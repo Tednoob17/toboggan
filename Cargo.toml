@@ -52,19 +52,19 @@ clawspec-core = "0.4.2"
 tempfile = "3.24.0"
 
 # Other dependencies
-comrak = "0.50.0"
+comrak = "0.52.0"
 miette = "7.6.0"
 comfy-table = "7.2.1"
 
 # Desktop dependencies
 iced = "0.14.0"
-tokio-tungstenite = { version = "0.28.0", default-features = false }
+tokio-tungstenite = { version = "0.29.0", default-features = false }
 reqwest = { version = "0.13.1", default-features = false }
 lucide-icons = "0.563.0"
 async-stream = "0.3.6"
 
 # Other dependencies
-scraper = "0.25.0"
+scraper = "0.26.0"
 
 # Server-specific dependencies
 rust-embed = "8.9.0"

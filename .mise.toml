@@ -17,9 +17,8 @@ cargo = { binstall = true }
 "cargo:cargo-machete" = "latest"
 "cargo:cargo-nextest" = "0.9"
 "cargo:wasm-pack" = "latest"
-"npm:rolldown-vite" = "latest"
 "npm:vite" = "latest"
-"npm:wasm-opt" = "latest"
+
 swiftlint = "latest"
 "npm:@stoplight/spectral-cli" = "latest"
 "cargo:cargo-ndk" = "latest"
