@@ -7,12 +7,18 @@ pub(super) enum CommentType {
     Pause(CssClasses),
     Notes,
     Code { info: String, path: PathBuf },
+    Term {
+        cwd: String,
+        theme: Option<String>,
+        cmd: Option<String>,
+    },
     Unknown,
 }
 
 const MARKER_PAUSE: &str = "pause";
 const MARKER_NOTES: &str = "notes";
 const MARKER_CODE: &str = "code";
+const MARKER_TERM: &str = "term";
 
 fn parse_comment(html: &str) -> Option<&str> {
     let html = html.trim();
@@ -39,6 +45,8 @@ pub(super) fn parse_comment_content(html: &str) -> CommentType {
         CommentType::Notes
     } else if comment_content.starts_with(MARKER_CODE) {
         parse_code_comment(comment_content)
+    } else if comment_content.starts_with(MARKER_TERM) {
+        parse_term_comment(comment_content)
     } else {
         CommentType::Unknown
     }
@@ -74,6 +82,48 @@ fn parse_code_comment(comment_content: &str) -> CommentType {
     } else {
         // If we can't parse properly, fall back to Unknown
         CommentType::Unknown
+    }
+}
+
+/// Parse `<!-- term: cwd -->`, `<!-- term: cwd :light -->`,
+/// `<!-- term: cwd | command -->`, or `<!-- term: cwd :light | command -->`
+fn parse_term_comment(comment_content: &str) -> CommentType {
+    let content_after_term = comment_content.trim_start_matches(MARKER_TERM).trim();
+
+    // Remove leading ':' if present
+    let content_after_term = content_after_term
+        .strip_prefix(':')
+        .unwrap_or(content_after_term);
+
+    // Split on '|' to separate cwd+theme from command
+    let (options_part, cmd) = if let Some((opts, cmd_str)) = content_after_term.split_once('|') {
+        let cmd = cmd_str.trim();
+        let cmd = if cmd.is_empty() { None } else { Some(cmd.to_string()) };
+        (opts.trim(), cmd)
+    } else {
+        (content_after_term, None)
+    };
+
+    // Split options on ':' to get cwd and optional theme
+    let parts: Vec<&str> = options_part.splitn(2, ':').collect();
+
+    match parts.first() {
+        Some(cwd_part) if !cwd_part.trim().is_empty() => {
+            let cwd = cwd_part.trim().to_string();
+            let theme = parts
+                .get(1)
+                .map(|theme| theme.trim().to_string())
+                .filter(|theme| !theme.is_empty());
+            CommentType::Term { cwd, theme, cmd }
+        }
+        _ => CommentType::Unknown,
+    }
+}
+
+pub(super) fn parse_term(html: &str) -> Option<(String, Option<String>, Option<String>)> {
+    match parse_comment_content(html) {
+        CommentType::Term { cwd, theme, cmd } => Some((cwd, theme, cmd)),
+        _ => None,
     }
 }
 
@@ -144,6 +194,50 @@ mod tests {
             parse_comment_content(malformed_code_comment),
             CommentType::Unknown
         );
+
+        // Test term comment
+        let term_comment = "<!-- term: ./my-project -->";
+        if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_comment) {
+            assert_eq!(cwd, "./my-project");
+            assert_eq!(theme, None);
+            assert_eq!(cmd, None);
+        } else {
+            panic!("Expected Term variant");
+        }
+
+        // Test term comment with theme
+        let term_comment_themed = "<!-- term: ./my-project :light -->";
+        if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_comment_themed) {
+            assert_eq!(cwd, "./my-project");
+            assert_eq!(theme, Some("light".to_string()));
+            assert_eq!(cmd, None);
+        } else {
+            panic!("Expected Term variant with theme");
+        }
+
+        // Test term comment with command
+        let term_with_cmd = "<!-- term: . | bacon test -->";
+        if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_with_cmd) {
+            assert_eq!(cwd, ".");
+            assert_eq!(theme, None);
+            assert_eq!(cmd, Some("bacon test".to_string()));
+        } else {
+            panic!("Expected Term variant with command");
+        }
+
+        // Test term comment with theme and command
+        let term_full = "<!-- term: ./src :light | hx main.rs -->";
+        if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_full) {
+            assert_eq!(cwd, "./src");
+            assert_eq!(theme, Some("light".to_string()));
+            assert_eq!(cmd, Some("hx main.rs".to_string()));
+        } else {
+            panic!("Expected Term variant with theme and command");
+        }
+
+        // Test term comment without path
+        let term_no_path = "<!-- term: -->";
+        assert_eq!(parse_comment_content(term_no_path), CommentType::Unknown);
 
         // Test unknown comment
         let unknown_comment = "<!-- random comment -->";

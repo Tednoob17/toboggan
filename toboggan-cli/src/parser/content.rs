@@ -5,10 +5,10 @@ use comrak::nodes::NodeValue;
 use comrak::options::Plugins;
 use comrak::{Options, format_commonmark};
 use miette::SourceSpan;
-use toboggan_core::{Content, Slide, SlideKind};
+use toboggan_core::{Content, Slide, SlideKind, TerminalConfig};
 
 use crate::error::{Result, TobogganCliError};
-use crate::parser::comments::{is_notes, parse_code, parse_pause};
+use crate::parser::comments::{is_notes, parse_code, parse_pause, parse_term};
 use crate::parser::directory::{extract_node_text, parse_frontmatter};
 use crate::parser::{
     ContentRenderer, CssClasses, DEFAULT_SLIDE_TITLE, FrontMatter, HtmlRenderer, MarkdownNode,
@@ -98,12 +98,14 @@ pub enum SlideContentParser {
         fm: FrontMatter,
         title: Option<String>,
         inner: InnerContent,
+        terminals: Vec<TerminalConfig>,
     },
     Notes {
         fm: FrontMatter,
         title: Option<String>,
         inner: InnerContent,
         notes: InnerContent,
+        terminals: Vec<TerminalConfig>,
     },
 }
 
@@ -117,8 +119,9 @@ impl SlideContentParser {
     fn handle_frontmatter(&mut self, content: &str, file_name: &str) -> Result<()> {
         let frontmatter = parse_frontmatter(content, file_name)?;
 
-        if let Self::Base { fm, .. } = self {
-            *fm = frontmatter;
+        match self {
+            Self::Base { fm, .. } | Self::Notes { fm, .. } => *fm = frontmatter,
+            Self::Init => {}
         }
         Ok(())
     }
@@ -135,12 +138,19 @@ impl SlideContentParser {
 
     /// Transition to notes state
     fn transition_to_notes(&mut self) {
-        if let Self::Base { fm, title, inner } = self {
+        if let Self::Base {
+            fm,
+            title,
+            inner,
+            terminals,
+        } = self
+        {
             *self = Self::Notes {
                 fm: fm.clone(),
                 title: title.clone(),
                 inner: inner.clone(),
                 notes: InnerContent::default(),
+                terminals: terminals.clone(),
             };
         }
     }
@@ -153,10 +163,13 @@ impl SlideContentParser {
                     fm: FrontMatter::default(),
                     title: None,
                     inner: InnerContent::default(),
+                    terminals: Vec::new(),
                 };
                 self.handle(elt, file_name)?;
             }
-            Self::Base { inner, .. } => match data {
+            Self::Base {
+                inner, terminals, ..
+            } => match data {
                 NodeValue::FrontMatter(content) => {
                     self.handle_frontmatter(content, file_name)?;
                 }
@@ -170,6 +183,18 @@ impl SlideContentParser {
                 }
                 NodeValue::HtmlBlock(html) if is_notes(&html.literal) => {
                     self.transition_to_notes();
+                }
+                NodeValue::HtmlBlock(html) if parse_term(&html.literal).is_some() => {
+                    if let Some((cwd, theme, cmd)) = parse_term(&html.literal) {
+                        let mut config = TerminalConfig::new(cwd);
+                        if let Some(theme) = theme {
+                            config = config.with_theme(theme);
+                        }
+                        if let Some(cmd) = cmd {
+                            config = config.with_cmd(cmd);
+                        }
+                        terminals.push(config);
+                    }
                 }
                 _ => inner.handle(elt, file_name)?,
             },
@@ -211,6 +236,13 @@ impl SlideContentParser {
         }
     }
 
+    fn terminals(&self) -> Vec<TerminalConfig> {
+        match self {
+            Self::Init => Vec::new(),
+            Self::Base { terminals, .. } | Self::Notes { terminals, .. } => terminals.clone(),
+        }
+    }
+
     pub fn parse<'a, I>(
         mut self,
         iterator: I,
@@ -248,6 +280,19 @@ impl SlideContentParser {
             },
             body,
             notes: self.notes(&renderer),
+            terminals: self
+                .terminals()
+                .into_iter()
+                .map(|mut tc| {
+                    // Resolve cwd relative to the slide file's parent directory
+                    if let Some(base_dir) = path.and_then(Path::parent) {
+                        let resolved = base_dir.join(&tc.cwd);
+                        let normalized: std::path::PathBuf = resolved.components().collect();
+                        tc.cwd = normalized.to_string_lossy().to_string();
+                    }
+                    tc
+                })
+                .collect(),
         };
 
         Ok((result, front_matter))

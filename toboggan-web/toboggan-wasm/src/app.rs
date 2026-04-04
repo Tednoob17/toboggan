@@ -110,6 +110,7 @@ impl WasmElement for App {
 
             let el = create_html_element("div");
             el.set_class_name("toboggan-slide");
+            elements.slide.set_api_base_url(self.api.base_url());
             elements.slide.render(&el);
             host.append_child(&el).unwrap_throw();
 

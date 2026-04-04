@@ -10,6 +10,12 @@ pub struct TobogganApi {
 }
 
 impl TobogganApi {
+    /// Returns the API base URL
+    #[must_use]
+    pub fn base_url(&self) -> &str {
+        &self.api_base_url
+    }
+
     /// Creates a new API client with the given base URL
     #[must_use]
     pub fn new(api_base_url: &str) -> Self {

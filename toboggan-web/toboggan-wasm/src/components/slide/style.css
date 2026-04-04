@@ -65,7 +65,7 @@ section {
 	width: 80vw;
 	min-height: calc(100% - 1rem);
 	max-height: calc(100% - 1rem);
-	overflow: auto;
+	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 
@@ -196,4 +196,26 @@ section.center {
 	}
 }
 
-/* TODO GRID */
+/* Terminals layout */
+.toboggan-terminals {
+	display: flex;
+	gap: 1rem;
+	justify-content: center;
+	align-items: stretch;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.toboggan-terminal {
+	flex: 1 1 0;
+	min-width: 0;
+	min-height: 0;
+	max-height: 100%;
+	overflow: hidden;
+}
+
+/* Wide layout: remove side margins for terminal-heavy slides */
+section.wide {
+	width: 95vw;
+}

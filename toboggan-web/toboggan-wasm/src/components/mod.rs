@@ -6,6 +6,9 @@ pub use self::footer::*;
 mod slide;
 pub use self::slide::*;
 
+mod terminal;
+pub use self::terminal::*;
+
 mod toast;
 pub use self::toast::*;
 

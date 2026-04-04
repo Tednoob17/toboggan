@@ -16,6 +16,7 @@ use crate::TobogganState;
 
 mod api;
 mod static_assets;
+mod terminal_ws;
 mod ws;
 
 pub fn routes(assets_dir: Option<PathBuf>, openapi: OpenApi) -> Router<TobogganState> {
@@ -38,7 +39,8 @@ pub fn routes_with_cors(
                 .route("/slides/{index}", get(api::get_slide_by_index))
                 .route("/command", post(api::post_command))
                 .route("/clients", get(api::get_clients))
-                .route("/ws", get(ws::websocket_handler)),
+                .route("/ws", get(ws::websocket_handler))
+                .route("/terminal", get(terminal_ws::terminal_websocket_handler)),
         )
         .layer(TraceLayer::new_for_http())
         .route("/health", get(health))

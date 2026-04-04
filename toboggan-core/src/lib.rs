@@ -24,5 +24,8 @@ pub use self::command::*;
 mod notification;
 pub use self::notification::*;
 
+mod terminal;
+pub use self::terminal::*;
+
 mod client;
 pub use self::client::*;

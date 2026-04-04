@@ -216,6 +216,7 @@ mod tests {
             },
             notes: Content::Empty,
             style: Style::default(),
+            terminals: Vec::new(),
         };
         talk.slides.push(slide);
 

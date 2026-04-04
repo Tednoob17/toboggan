@@ -1,4 +1,4 @@
-import {
+import init, {
 	AppConfig,
 	start_app,
 	WebSocketConfig,
@@ -10,6 +10,8 @@ import "./state.css";
 
 // Initialize the application when the DOM is loaded
 document.addEventListener("DOMContentLoaded", async () => {
+	await init();
+
 	const elt = document.querySelector("main");
 	if (!elt) {
 		console.error("🚨 Missing <main> element");

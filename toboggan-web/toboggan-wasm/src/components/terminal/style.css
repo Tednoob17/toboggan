@@ -1,0 +1,112 @@
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.terminal-window {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Dark theme (default) */
+.terminal-dark {
+    background: #1e1e2e;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.terminal-dark .terminal-titlebar {
+    background: #181825;
+}
+
+.terminal-dark .terminal-title {
+    color: #6c7086;
+}
+
+/* Light theme */
+.terminal-light {
+    background: #eff1f5;
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.15),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #ccd0da;
+}
+
+.terminal-light .terminal-titlebar {
+    background: #e6e9ef;
+    border-bottom: 1px solid #ccd0da;
+}
+
+.terminal-light .terminal-title {
+    color: #8c8fa1;
+}
+
+/* Title bar */
+.terminal-titlebar {
+    display: flex;
+    align-items: center;
+    height: 36px;
+    flex-shrink: 0;
+    padding: 0 12px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Traffic lights */
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.terminal-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+}
+
+.terminal-btn-close {
+    background: #ed6a5e;
+}
+
+.terminal-btn-minimize {
+    background: #f5bf4f;
+}
+
+.terminal-btn-maximize {
+    background: #61c554;
+}
+
+/* Title text */
+.terminal-title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'MonaspiceNe Nerd Font', 'JetBrainsMono Nerd Font', 'Inconsolata', system-ui, monospace;
+    font-size: 13px;
+    pointer-events: none;
+}
+
+/* Canvas area */
+.terminal-body {
+    padding: 2px 3px 3px;
+    overflow: hidden;
+}
+
+.terminal-canvas {
+    display: block;
+    outline: none;
+    max-width: 100%;
+    max-height: 100%;
+}

@@ -1,0 +1,222 @@
+title = "Terminal in Slide"
+date = "2026-04-04"
+
+[[slides]]
+kind = "Cover"
+
+[slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Terminal in Slide"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Terminal in Slide</h1>
+<blockquote>
+<p>A demo of embedded terminals in presentation slides</p>
+</blockquote>
+"""
+alt = """
+# Terminal in Slide
+> A demo of embedded terminals in presentation slides
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "What is this?"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>What is this?</h1>
+<p>Toboggan can now embed <strong>live terminals</strong> inside slides.
+Use the <code>&lt;!-- term: path --&gt;</code> comment in your markdown:</p>
+<pre style="background-color:#eff1f5;"><code class="language-markdown"><span style="color:#a7adba;">&lt;!-- term: ./my-project --&gt;
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<p>Features:</p>
+<ul>
+<li>Real PTY connected to your shell</li>
+<li>ANSI color support (256 + truecolor)</li>
+<li>Dark and light themes</li>
+<li>macOS-style window chrome</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = """
+# What is this?
+Toboggan can now embed **live terminals** inside slides.
+Use the `<!-- term: path -->` comment in your markdown:
+```markdown
+<!-- term: ./my-project -->
+```
+
+Features:
+- Real PTY connected to your shell
+- ANSI color support (256 + truecolor)
+- Dark and light themes
+- macOS-style window chrome
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[slides.title]
+type = "Text"
+text = "Dark Terminal"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Live Terminal (Dark)</h1>
+"""
+alt = """
+# Live Terminal (Dark)
+"""
+
+[slides.body.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[[slides.terminals]]
+cwd = "examples/demo-terminal"
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[slides.title]
+type = "Text"
+text = "Light Terminal"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Live Terminal (Light)</h1>
+"""
+alt = """
+# Live Terminal (Light)
+"""
+
+[slides.body.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[[slides.terminals]]
+cwd = "examples/demo-terminal"
+theme = "light"
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[slides.title]
+type = "Text"
+text = "Live Coding"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Live Coding</h1>
+"""
+alt = """
+# Live Coding
+"""
+
+[slides.body.style]
+classes = [
+    "no_title",
+    "wide",
+]
+
+[[slides.terminals]]
+cwd = "examples/demo-terminal"
+cmd = "bacon test"
+
+[[slides.terminals]]
+cwd = "examples/demo-terminal"
+cmd = "hx src/lib.rs"
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = [
+    "no_title",
+    "center",
+]
+
+[slides.title]
+type = "Text"
+text = "The End"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>That's it!</h1>
+<p>The terminal is embedded right in the slide.
+Try typing commands, resizing the window, or navigating away and back.</p>
+"""
+alt = '''
+# That's it\!
+The terminal is embedded right in the slide.
+Try typing commands, resizing the window, or navigating away and back.
+'''
+
+[slides.body.style]
+classes = [
+    "no_title",
+    "center",
+]
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "title"
+
+[slides.body]
+type = "Html"
+raw = """
+<p>Terminal in Slide Demo</p>
+"""
+alt = """
+Terminal in Slide Demo
+"""

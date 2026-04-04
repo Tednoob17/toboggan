@@ -2,7 +2,7 @@ use std::fmt::{self, Display, Formatter};
 
 use serde::{Deserialize, Serialize};
 
-use crate::Content;
+use crate::{Content, TerminalConfig};
 
 /// A type-safe identifier for slides in a presentation.
 ///
@@ -74,6 +74,8 @@ pub struct Slide {
     pub body: Content,
     #[serde(skip_serializing_if = "Content::is_empty")]
     pub notes: Content,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub terminals: Vec<TerminalConfig>,
 }
 
 impl Slide {
@@ -118,6 +120,12 @@ impl Slide {
     #[must_use]
     pub fn with_notes(mut self, notes: impl Into<Content>) -> Self {
         self.notes = notes.into();
+        self
+    }
+
+    #[must_use]
+    pub fn with_terminal(mut self, terminal: TerminalConfig) -> Self {
+        self.terminals.push(terminal);
         self
     }
 }
