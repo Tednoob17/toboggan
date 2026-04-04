@@ -103,23 +103,25 @@ async fn handle_terminal(socket: WebSocket, cwd: String, cmd: Option<String>, co
 
     // Pre-send DA1 response so fish doesn't wait 10s (only for interactive shells,
     // not for commands — command shells exit quickly and the response would echo as text)
-    if cmd.is_none() {
-        let _ = tx_pty.send(DA1_RESPONSE.to_vec());
+    if cmd.is_none() && tx_pty.send(DA1_RESPONSE.to_vec()).is_err() {
+        warn!("Failed to send DA1 response to PTY");
     }
 
     let ws_reader_task = spawn_ws_reader(ws_receiver, tx_pty, pair.master);
     let ws_sender_task = spawn_ws_sender(rx_ws, ws_sender);
 
     tokio::select! {
-        _ = ws_reader_task => {}
-        _ = ws_sender_task => {}
+        _ = ws_reader_task => { info!("WebSocket reader ended"); }
+        _ = ws_sender_task => { info!("WebSocket sender ended"); }
     }
 
     info!("Terminal session ended, killing child process");
-    let _ = child.kill();
+    if let Err(err) = child.kill() {
+        warn!(?err, "Failed to kill child process");
+    }
 }
 
-/// DA1 response: VT220 with advanced video option
+/// DA1 response: VT220 with Sixel graphics support
 const DA1_RESPONSE: &[u8] = b"\x1b[?62;4c";
 /// DSR response: cursor at row 1, col 1
 const DSR_RESPONSE: &[u8] = b"\x1b[1;1R";
@@ -146,13 +148,16 @@ fn spawn_pty_reader(
                     let data = buffer.get(..len).unwrap_or_default();
 
                     // Respond to terminal queries (DA1, DSR) via PTY input
-                    if data.windows(3).any(|w| w == b"\x1b[c")
-                        || data.windows(4).any(|w| w == b"\x1b[0c")
+                    if (data.windows(3).any(|w| w == b"\x1b[c")
+                        || data.windows(4).any(|w| w == b"\x1b[0c"))
+                        && tx_pty.send(DA1_RESPONSE.to_vec()).is_err()
                     {
-                        let _ = tx_pty.send(DA1_RESPONSE.to_vec());
+                        warn!("Failed to send DA1 response to PTY");
                     }
-                    if data.windows(4).any(|w| w == b"\x1b[6n") {
-                        let _ = tx_pty.send(DSR_RESPONSE.to_vec());
+                    if data.windows(4).any(|w| w == b"\x1b[6n")
+                        && tx_pty.send(DSR_RESPONSE.to_vec()).is_err()
+                    {
+                        warn!("Failed to send DSR response to PTY");
                     }
 
                     // Forward all output to WebSocket (don't strip anything)
@@ -183,7 +188,8 @@ fn spawn_pty_writer(
 
     thread::spawn(move || {
         while let Ok(bytes) = rx_pty.recv() {
-            if writer.write_all(&bytes).is_err() {
+            if let Err(err) = writer.write_all(&bytes) {
+                warn!(?err, "PTY write failed");
                 break;
             }
         }
@@ -237,6 +243,8 @@ fn spawn_ws_sender(
 fn handle_control(master: &dyn MasterPty, control: TerminalControl) {
     match control {
         TerminalControl::Resize { cols, rows } => {
+            let cols = cols.max(1);
+            let rows = rows.max(1);
             let size = PtySize {
                 rows,
                 cols,

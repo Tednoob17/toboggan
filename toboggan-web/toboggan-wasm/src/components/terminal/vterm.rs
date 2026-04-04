@@ -1,13 +1,14 @@
 #![allow(clippy::min_ident_chars)]
 
+use gloo::console::error;
+use toboggan_core::Theme;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlCanvasElement;
 
-/// A cell in the virtual terminal grid
+/// Current SGR state applied to subsequently printed characters
 #[derive(Debug, Clone, Copy)]
 #[allow(clippy::struct_excessive_bools)]
-struct Cell {
-    ch: char,
+struct CellStyle {
     fg: Rgb,
     bg: Rgb,
     bold: bool,
@@ -18,10 +19,9 @@ struct Cell {
     strikethrough: bool,
 }
 
-impl Default for Cell {
+impl Default for CellStyle {
     fn default() -> Self {
         Self {
-            ch: ' ',
             fg: Rgb::WHITE,
             bg: Rgb::BLACK,
             bold: false,
@@ -30,6 +30,22 @@ impl Default for Cell {
             underline: false,
             reverse: false,
             strikethrough: false,
+        }
+    }
+}
+
+/// A cell in the virtual terminal grid
+#[derive(Debug, Clone, Copy)]
+struct Cell {
+    ch: char,
+    style: CellStyle,
+}
+
+impl Default for Cell {
+    fn default() -> Self {
+        Self {
+            ch: ' ',
+            style: CellStyle::default(),
         }
     }
 }
@@ -56,6 +72,13 @@ impl Rgb {
     fn to_css(self) -> String {
         format!("rgb({},{},{})", self.red, self.green, self.blue)
     }
+}
+
+#[derive(Debug, Clone)]
+struct SavedScreen {
+    grid: Vec<Vec<Cell>>,
+    cursor_row: u16,
+    cursor_col: u16,
 }
 
 /// Dark theme ANSI color palette (Catppuccin Mocha-inspired)
@@ -226,20 +249,6 @@ const LIGHT_COLORS: [Rgb; 16] = [
     }, // 15 bright white (text)
 ];
 
-/// Attributes for the current character being written
-#[derive(Debug, Clone, Copy)]
-#[allow(clippy::struct_excessive_bools)]
-struct Attrs {
-    fg: Rgb,
-    bg: Rgb,
-    bold: bool,
-    dim: bool,
-    italic: bool,
-    underline: bool,
-    reverse: bool,
-    strikethrough: bool,
-}
-
 pub struct VirtualTerminal {
     screen: TermScreen,
     parser: vte::Parser,
@@ -251,8 +260,8 @@ struct TermScreen {
     cursor_row: u16,
     cursor_col: u16,
     grid: Vec<Vec<Cell>>,
-    /// Stack of saved grids for nested alternate screen buffers
-    saved_screens: Vec<(Vec<Vec<Cell>>, u16, u16)>,
+    /// Saved grids for alternate screen buffer save/restore (DECSET 47/1047/1049)
+    saved_screens: Vec<SavedScreen>,
     /// Saved cursor position for DEC/ANSI save/restore
     saved_cursor: Option<(u16, u16)>,
     /// Scroll region: (top, bottom) inclusive, 0-indexed
@@ -266,14 +275,14 @@ struct TermScreen {
     title: Option<String>,
     /// Inside an OSC 8 hyperlink — suppress underline rendering
     in_hyperlink: bool,
-    attrs: Attrs,
+    attrs: CellStyle,
     default_fg: Rgb,
     default_bg: Rgb,
     colors: [Rgb; 16],
 }
 
 impl VirtualTerminal {
-    pub fn new(cols: u16, rows: u16, theme: &str) -> Self {
+    pub fn new(cols: u16, rows: u16, theme: Theme) -> Self {
         Self {
             screen: TermScreen::new(cols, rows, theme),
             parser: vte::Parser::new(),
@@ -299,8 +308,8 @@ impl VirtualTerminal {
 
 impl TermScreen {
     #[allow(clippy::similar_names)]
-    fn new(cols: u16, rows: u16, theme: &str) -> Self {
-        let is_light = theme == "light";
+    fn new(cols: u16, rows: u16, theme: Theme) -> Self {
+        let is_light = theme == Theme::Light;
         let (default_fg, default_bg, colors) = if is_light {
             (
                 Rgb {
@@ -331,22 +340,20 @@ impl TermScreen {
             )
         };
 
-        let attrs = Attrs {
+        let attrs = CellStyle {
             fg: default_fg,
             bg: default_bg,
-            bold: false,
-            dim: false,
-            italic: false,
-            underline: false,
-            reverse: false,
-            strikethrough: false,
+            ..CellStyle::default()
         };
 
         let grid = vec![
             vec![
                 Cell {
-                    fg: default_fg,
-                    bg: default_bg,
+                    style: CellStyle {
+                        fg: default_fg,
+                        bg: default_bg,
+                        ..CellStyle::default()
+                    },
                     ..Cell::default()
                 };
                 cols as usize
@@ -363,7 +370,7 @@ impl TermScreen {
             saved_screens: Vec::new(),
             saved_cursor: None,
             scroll_top: 0,
-            scroll_bottom: rows - 1,
+            scroll_bottom: rows.saturating_sub(1),
             autowrap: true,
             wrap_pending: false,
             title: None,
@@ -386,8 +393,11 @@ impl TermScreen {
         let mut new_grid = vec![
             vec![
                 Cell {
-                    fg: self.default_fg,
-                    bg: self.default_bg,
+                    style: CellStyle {
+                        fg: self.default_fg,
+                        bg: self.default_bg,
+                        ..CellStyle::default()
+                    },
                     ..Cell::default()
                 };
                 cols as usize
@@ -427,9 +437,11 @@ impl TermScreen {
         // Measure actual character width and ceil to avoid sub-pixel gaps
         let char_width = {
             let Ok(Some(ctx)) = canvas.get_context("2d") else {
+                error!("Failed to get 2d context for character measurement");
                 return;
             };
             let Ok(ctx) = ctx.dyn_into::<web_sys::CanvasRenderingContext2d>() else {
+                error!("Failed to cast to CanvasRenderingContext2d for measurement");
                 return;
             };
             ctx.set_font(&font);
@@ -443,9 +455,11 @@ impl TermScreen {
         canvas.set_height((f64::from(self.rows) * char_height) as u32);
 
         let Ok(Some(ctx)) = canvas.get_context("2d") else {
+            error!("Failed to get 2d context for rendering");
             return;
         };
         let Ok(ctx) = ctx.dyn_into::<web_sys::CanvasRenderingContext2d>() else {
+            error!("Failed to cast to CanvasRenderingContext2d for rendering");
             return;
         };
 
@@ -463,8 +477,8 @@ impl TermScreen {
             let row_y = row_idx as f64 * char_height;
             for (col_idx, cell) in row.iter().enumerate() {
                 let col_x = col_idx as f64 * char_width;
-                let bg = if cell.reverse { cell.fg } else { cell.bg };
-                if bg != self.default_bg || cell.reverse {
+                let bg = if cell.style.reverse { cell.style.fg } else { cell.style.bg };
+                if bg != self.default_bg || cell.style.reverse {
                     ctx.set_fill_style_str(&bg.to_css());
                     ctx.fill_rect(col_x, row_y, char_width, char_height);
                 }
@@ -478,14 +492,14 @@ impl TermScreen {
         for (row_idx, row) in self.grid.iter().enumerate() {
             let row_y = row_idx as f64 * char_height;
             for (col_idx, cell) in row.iter().enumerate() {
-                if cell.ch == ' ' && !cell.reverse {
+                if cell.ch == ' ' && !cell.style.reverse {
                     continue;
                 }
                 let col_x = col_idx as f64 * char_width;
-                let fg = if cell.reverse { cell.bg } else { cell.fg };
+                let fg = if cell.style.reverse { cell.style.bg } else { cell.style.fg };
 
                 // Set font style
-                let style = match (cell.bold, cell.italic) {
+                let style = match (cell.style.bold, cell.style.italic) {
                     (true, true) => format!("bold italic {font_size}px {font_family}"),
                     (true, false) => format!("bold {font_size}px {font_family}"),
                     (false, true) => format!("italic {font_size}px {font_family}"),
@@ -494,7 +508,7 @@ impl TermScreen {
                 ctx.set_font(&style);
 
                 // Foreground color (dim = half opacity)
-                let fg_css = if cell.dim {
+                let fg_css = if cell.style.dim {
                     format!("rgba({},{},{},0.5)", fg.red, fg.green, fg.blue)
                 } else {
                     fg.to_css()
@@ -503,7 +517,7 @@ impl TermScreen {
                 let _ = ctx.fill_text(&cell.ch.to_string(), col_x, row_y + 2.0);
 
                 // Underline
-                if cell.underline {
+                if cell.style.underline {
                     ctx.set_stroke_style_str(&fg.to_css());
                     ctx.set_line_width(1.0);
                     ctx.begin_path();
@@ -513,7 +527,7 @@ impl TermScreen {
                 }
 
                 // Strikethrough
-                if cell.strikethrough {
+                if cell.style.strikethrough {
                     ctx.set_stroke_style_str(&fg.to_css());
                     ctx.set_line_width(1.0);
                     ctx.begin_path();
@@ -546,24 +560,18 @@ impl TermScreen {
             let row = self.cursor_row as usize;
             let col = self.cursor_col as usize;
             if let Some(cell) = self.grid.get_mut(row).and_then(|r| r.get_mut(col)) {
+                cell.style = self.attrs;
+                cell.style.underline &= !self.in_hyperlink;
                 cell.ch = ch;
-                cell.fg = self.attrs.fg;
-                cell.bg = self.attrs.bg;
-                cell.bold = self.attrs.bold;
-                cell.dim = self.attrs.dim;
-                cell.italic = self.attrs.italic;
-                cell.underline = self.attrs.underline && !self.in_hyperlink;
-                cell.reverse = self.attrs.reverse;
-                cell.strikethrough = self.attrs.strikethrough;
             }
             self.cursor_col += 1;
             if self.cursor_col >= self.cols {
                 if self.autowrap {
                     // Don't wrap yet — defer until next character is printed
-                    self.cursor_col = self.cols - 1;
+                    self.cursor_col = self.cols.saturating_sub(1);
                     self.wrap_pending = true;
                 } else {
-                    self.cursor_col = self.cols - 1;
+                    self.cursor_col = self.cols.saturating_sub(1);
                 }
             }
         }
@@ -604,13 +612,10 @@ impl TermScreen {
     }
 
     fn clear_row(&mut self, row: u16) {
+        let default = self.default_cell();
         if let Some(grid_row) = self.grid.get_mut(row as usize) {
             for cell in grid_row.iter_mut() {
-                *cell = Cell {
-                    fg: self.default_fg,
-                    bg: self.default_bg,
-                    ..Cell::default()
-                };
+                *cell = default;
             }
         }
     }
@@ -621,19 +626,22 @@ impl TermScreen {
 
     fn default_cell(&self) -> Cell {
         Cell {
-            fg: self.default_fg,
-            bg: self.default_bg,
+            style: CellStyle {
+                fg: self.default_fg,
+                bg: self.default_bg,
+                ..CellStyle::default()
+            },
             ..Cell::default()
         }
     }
 
     fn enter_alternate_screen(&mut self) {
         // Push current screen state onto the stack
-        self.saved_screens.push((
-            self.grid.clone(),
-            self.cursor_row,
-            self.cursor_col,
-        ));
+        self.saved_screens.push(SavedScreen {
+            grid: self.grid.clone(),
+            cursor_row: self.cursor_row,
+            cursor_col: self.cursor_col,
+        });
         // Clear the screen for the alternate buffer
         let default = self.default_cell();
         for row in &mut self.grid {
@@ -644,17 +652,17 @@ impl TermScreen {
         self.cursor_row = 0;
         self.cursor_col = 0;
         self.scroll_top = 0;
-        self.scroll_bottom = self.rows - 1;
+        self.scroll_bottom = self.rows.saturating_sub(1);
     }
 
     fn leave_alternate_screen(&mut self) {
-        if let Some((grid, row, col)) = self.saved_screens.pop() {
+        if let Some(SavedScreen { grid, cursor_row, cursor_col }) = self.saved_screens.pop() {
             self.grid = grid;
-            self.cursor_row = row;
-            self.cursor_col = col;
+            self.cursor_row = cursor_row;
+            self.cursor_col = cursor_col;
         }
         self.scroll_top = 0;
-        self.scroll_bottom = self.rows - 1;
+        self.scroll_bottom = self.rows.saturating_sub(1);
     }
 
     fn reset_attrs(&mut self) {
@@ -768,7 +776,7 @@ impl vte::Perform for TermScreen {
                 // Tab - advance to next 8-col boundary
                 self.cursor_col = ((self.cursor_col / 8) + 1) * 8;
                 if self.cursor_col >= self.cols {
-                    self.cursor_col = self.cols - 1;
+                    self.cursor_col = self.cols.saturating_sub(1);
                 }
             }
             _ => {}
@@ -792,7 +800,7 @@ impl vte::Perform for TermScreen {
         if intermediates.first() == Some(&b'!') && action == 'p' {
             self.reset_attrs();
             self.scroll_top = 0;
-            self.scroll_bottom = self.rows - 1;
+            self.scroll_bottom = self.rows.saturating_sub(1);
             self.autowrap = true;
             return;
         }
@@ -828,12 +836,12 @@ impl vte::Perform for TermScreen {
             // Cursor Down
             'B' => {
                 let count = params.first().copied().unwrap_or(1).max(1);
-                self.cursor_row = (self.cursor_row + count).min(self.rows - 1);
+                self.cursor_row = (self.cursor_row + count).min(self.rows.saturating_sub(1));
             }
             // Cursor Forward
             'C' => {
                 let count = params.first().copied().unwrap_or(1).max(1);
-                self.cursor_col = (self.cursor_col + count).min(self.cols - 1);
+                self.cursor_col = (self.cursor_col + count).min(self.cols.saturating_sub(1));
             }
             // Cursor Back
             'D' => {
@@ -843,12 +851,12 @@ impl vte::Perform for TermScreen {
             // Vertical Position Absolute (VPA) - move to specific row
             'd' => {
                 let row = params.first().copied().unwrap_or(1).max(1) - 1;
-                self.cursor_row = row.min(self.rows - 1);
+                self.cursor_row = row.min(self.rows.saturating_sub(1));
             }
             // Cursor Next Line
             'E' => {
                 let count = params.first().copied().unwrap_or(1).max(1);
-                self.cursor_row = (self.cursor_row + count).min(self.rows - 1);
+                self.cursor_row = (self.cursor_row + count).min(self.rows.saturating_sub(1));
                 self.cursor_col = 0;
             }
             // Cursor Previous Line
@@ -860,14 +868,14 @@ impl vte::Perform for TermScreen {
             // Cursor Horizontal Absolute
             'G' => {
                 let col = params.first().copied().unwrap_or(1).max(1) - 1;
-                self.cursor_col = col.min(self.cols - 1);
+                self.cursor_col = col.min(self.cols.saturating_sub(1));
             }
             // Cursor Position (CUP)
             'H' | 'f' => {
                 let row = params.first().copied().unwrap_or(1).max(1) - 1;
                 let col = params.get(1).copied().unwrap_or(1).max(1) - 1;
-                self.cursor_row = row.min(self.rows - 1);
-                self.cursor_col = col.min(self.cols - 1);
+                self.cursor_row = row.min(self.rows.saturating_sub(1));
+                self.cursor_col = col.min(self.cols.saturating_sub(1));
             }
             // Erase in Display (ED)
             'J' => self.erase_in_display(params.first().copied().unwrap_or(0)),
@@ -934,8 +942,8 @@ impl vte::Perform for TermScreen {
             'r' => {
                 let top = params.first().copied().unwrap_or(1).max(1) - 1;
                 let bottom = params.get(1).copied().unwrap_or(self.rows).max(1) - 1;
-                self.scroll_top = top.min(self.rows - 1);
-                self.scroll_bottom = bottom.min(self.rows - 1);
+                self.scroll_top = top.min(self.rows.saturating_sub(1));
+                self.scroll_bottom = bottom.min(self.rows.saturating_sub(1));
                 self.cursor_row = 0;
                 self.cursor_col = 0;
             }
@@ -1023,7 +1031,7 @@ impl vte::Perform for TermScreen {
                 if self.cursor_row == self.scroll_bottom {
                     self.scroll_up(1);
                 } else {
-                    self.cursor_row = (self.cursor_row + 1).min(self.rows - 1);
+                    self.cursor_row = (self.cursor_row + 1).min(self.rows.saturating_sub(1));
                 }
             }
             // Next Line (NEL)
@@ -1032,7 +1040,7 @@ impl vte::Perform for TermScreen {
                 if self.cursor_row == self.scroll_bottom {
                     self.scroll_up(1);
                 } else {
-                    self.cursor_row = (self.cursor_row + 1).min(self.rows - 1);
+                    self.cursor_row = (self.cursor_row + 1).min(self.rows.saturating_sub(1));
                 }
             }
             _ => {}

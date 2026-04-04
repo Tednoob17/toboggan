@@ -1,5 +1,7 @@
 use std::path::PathBuf;
 
+use toboggan_core::Theme;
+
 use crate::parser::CssClasses;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -9,7 +11,7 @@ pub(super) enum CommentType {
     Code { info: String, path: PathBuf },
     Term {
         cwd: String,
-        theme: Option<String>,
+        theme: Option<Theme>,
         cmd: Option<String>,
     },
     Unknown,
@@ -67,7 +69,6 @@ fn parse_classes(html: &str) -> CssClasses {
 fn parse_code_comment(comment_content: &str) -> CommentType {
     let content_after_code = comment_content.trim_start_matches(MARKER_CODE).trim();
 
-    // Remove leading ':' if present
     let content_after_code = content_after_code
         .strip_prefix(':')
         .unwrap_or(content_after_code);
@@ -90,7 +91,6 @@ fn parse_code_comment(comment_content: &str) -> CommentType {
 fn parse_term_comment(comment_content: &str) -> CommentType {
     let content_after_term = comment_content.trim_start_matches(MARKER_TERM).trim();
 
-    // Remove leading ':' if present
     let content_after_term = content_after_term
         .strip_prefix(':')
         .unwrap_or(content_after_term);
@@ -110,17 +110,18 @@ fn parse_term_comment(comment_content: &str) -> CommentType {
     match parts.first() {
         Some(cwd_part) if !cwd_part.trim().is_empty() => {
             let cwd = cwd_part.trim().to_string();
-            let theme = parts
-                .get(1)
-                .map(|theme| theme.trim().to_string())
-                .filter(|theme| !theme.is_empty());
+            let theme = parts.get(1).map(|val| val.trim()).and_then(|val| match val {
+                "light" => Some(Theme::Light),
+                "dark" => Some(Theme::Dark),
+                _ => None,
+            });
             CommentType::Term { cwd, theme, cmd }
         }
         _ => CommentType::Unknown,
     }
 }
 
-pub(super) fn parse_term(html: &str) -> Option<(String, Option<String>, Option<String>)> {
+pub(super) fn parse_term(html: &str) -> Option<(String, Option<Theme>, Option<String>)> {
     match parse_comment_content(html) {
         CommentType::Term { cwd, theme, cmd } => Some((cwd, theme, cmd)),
         _ => None,
@@ -209,7 +210,7 @@ mod tests {
         let term_comment_themed = "<!-- term: ./my-project :light -->";
         if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_comment_themed) {
             assert_eq!(cwd, "./my-project");
-            assert_eq!(theme, Some("light".to_string()));
+            assert_eq!(theme, Some(Theme::Light));
             assert_eq!(cmd, None);
         } else {
             panic!("Expected Term variant with theme");
@@ -229,7 +230,7 @@ mod tests {
         let term_full = "<!-- term: ./src :light | hx main.rs -->";
         if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_full) {
             assert_eq!(cwd, "./src");
-            assert_eq!(theme, Some("light".to_string()));
+            assert_eq!(theme, Some(Theme::Light));
             assert_eq!(cmd, Some("hx main.rs".to_string()));
         } else {
             panic!("Expected Term variant with theme and command");

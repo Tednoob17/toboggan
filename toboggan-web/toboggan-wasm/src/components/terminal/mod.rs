@@ -8,7 +8,7 @@ use futures::{SinkExt, StreamExt};
 use gloo::console::{error, info};
 use gloo::net::websocket::Message;
 use gloo::net::websocket::futures::WebSocket;
-use toboggan_core::TerminalConfig;
+use toboggan_core::{TerminalConfig, Theme};
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::{JsCast, UnwrapThrowExt};
 use wasm_bindgen_futures::spawn_local;
@@ -34,13 +34,13 @@ pub struct TobogganTerminalElement {
 impl TobogganTerminalElement {
     pub fn start_terminal(&self, config: &TerminalConfig, api_base_url: &str) {
         let Some(container) = &self.container else {
+            error!("start_terminal called before render");
             return;
         };
 
         let document = gloo::utils::document();
-        let is_light = config.theme == "light";
+        let is_light = config.theme == Theme::Light;
 
-        // Window container with theme class
         let window_class = if is_light {
             "terminal-window terminal-light"
         } else {
@@ -48,10 +48,8 @@ impl TobogganTerminalElement {
         };
         let window_el = create_element_with_class(&document, "div", window_class);
 
-        // Title bar
         let titlebar = create_element_with_class(&document, "div", "terminal-titlebar");
 
-        // Traffic light buttons
         let buttons = create_element_with_class(&document, "div", "terminal-buttons");
         let btn_close = create_element_with_class(&document, "div", "terminal-btn terminal-btn-close");
         let btn_minimize = create_element_with_class(&document, "div", "terminal-btn terminal-btn-minimize");
@@ -61,7 +59,6 @@ impl TobogganTerminalElement {
         let _ = buttons.append_child(&btn_maximize);
         let _ = titlebar.append_child(&buttons);
 
-        // Title text (show cwd basename or cmd)
         let title_text = create_element_with_class(&document, "span", "terminal-title");
         let title = config
             .cmd
@@ -77,7 +74,6 @@ impl TobogganTerminalElement {
         let _ = titlebar.append_child(&title_text);
         let _ = window_el.append_child(&titlebar);
 
-        // Terminal body (canvas container)
         let body = create_element_with_class(&document, "div", "terminal-body");
 
         let Ok(canvas) = document.create_element("canvas") else {
@@ -97,7 +93,7 @@ impl TobogganTerminalElement {
 
         canvas.focus().unwrap_throw();
 
-        let theme = config.theme.clone();
+        let theme = config.theme;
         let title_el = title_text.dyn_into::<HtmlElement>().ok();
         let window_html = window_el.dyn_into::<HtmlElement>().ok();
         let initial_rows = compute_terminal_size(window_html.as_ref(), DEFAULT_FONT_SIZE).1;
@@ -106,14 +102,14 @@ impl TobogganTerminalElement {
         // Set up action channel (shared between keyboard handler and button clicks)
         let (tx_key, rx_key) = mpsc::unbounded::<KeyAction>();
         setup_keyboard_handler(&canvas, tx_key.clone());
-        setup_button_click(&btn_maximize, tx_key.clone(), &KeyAction::Expand);
-        setup_button_click(&btn_minimize, tx_key, &KeyAction::Restore);
+        setup_button_click(&btn_maximize, tx_key.clone(), KeyAction::Expand);
+        setup_button_click(&btn_minimize, tx_key, KeyAction::Restore);
 
         info!("Starting terminal session:", &ws_url);
 
         spawn_local(async move {
             run_terminal_session(
-                canvas, &ws_url, &theme, title_el, window_html, initial_rows, rx_key,
+                canvas, &ws_url, theme, title_el, window_html, initial_rows, rx_key,
             )
             .await;
         });
@@ -153,6 +149,7 @@ fn create_element_with_class(document: &web_sys::Document, tag: &str, class: &st
 }
 
 /// Message from keyboard/button handler to terminal session
+#[derive(Clone)]
 enum KeyAction {
     Input(String),
     FontIncrease,
@@ -164,16 +161,10 @@ enum KeyAction {
 fn setup_button_click(
     btn: &Element,
     tx: mpsc::UnboundedSender<KeyAction>,
-    action: &KeyAction,
+    action: KeyAction,
 ) {
-    let is_expand = matches!(action, KeyAction::Expand);
     let closure = Closure::<dyn FnMut()>::new(move || {
-        let action = if is_expand {
-            KeyAction::Expand
-        } else {
-            KeyAction::Restore
-        };
-        let _ = tx.unbounded_send(action);
+        let _ = tx.unbounded_send(action.clone());
     });
     let _ = btn.add_event_listener_with_callback("click", closure.as_ref().unchecked_ref());
     closure.forget();
@@ -183,7 +174,7 @@ fn setup_button_click(
 async fn run_terminal_session(
     canvas: HtmlCanvasElement,
     ws_url: &str,
-    theme: &str,
+    theme: Theme,
     title_el: Option<HtmlElement>,
     window_el: Option<HtmlElement>,
     initial_rows: u16,
@@ -373,17 +364,17 @@ fn translate_key(event: &KeyboardEvent) -> String {
     }
 }
 
-/// Titlebar height in pixels (must match CSS .terminal-titlebar height)
+/// Titlebar height in pixels (CSS: .terminal-titlebar { height: 36px })
 const TITLEBAR_HEIGHT: f64 = 36.0;
-/// Body padding (top + bottom, must match CSS .terminal-body padding)
+/// Body vertical padding: top 2px + bottom 3px (CSS: .terminal-body { padding: 2px 3px 3px })
 const BODY_PADDING: f64 = 5.0;
-/// Body horizontal padding (left + right, must match CSS .terminal-body padding)
+/// Body horizontal padding: left 3px + right 3px (CSS: .terminal-body { padding: 2px 3px 3px })
 const BODY_H_PADDING: f64 = 6.0;
 
 #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
 fn compute_terminal_size(window_el: Option<&HtmlElement>, font_size: f64) -> (u16, u16) {
     let char_height = (font_size * 1.3).ceil();
-    // Use measureText for accurate char_width when possible, fallback to 0.6 ratio
+    // Character width approximation (0.6 ratio of font size)
     let char_width = (font_size * 0.6).ceil();
 
     let (avail_w, avail_h) = window_el
@@ -418,10 +409,14 @@ async fn resize_and_render(
         vt.render_to_canvas(canvas, font_size);
     }
     let resize_msg = format!(r#"{{"type":"resize","cols":{cols},"rows":{rows}}}"#);
-    let _ = ws_write
+    if ws_write
         .borrow_mut()
         .send(Message::Bytes(resize_msg.into_bytes()))
-        .await;
+        .await
+        .is_err()
+    {
+        error!("Failed to send resize to server");
+    }
 }
 
 fn update_title(title_el: Option<&HtmlElement>, current: &mut String, new_title: Option<&str>) {

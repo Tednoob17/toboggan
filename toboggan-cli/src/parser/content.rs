@@ -184,8 +184,8 @@ impl SlideContentParser {
                 NodeValue::HtmlBlock(html) if is_notes(&html.literal) => {
                     self.transition_to_notes();
                 }
-                NodeValue::HtmlBlock(html) if parse_term(&html.literal).is_some() => {
-                    if let Some((cwd, theme, cmd)) = parse_term(&html.literal) {
+                NodeValue::HtmlBlock(html) => match parse_term(&html.literal) {
+                    Some((cwd, theme, cmd)) => {
                         let mut config = TerminalConfig::new(cwd);
                         if let Some(theme) = theme {
                             config = config.with_theme(theme);
@@ -195,7 +195,8 @@ impl SlideContentParser {
                         }
                         terminals.push(config);
                     }
-                }
+                    None => inner.handle(elt, file_name)?,
+                },
                 _ => inner.handle(elt, file_name)?,
             },
             Self::Notes { notes, .. } => {
