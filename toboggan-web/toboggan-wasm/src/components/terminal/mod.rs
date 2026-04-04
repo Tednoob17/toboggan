@@ -53,14 +53,12 @@ impl TobogganTerminalElement {
 
         // Traffic light buttons
         let buttons = create_element_with_class(&document, "div", "terminal-buttons");
-        for class in [
-            "terminal-btn terminal-btn-close",
-            "terminal-btn terminal-btn-minimize",
-            "terminal-btn terminal-btn-maximize",
-        ] {
-            let btn = create_element_with_class(&document, "div", class);
-            let _ = buttons.append_child(&btn);
-        }
+        let btn_close = create_element_with_class(&document, "div", "terminal-btn terminal-btn-close");
+        let btn_minimize = create_element_with_class(&document, "div", "terminal-btn terminal-btn-minimize");
+        let btn_maximize = create_element_with_class(&document, "div", "terminal-btn terminal-btn-maximize");
+        let _ = buttons.append_child(&btn_close);
+        let _ = buttons.append_child(&btn_minimize);
+        let _ = buttons.append_child(&btn_maximize);
         let _ = titlebar.append_child(&buttons);
 
         // Title text (show cwd basename or cmd)
@@ -102,14 +100,22 @@ impl TobogganTerminalElement {
         let theme = config.theme.clone();
         let title_el = title_text.dyn_into::<HtmlElement>().ok();
         let window_html = window_el.dyn_into::<HtmlElement>().ok();
-        let initial_rows = compute_rows_for_font(window_html.as_ref(), DEFAULT_FONT_SIZE);
+        let initial_rows = compute_terminal_size(window_html.as_ref(), DEFAULT_FONT_SIZE).1;
         let ws_url = build_terminal_ws_url(api_base_url, config, initial_rows);
+
+        // Set up action channel (shared between keyboard handler and button clicks)
+        let (tx_key, rx_key) = mpsc::unbounded::<KeyAction>();
+        setup_keyboard_handler(&canvas, tx_key.clone());
+        setup_button_click(&btn_maximize, tx_key.clone(), &KeyAction::Expand);
+        setup_button_click(&btn_minimize, tx_key, &KeyAction::Restore);
 
         info!("Starting terminal session:", &ws_url);
 
         spawn_local(async move {
-            run_terminal_session(canvas, &ws_url, &theme, title_el, window_html, initial_rows)
-                .await;
+            run_terminal_session(
+                canvas, &ws_url, &theme, title_el, window_html, initial_rows, rx_key,
+            )
+            .await;
         });
     }
 
@@ -146,11 +152,31 @@ fn create_element_with_class(document: &web_sys::Document, tag: &str, class: &st
     el
 }
 
-/// Message from keyboard handler to terminal session
+/// Message from keyboard/button handler to terminal session
 enum KeyAction {
     Input(String),
     FontIncrease,
     FontDecrease,
+    Expand,
+    Restore,
+}
+
+fn setup_button_click(
+    btn: &Element,
+    tx: mpsc::UnboundedSender<KeyAction>,
+    action: &KeyAction,
+) {
+    let is_expand = matches!(action, KeyAction::Expand);
+    let closure = Closure::<dyn FnMut()>::new(move || {
+        let action = if is_expand {
+            KeyAction::Expand
+        } else {
+            KeyAction::Restore
+        };
+        let _ = tx.unbounded_send(action);
+    });
+    let _ = btn.add_event_listener_with_callback("click", closure.as_ref().unchecked_ref());
+    closure.forget();
 }
 
 #[allow(clippy::await_holding_refcell_ref)] // Safe: single-threaded WASM
@@ -161,6 +187,7 @@ async fn run_terminal_session(
     title_el: Option<HtmlElement>,
     window_el: Option<HtmlElement>,
     initial_rows: u16,
+    rx_key: mpsc::UnboundedReceiver<KeyAction>,
 ) {
     let ws = match WebSocket::open(ws_url) {
         Ok(ws) => ws,
@@ -177,11 +204,7 @@ async fn run_terminal_session(
 
     vterm.render_to_canvas(&canvas, *font_size.borrow());
 
-    // Set up keyboard input → channel
-    let (tx_key, rx_key) = mpsc::unbounded::<KeyAction>();
-    setup_keyboard_handler(&canvas, tx_key);
-
-    // Forward keyboard input to WebSocket / handle font resize
+    // Forward actions (keyboard input, font resize, expand/restore) to WebSocket
     let ws_write = Rc::new(RefCell::new(ws_write));
     let ws_write_kbd = Rc::clone(&ws_write);
     let font_size_kbd = Rc::clone(&font_size);
@@ -211,22 +234,38 @@ async fn run_terminal_session(
                         };
                         *size
                     };
-                    let new_rows = compute_rows_for_font(window_el_kbd.as_ref(), new_size);
-                    let cols = {
-                        let mut vt = vterm_kbd.borrow_mut();
-                        let cols = vt.cols();
-                        vt.resize(cols, new_rows);
-                        vt.render_to_canvas(&canvas_kbd, new_size);
-                        cols
-                    };
-                    // Send resize to PTY
-                    let resize_msg = format!(
-                        r#"{{"type":"resize","cols":{cols},"rows":{new_rows}}}"#,
-                    );
-                    let _ = ws_write_kbd
-                        .borrow_mut()
-                        .send(Message::Bytes(resize_msg.into_bytes()))
-                        .await;
+                    let (new_cols, new_rows) =
+                        compute_terminal_size(window_el_kbd.as_ref(), new_size);
+                    resize_and_render(
+                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, new_size,
+                    )
+                    .await;
+                }
+                KeyAction::Expand => {
+                    if let Some(ref win) = window_el_kbd {
+                        let _ = win.class_list().add_1("terminal-fullscreen");
+                    }
+                    let size = *font_size_kbd.borrow();
+                    let (new_cols, new_rows) =
+                        compute_terminal_size(window_el_kbd.as_ref(), size);
+                    resize_and_render(
+                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, size,
+                    )
+                    .await;
+                    let _ = canvas_kbd.focus();
+                }
+                KeyAction::Restore => {
+                    if let Some(ref win) = window_el_kbd {
+                        let _ = win.class_list().remove_1("terminal-fullscreen");
+                    }
+                    let size = *font_size_kbd.borrow();
+                    let (new_cols, new_rows) =
+                        compute_terminal_size(window_el_kbd.as_ref(), size);
+                    resize_and_render(
+                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, size,
+                    )
+                    .await;
+                    let _ = canvas_kbd.focus();
                 }
             }
         }
@@ -338,17 +377,51 @@ fn translate_key(event: &KeyboardEvent) -> String {
 const TITLEBAR_HEIGHT: f64 = 36.0;
 /// Body padding (top + bottom, must match CSS .terminal-body padding)
 const BODY_PADDING: f64 = 5.0;
+/// Body horizontal padding (left + right, must match CSS .terminal-body padding)
+const BODY_H_PADDING: f64 = 6.0;
 
 #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-fn compute_rows_for_font(window_el: Option<&HtmlElement>, font_size: f64) -> u16 {
+fn compute_terminal_size(window_el: Option<&HtmlElement>, font_size: f64) -> (u16, u16) {
     let char_height = (font_size * 1.3).ceil();
-    let available = window_el
-        .map(|el| f64::from(el.client_height()))
-        .filter(|height| *height > 0.0)
-        .unwrap_or(f64::from(DEFAULT_ROWS) * char_height + TITLEBAR_HEIGHT + BODY_PADDING);
-    let body_height = available - TITLEBAR_HEIGHT - BODY_PADDING;
+    // Use measureText for accurate char_width when possible, fallback to 0.6 ratio
+    let char_width = (font_size * 0.6).ceil();
+
+    let (avail_w, avail_h) = window_el
+        .map(|el| (f64::from(el.client_width()), f64::from(el.client_height())))
+        .filter(|(width, height)| *width > 0.0 && *height > 0.0)
+        .unwrap_or((
+            f64::from(DEFAULT_COLS) * char_width + BODY_H_PADDING,
+            f64::from(DEFAULT_ROWS) * char_height + TITLEBAR_HEIGHT + BODY_PADDING,
+        ));
+
+    let body_width = avail_w - BODY_H_PADDING;
+    let body_height = avail_h - TITLEBAR_HEIGHT - BODY_PADDING;
+
+    let cols = (body_width / char_width).floor() as u16;
     let rows = (body_height / char_height).floor() as u16;
-    rows.max(4) // minimum 4 rows
+
+    (cols.max(20), rows.max(4))
+}
+
+#[allow(clippy::await_holding_refcell_ref)] // Safe: single-threaded WASM
+async fn resize_and_render(
+    vterm: &Rc<RefCell<VirtualTerminal>>,
+    canvas: &HtmlCanvasElement,
+    ws_write: &Rc<RefCell<futures::stream::SplitSink<gloo::net::websocket::futures::WebSocket, Message>>>,
+    cols: u16,
+    rows: u16,
+    font_size: f64,
+) {
+    {
+        let mut vt = vterm.borrow_mut();
+        vt.resize(cols, rows);
+        vt.render_to_canvas(canvas, font_size);
+    }
+    let resize_msg = format!(r#"{{"type":"resize","cols":{cols},"rows":{rows}}}"#);
+    let _ = ws_write
+        .borrow_mut()
+        .send(Message::Bytes(resize_msg.into_bytes()))
+        .await;
 }
 
 fn update_title(title_el: Option<&HtmlElement>, current: &mut String, new_title: Option<&str>) {

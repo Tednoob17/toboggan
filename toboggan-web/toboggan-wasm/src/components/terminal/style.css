@@ -74,10 +74,12 @@
     height: 12px;
     border-radius: 50%;
     border: none;
+    cursor: pointer;
 }
 
 .terminal-btn-close {
     background: #ed6a5e;
+    cursor: default;
 }
 
 .terminal-btn-minimize {
@@ -112,4 +114,17 @@
     outline: none;
     max-width: 100%;
     max-height: 100%;
+}
+
+/* Fullscreen mode */
+.terminal-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+    z-index: 9999;
 }

@@ -292,10 +292,6 @@ impl VirtualTerminal {
         self.screen.title.as_deref()
     }
 
-    pub fn cols(&self) -> u16 {
-        self.screen.cols
-    }
-
     pub fn resize(&mut self, cols: u16, rows: u16) {
         self.screen.resize(cols, rows);
     }
