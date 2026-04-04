@@ -1,8 +1,7 @@
 +++
-title = "Light Terminal"
 classes = ["no_title", "wide"]
 +++
 
-# Live Terminal (Light)
+# Light Theme
 
 <!-- term: . :light -->

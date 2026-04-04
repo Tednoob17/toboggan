@@ -1,28 +1,80 @@
-title = "Terminal in Slide"
+title = "Toboggan Feature Demo"
 date = "2026-04-04"
 
 [[slides]]
 kind = "Cover"
 
 [slides.style]
-classes = ["no_title"]
+classes = [
+    "no_title",
+    "cover",
+]
 
 [slides.title]
 type = "Text"
-text = "Terminal in Slide"
+text = "Toboggan"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>Terminal in Slide</h1>
+<h1>Toboggan</h1>
 <blockquote>
-<p>A demo of embedded terminals in presentation slides</p>
+<p>A terminal-first presentation system</p>
 </blockquote>
 """
 alt = """
-# Terminal in Slide
-> A demo of embedded terminals in presentation slides
+# Toboggan
+> A terminal-first presentation system
 """
+
+[slides.body.style]
+classes = [
+    "no_title",
+    "cover",
+]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Stepped Reveals"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Stepped Reveals</h1>
+<p>Content appears progressively with <code>&lt;!-- pause --&gt;</code></p>
+
+<div class="step step-0"><!-- begin step -->
+<p>First, this paragraph appears...</p>
+</div><!-- end step -->
+
+<div class="step step-1"><!-- begin step -->
+<p>...then this one!</p>
+</div><!-- end step -->
+
+<div class="step step-2"><!-- begin step -->
+<ul>
+<li>And finally</li>
+<li>a bullet list</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = '''
+# Stepped Reveals
+Content appears progressively with `<!-- pause -->`
+
+First, this paragraph appears...
+
+...then this one\!
+
+- And finally
+- a bullet list
+'''
 
 [slides.body.style]
 classes = ["no_title"]
@@ -35,40 +87,42 @@ classes = ["no_title"]
 
 [slides.title]
 type = "Text"
-text = "What is this?"
+text = "Pause Options"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>What is this?</h1>
-<p>Toboggan can now embed <strong>live terminals</strong> inside slides.
-Use the <code>&lt;!-- term: path --&gt;</code> comment in your markdown:</p>
-<pre style="background-color:#eff1f5;"><code class="language-markdown"><span style="color:#a7adba;">&lt;!-- term: ./my-project --&gt;
+<h1>Pause Options</h1>
+<h3>Syntax</h3>
+<pre style="background-color:#eff1f5;"><code class="language-markdown"><span style="color:#a7adba;">&lt;!-- pause --&gt;
+</span><span style="color:#a7adba;">&lt;!-- pause :highlight --&gt;
+</span><span style="color:#a7adba;">&lt;!-- pause :class1 class2 --&gt;
 </span></code></pre>
 
 <div class="step step-0"><!-- begin step -->
-<p>Features:</p>
-<ul>
-<li>Real PTY connected to your shell</li>
-<li>ANSI color support (256 + truecolor)</li>
-<li>Dark and light themes</li>
-<li>macOS-style window chrome</li>
-</ul>
+<h3>With <code>spread-steps</code> class</h3>
+<p>Distributes steps evenly across the slide height.</p>
+</div><!-- end step -->
+
+<div class="step step-1"><!-- begin step -->
+<h3>With <code>step-line-through</code> class</h3>
+<p>Strikes through previous steps as you advance.</p>
 </div><!-- end step -->
 """
 alt = """
-# What is this?
-Toboggan can now embed **live terminals** inside slides.
-Use the `<!-- term: path -->` comment in your markdown:
+# Pause Options
+### Syntax
 ```markdown
-<!-- term: ./my-project -->
+<!-- pause -->
+<!-- pause :highlight -->
+<!-- pause :class1 class2 -->
 ```
 
-Features:
-- Real PTY connected to your shell
-- ANSI color support (256 + truecolor)
-- Dark and light themes
-- macOS-style window chrome
+### With `spread-steps` class
+Distributes steps evenly across the slide height.
+
+### With `step-line-through` class
+Strikes through previous steps as you advance.
 """
 
 [slides.body.style]
@@ -85,15 +139,15 @@ classes = [
 
 [slides.title]
 type = "Text"
-text = "Dark Terminal"
+text = "Live Terminal"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>Live Terminal (Dark)</h1>
+<h1>Live Terminal</h1>
 """
 alt = """
-# Live Terminal (Dark)
+# Live Terminal
 """
 
 [slides.body.style]
@@ -109,6 +163,63 @@ cwd = "examples/demo-terminal"
 kind = "Standard"
 
 [slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Terminal Options"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Terminal Options</h1>
+<h3>Syntax</h3>
+<pre style="background-color:#eff1f5;"><code class="language-markdown"><span style="color:#a7adba;">&lt;!-- term: ./path --&gt;
+</span><span style="color:#a7adba;">&lt;!-- term: ./path :light --&gt;
+</span><span style="color:#4f5b66;">&lt;!-- term: ./path | command --&gt;
+</span><span style="color:#4f5b66;">&lt;!-- term: ./path :light | command --&gt;
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Features</h3>
+<ul>
+<li>Real PTY connected to your shell</li>
+<li>ANSI color support (256 + truecolor)</li>
+<li>Dark and light themes</li>
+<li>macOS-style window chrome</li>
+<li><code>Cmd +</code> / <code>Cmd -</code> to resize font</li>
+<li>Green button expands to fullscreen</li>
+<li>Yellow button restores</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = """
+# Terminal Options
+### Syntax
+```markdown
+<!-- term: ./path -->
+<!-- term: ./path :light -->
+<!-- term: ./path | command -->
+<!-- term: ./path :light | command -->
+```
+
+### Features
+- Real PTY connected to your shell
+- ANSI color support (256 + truecolor)
+- Dark and light themes
+- macOS-style window chrome
+- `Cmd +` / `Cmd -` to resize font
+- Green button expands to fullscreen
+- Yellow button restores
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
 classes = [
     "no_title",
     "wide",
@@ -116,15 +227,15 @@ classes = [
 
 [slides.title]
 type = "Text"
-text = "Light Terminal"
+text = "Light Theme"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>Live Terminal (Light)</h1>
+<h1>Light Theme</h1>
 """
 alt = """
-# Live Terminal (Light)
+# Light Theme
 """
 
 [slides.body.style]
@@ -148,15 +259,15 @@ classes = [
 
 [slides.title]
 type = "Text"
-text = "Live Coding"
+text = "Side-by-Side Terminals"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>Live Coding</h1>
+<h1>Side-by-Side Terminals</h1>
 """
 alt = """
-# Live Coding
+# Side-by-Side Terminals
 """
 
 [slides.body.style]
@@ -177,6 +288,225 @@ cmd = "hx src/lib.rs"
 kind = "Standard"
 
 [slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Speaker Notes"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Speaker Notes</h1>
+<p>Content after <code>&lt;!-- notes --&gt;</code> is hidden from the slide.
+Useful for presenter talking points.</p>
+<pre style="background-color:#eff1f5;"><code class="language-markdown"><span style="color:#a7adba;">&lt;!-- notes --&gt;
+</span><span style="color:#4f5b66;">This won&#39;t appear on the slide.
+</span></code></pre>
+"""
+alt = """
+# Speaker Notes
+Content after `<!-- notes -->` is hidden from the slide.
+Useful for presenter talking points.
+```markdown
+<!-- notes -->
+This won't appear on the slide.
+```
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[slides.notes]
+type = "Html"
+raw = """
+<p>These are speaker notes — they won't be displayed on the slide itself.
+Remind the audience about the note shortcut key.</p>
+"""
+alt = """
+These are speaker notes — they won't be displayed on the slide itself.
+Remind the audience about the note shortcut key.
+"""
+
+[slides.notes.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Slide Styling"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Slide Styling</h1>
+<h3>Frontmatter classes</h3>
+<pre style="background-color:#eff1f5;"><code class="language-toml"><span style="color:#4f5b66;">+++
+</span><span style="color:#4f5b66;">classes = [&quot;no_title&quot;, &quot;wide&quot;, &quot;cover&quot;, &quot;center&quot;]
+</span><span style="color:#4f5b66;">+++
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Available classes</h3>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>no_title</code></td>
+<td>Hides the slide title</td>
+</tr>
+<tr>
+<td><code>wide</code></td>
+<td>Expands to 95% viewport width</td>
+</tr>
+<tr>
+<td><code>cover</code></td>
+<td>Centers content (for title slides)</td>
+</tr>
+<tr>
+<td><code>center</code></td>
+<td>Centers article content</td>
+</tr>
+<tr>
+<td><code>spread-steps</code></td>
+<td>Distributes steps evenly</td>
+</tr>
+</tbody>
+</table>
+</div><!-- end step -->
+"""
+alt = """
+# Slide Styling
+### Frontmatter classes
+```toml
++++
+classes = ["no_title", "wide", "cover", "center"]
++++
+```
+
+### Available classes
+| Class | Effect |
+| --- | --- |
+| `no_title` | Hides the slide title |
+| `wide` | Expands to 95% viewport width |
+| `cover` | Centers content (for title slides) |
+| `center` | Centers article content |
+| `spread-steps` | Distributes steps evenly |
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = ["no_title"]
+
+[slides.title]
+type = "Text"
+text = "Frontmatter Reference"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Frontmatter Reference</h1>
+<p>Each slide supports TOML frontmatter between <code>+++</code> delimiters:</p>
+<pre style="background-color:#eff1f5;"><code class="language-toml"><span style="color:#4f5b66;">+++
+</span><span style="color:#4f5b66;">title = &quot;Custom Title&quot;
+</span><span style="color:#4f5b66;">classes = [&quot;no_title&quot;, &quot;wide&quot;]
+</span><span style="color:#4f5b66;">style = &quot;background: linear-gradient(#1a1a2e, #16213e);&quot;
+</span><span style="color:#4f5b66;">skip = false
+</span><span style="color:#4f5b66;">duration = &quot;2m&quot;
+</span><span style="color:#4f5b66;">date = &quot;2026-04-04&quot;
+</span><span style="color:#4f5b66;">+++
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>string</td>
+<td>Override auto-detected title</td>
+</tr>
+<tr>
+<td><code>classes</code></td>
+<td>list</td>
+<td>CSS classes for layout</td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td>string</td>
+<td>Inline CSS rules</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td>bool</td>
+<td>Skip this slide</td>
+</tr>
+<tr>
+<td><code>duration</code></td>
+<td>string</td>
+<td>Time hint (humantime)</td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>string</td>
+<td>Slide date</td>
+</tr>
+</tbody>
+</table>
+</div><!-- end step -->
+"""
+alt = """
+# Frontmatter Reference
+Each slide supports TOML frontmatter between `+++` delimiters:
+```toml
++++
+title = "Custom Title"
+classes = ["no_title", "wide"]
+style = "background: linear-gradient(#1a1a2e, #16213e);"
+skip = false
+duration = "2m"
+date = "2026-04-04"
++++
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `title` | string | Override auto-detected title |
+| `classes` | list | CSS classes for layout |
+| `style` | string | Inline CSS rules |
+| `skip` | bool | Skip this slide |
+| `duration` | string | Time hint (humantime) |
+| `date` | string | Slide date |
+"""
+
+[slides.body.style]
+classes = ["no_title"]
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
 classes = [
     "no_title",
     "center",
@@ -184,19 +514,17 @@ classes = [
 
 [slides.title]
 type = "Text"
-text = "The End"
+text = "Thank you!"
 
 [slides.body]
 type = "Html"
 raw = """
-<h1>That's it!</h1>
-<p>The terminal is embedded right in the slide.
-Try typing commands, resizing the window, or navigating away and back.</p>
+<h1>Thank you!</h1>
+<p>Toboggan — write slides in Markdown, present from the terminal.</p>
 """
 alt = '''
-# That's it\!
-The terminal is embedded right in the slide.
-Try typing commands, resizing the window, or navigating away and back.
+# Thank you\!
+Toboggan — write slides in Markdown, present from the terminal.
 '''
 
 [slides.body.style]
@@ -204,19 +532,3 @@ classes = [
     "no_title",
     "center",
 ]
-
-[[slides]]
-kind = "Standard"
-
-[slides.title]
-type = "Text"
-text = "title"
-
-[slides.body]
-type = "Html"
-raw = """
-<p>Terminal in Slide Demo</p>
-"""
-alt = """
-Terminal in Slide Demo
-"""

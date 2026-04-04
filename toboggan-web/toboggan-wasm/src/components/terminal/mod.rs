@@ -51,9 +51,12 @@ impl TobogganTerminalElement {
         let titlebar = create_element_with_class(&document, "div", "terminal-titlebar");
 
         let buttons = create_element_with_class(&document, "div", "terminal-buttons");
-        let btn_close = create_element_with_class(&document, "div", "terminal-btn terminal-btn-close");
-        let btn_minimize = create_element_with_class(&document, "div", "terminal-btn terminal-btn-minimize");
-        let btn_maximize = create_element_with_class(&document, "div", "terminal-btn terminal-btn-maximize");
+        let btn_close =
+            create_element_with_class(&document, "div", "terminal-btn terminal-btn-close");
+        let btn_minimize =
+            create_element_with_class(&document, "div", "terminal-btn terminal-btn-minimize");
+        let btn_maximize =
+            create_element_with_class(&document, "div", "terminal-btn terminal-btn-maximize");
         let _ = buttons.append_child(&btn_close);
         let _ = buttons.append_child(&btn_minimize);
         let _ = buttons.append_child(&btn_maximize);
@@ -63,12 +66,7 @@ impl TobogganTerminalElement {
         let title = config
             .cmd
             .as_deref()
-            .or_else(|| {
-                config
-                    .cwd
-                    .rsplit('/')
-                    .find(|segment| !segment.is_empty())
-            })
+            .or_else(|| config.cwd.rsplit('/').find(|segment| !segment.is_empty()))
             .unwrap_or(&config.cwd);
         title_text.set_text_content(Some(title));
         let _ = titlebar.append_child(&title_text);
@@ -109,7 +107,13 @@ impl TobogganTerminalElement {
 
         spawn_local(async move {
             run_terminal_session(
-                canvas, &ws_url, theme, title_el, window_html, initial_rows, rx_key,
+                canvas,
+                &ws_url,
+                theme,
+                title_el,
+                window_html,
+                initial_rows,
+                rx_key,
             )
             .await;
         });
@@ -158,11 +162,7 @@ enum KeyAction {
     Restore,
 }
 
-fn setup_button_click(
-    btn: &Element,
-    tx: mpsc::UnboundedSender<KeyAction>,
-    action: KeyAction,
-) {
+fn setup_button_click(btn: &Element, tx: mpsc::UnboundedSender<KeyAction>, action: KeyAction) {
     let closure = Closure::<dyn FnMut()>::new(move || {
         let _ = tx.unbounded_send(action.clone());
     });
@@ -209,8 +209,7 @@ async fn run_terminal_session(
         while let Some(action) = rx_key.next().await {
             match action {
                 KeyAction::Input(input) => {
-                    let send_result =
-                        ws_write_kbd.borrow_mut().send(Message::Text(input)).await;
+                    let send_result = ws_write_kbd.borrow_mut().send(Message::Text(input)).await;
                     if send_result.is_err() {
                         break;
                     }
@@ -228,7 +227,12 @@ async fn run_terminal_session(
                     let (new_cols, new_rows) =
                         compute_terminal_size(window_el_kbd.as_ref(), new_size);
                     resize_and_render(
-                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, new_size,
+                        &vterm_kbd,
+                        &canvas_kbd,
+                        &ws_write_kbd,
+                        new_cols,
+                        new_rows,
+                        new_size,
                     )
                     .await;
                 }
@@ -237,10 +241,14 @@ async fn run_terminal_session(
                         let _ = win.class_list().add_1("terminal-fullscreen");
                     }
                     let size = *font_size_kbd.borrow();
-                    let (new_cols, new_rows) =
-                        compute_terminal_size(window_el_kbd.as_ref(), size);
+                    let (new_cols, new_rows) = compute_terminal_size(window_el_kbd.as_ref(), size);
                     resize_and_render(
-                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, size,
+                        &vterm_kbd,
+                        &canvas_kbd,
+                        &ws_write_kbd,
+                        new_cols,
+                        new_rows,
+                        size,
                     )
                     .await;
                     let _ = canvas_kbd.focus();
@@ -250,10 +258,14 @@ async fn run_terminal_session(
                         let _ = win.class_list().remove_1("terminal-fullscreen");
                     }
                     let size = *font_size_kbd.borrow();
-                    let (new_cols, new_rows) =
-                        compute_terminal_size(window_el_kbd.as_ref(), size);
+                    let (new_cols, new_rows) = compute_terminal_size(window_el_kbd.as_ref(), size);
                     resize_and_render(
-                        &vterm_kbd, &canvas_kbd, &ws_write_kbd, new_cols, new_rows, size,
+                        &vterm_kbd,
+                        &canvas_kbd,
+                        &ws_write_kbd,
+                        new_cols,
+                        new_rows,
+                        size,
                     )
                     .await;
                     let _ = canvas_kbd.focus();
@@ -398,7 +410,9 @@ fn compute_terminal_size(window_el: Option<&HtmlElement>, font_size: f64) -> (u1
 async fn resize_and_render(
     vterm: &Rc<RefCell<VirtualTerminal>>,
     canvas: &HtmlCanvasElement,
-    ws_write: &Rc<RefCell<futures::stream::SplitSink<gloo::net::websocket::futures::WebSocket, Message>>>,
+    ws_write: &Rc<
+        RefCell<futures::stream::SplitSink<gloo::net::websocket::futures::WebSocket, Message>>,
+    >,
     cols: u16,
     rows: u16,
     font_size: f64,
@@ -420,8 +434,7 @@ async fn resize_and_render(
 }
 
 fn update_title(title_el: Option<&HtmlElement>, current: &mut String, new_title: Option<&str>) {
-    if let (Some(el), Some(title)) = (title_el, new_title.filter(|val| *val != current.as_str()))
-    {
+    if let (Some(el), Some(title)) = (title_el, new_title.filter(|val| *val != current.as_str())) {
         el.set_text_content(Some(title));
         *current = title.to_string();
     }
@@ -433,9 +446,8 @@ fn build_terminal_ws_url(api_base_url: &str, config: &TerminalConfig, rows: u16)
         .replace("http://", "ws://");
 
     let encoded_cwd = String::from(js_sys::encode_uri_component(&config.cwd));
-    let mut url = format!(
-        "{ws_base}/api/terminal?cwd={encoded_cwd}&cols={DEFAULT_COLS}&rows={rows}",
-    );
+    let mut url =
+        format!("{ws_base}/api/terminal?cwd={encoded_cwd}&cols={DEFAULT_COLS}&rows={rows}",);
 
     if let Some(cmd) = &config.cmd {
         url.push_str("&cmd=");

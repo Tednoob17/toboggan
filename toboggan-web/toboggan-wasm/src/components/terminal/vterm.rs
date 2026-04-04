@@ -431,7 +431,8 @@ impl TermScreen {
         clippy::cast_precision_loss
     )]
     fn render_to_canvas(&self, canvas: &HtmlCanvasElement, font_size: f64) {
-        let font_family = "'MonaspiceNe Nerd Font', 'JetBrainsMono Nerd Font', 'Inconsolata', monospace";
+        let font_family =
+            "'MonaspiceNe Nerd Font', 'JetBrainsMono Nerd Font', 'Inconsolata', monospace";
         let font = format!("{font_size}px {font_family}");
 
         // Measure actual character width and ceil to avoid sub-pixel gaps
@@ -477,7 +478,11 @@ impl TermScreen {
             let row_y = row_idx as f64 * char_height;
             for (col_idx, cell) in row.iter().enumerate() {
                 let col_x = col_idx as f64 * char_width;
-                let bg = if cell.style.reverse { cell.style.fg } else { cell.style.bg };
+                let bg = if cell.style.reverse {
+                    cell.style.fg
+                } else {
+                    cell.style.bg
+                };
                 if bg != self.default_bg || cell.style.reverse {
                     ctx.set_fill_style_str(&bg.to_css());
                     ctx.fill_rect(col_x, row_y, char_width, char_height);
@@ -496,7 +501,11 @@ impl TermScreen {
                     continue;
                 }
                 let col_x = col_idx as f64 * char_width;
-                let fg = if cell.style.reverse { cell.style.bg } else { cell.style.fg };
+                let fg = if cell.style.reverse {
+                    cell.style.bg
+                } else {
+                    cell.style.fg
+                };
 
                 // Set font style
                 let style = match (cell.style.bold, cell.style.italic) {
@@ -543,7 +552,6 @@ impl TermScreen {
         let cursor_y = f64::from(self.cursor_row) * char_height;
         ctx.set_fill_style_str("rgba(200,200,200,0.5)");
         ctx.fill_rect(cursor_x, cursor_y, char_width, char_height);
-
     }
 
     fn put_char(&mut self, ch: char) {
@@ -594,7 +602,8 @@ impl TermScreen {
             if top < self.grid.len() && top <= bottom {
                 self.grid.remove(top);
                 let insert_at = bottom.min(self.grid.len());
-                self.grid.insert(insert_at, vec![default; self.cols as usize]);
+                self.grid
+                    .insert(insert_at, vec![default; self.cols as usize]);
             }
         }
     }
@@ -656,7 +665,12 @@ impl TermScreen {
     }
 
     fn leave_alternate_screen(&mut self) {
-        if let Some(SavedScreen { grid, cursor_row, cursor_col }) = self.saved_screens.pop() {
+        if let Some(SavedScreen {
+            grid,
+            cursor_row,
+            cursor_col,
+        }) = self.saved_screens.pop()
+        {
             self.grid = grid;
             self.cursor_row = cursor_row;
             self.cursor_col = cursor_col;
@@ -823,7 +837,10 @@ impl vte::Perform for TermScreen {
         }
 
         // Any explicit cursor movement clears the pending wrap
-        if matches!(action, 'A' | 'B' | 'C' | 'D' | 'd' | 'E' | 'F' | 'G' | 'H' | 'f' | 'r' | 's' | 'u') {
+        if matches!(
+            action,
+            'A' | 'B' | 'C' | 'D' | 'd' | 'E' | 'F' | 'G' | 'H' | 'f' | 'r' | 's' | 'u'
+        ) {
             self.wrap_pending = false;
         }
 
@@ -904,7 +921,8 @@ impl vte::Perform for TermScreen {
                     if row <= bottom && row < self.grid.len() {
                         self.grid.remove(row);
                         let insert_at = bottom.min(self.grid.len());
-                        self.grid.insert(insert_at, vec![default; self.cols as usize]);
+                        self.grid
+                            .insert(insert_at, vec![default; self.cols as usize]);
                     }
                 }
             }

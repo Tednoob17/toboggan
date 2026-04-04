@@ -8,7 +8,10 @@ use crate::parser::CssClasses;
 pub(super) enum CommentType {
     Pause(CssClasses),
     Notes,
-    Code { info: String, path: PathBuf },
+    Code {
+        info: String,
+        path: PathBuf,
+    },
     Term {
         cwd: String,
         theme: Option<Theme>,
@@ -98,7 +101,11 @@ fn parse_term_comment(comment_content: &str) -> CommentType {
     // Split on '|' to separate cwd+theme from command
     let (options_part, cmd) = if let Some((opts, cmd_str)) = content_after_term.split_once('|') {
         let cmd = cmd_str.trim();
-        let cmd = if cmd.is_empty() { None } else { Some(cmd.to_string()) };
+        let cmd = if cmd.is_empty() {
+            None
+        } else {
+            Some(cmd.to_string())
+        };
         (opts.trim(), cmd)
     } else {
         (content_after_term, None)
@@ -110,11 +117,14 @@ fn parse_term_comment(comment_content: &str) -> CommentType {
     match parts.first() {
         Some(cwd_part) if !cwd_part.trim().is_empty() => {
             let cwd = cwd_part.trim().to_string();
-            let theme = parts.get(1).map(|val| val.trim()).and_then(|val| match val {
-                "light" => Some(Theme::Light),
-                "dark" => Some(Theme::Dark),
-                _ => None,
-            });
+            let theme = parts
+                .get(1)
+                .map(|val| val.trim())
+                .and_then(|val| match val {
+                    "light" => Some(Theme::Light),
+                    "dark" => Some(Theme::Dark),
+                    _ => None,
+                });
             CommentType::Term { cwd, theme, cmd }
         }
         _ => CommentType::Unknown,

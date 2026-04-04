@@ -39,7 +39,13 @@ pub async fn terminal_websocket_handler(
     ws.on_upgrade(move |socket| handle_terminal(socket, cwd, cmd, params.cols, params.rows))
 }
 
-async fn handle_terminal(socket: WebSocket, cwd: String, cmd: Option<String>, cols: u16, rows: u16) {
+async fn handle_terminal(
+    socket: WebSocket,
+    cwd: String,
+    cmd: Option<String>,
+    cols: u16,
+    rows: u16,
+) {
     let (mut ws_sender, ws_receiver) = socket.split();
 
     // Resolve cwd to absolute path

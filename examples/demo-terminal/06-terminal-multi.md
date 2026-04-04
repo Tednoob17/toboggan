@@ -1,9 +1,8 @@
 +++
-title = "Live Coding"
 classes = ["no_title", "wide"]
 +++
 
-# Live Coding
+# Side-by-Side Terminals
 
 <!-- term: . | bacon test -->
 

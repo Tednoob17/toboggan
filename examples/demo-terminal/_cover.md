@@ -1,8 +1,8 @@
 +++
 date = "2026-04-04"
-classes = ["no_title"]
+classes = ["no_title", "cover"]
 +++
 
-# Terminal in Slide
+# Toboggan
 
-> A demo of embedded terminals in presentation slides
+> A terminal-first presentation system
