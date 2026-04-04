@@ -21,7 +21,7 @@ use crate::{create_and_append_element, create_shadow_root_with_style, dom_try};
 const CSS: &str = include_str!("style.css");
 const DEFAULT_COLS: u16 = 80;
 const DEFAULT_ROWS: u16 = 24;
-const DEFAULT_FONT_SIZE: f64 = 14.0;
+const DEFAULT_FONT_SIZE: f64 = 22.0;
 const FONT_SIZE_STEP: f64 = 2.0;
 const FONT_SIZE_MIN: f64 = 8.0;
 const FONT_SIZE_MAX: f64 = 32.0;
@@ -99,13 +99,17 @@ impl TobogganTerminalElement {
 
         canvas.focus().unwrap_throw();
 
-        let ws_url = build_terminal_ws_url(api_base_url, config);
         let theme = config.theme.clone();
+        let title_el = title_text.dyn_into::<HtmlElement>().ok();
+        let window_html = window_el.dyn_into::<HtmlElement>().ok();
+        let initial_rows = compute_rows_for_font(window_html.as_ref(), DEFAULT_FONT_SIZE);
+        let ws_url = build_terminal_ws_url(api_base_url, config, initial_rows);
 
         info!("Starting terminal session:", &ws_url);
 
         spawn_local(async move {
-            run_terminal_session(canvas, &ws_url, &theme).await;
+            run_terminal_session(canvas, &ws_url, &theme, title_el, window_html, initial_rows)
+                .await;
         });
     }
 
@@ -150,7 +154,14 @@ enum KeyAction {
 }
 
 #[allow(clippy::await_holding_refcell_ref)] // Safe: single-threaded WASM
-async fn run_terminal_session(canvas: HtmlCanvasElement, ws_url: &str, theme: &str) {
+async fn run_terminal_session(
+    canvas: HtmlCanvasElement,
+    ws_url: &str,
+    theme: &str,
+    title_el: Option<HtmlElement>,
+    window_el: Option<HtmlElement>,
+    initial_rows: u16,
+) {
     let ws = match WebSocket::open(ws_url) {
         Ok(ws) => ws,
         Err(err) => {
@@ -161,7 +172,8 @@ async fn run_terminal_session(canvas: HtmlCanvasElement, ws_url: &str, theme: &s
 
     let (ws_write, mut ws_read) = ws.split();
     let font_size = Rc::new(RefCell::new(DEFAULT_FONT_SIZE));
-    let vterm = VirtualTerminal::new(DEFAULT_COLS, DEFAULT_ROWS, theme);
+
+    let vterm = VirtualTerminal::new(DEFAULT_COLS, initial_rows, theme);
 
     vterm.render_to_canvas(&canvas, *font_size.borrow());
 
@@ -176,6 +188,7 @@ async fn run_terminal_session(canvas: HtmlCanvasElement, ws_url: &str, theme: &s
     let canvas_kbd = canvas.clone();
     let vterm_rc = Rc::new(RefCell::new(vterm));
     let vterm_kbd = Rc::clone(&vterm_rc);
+    let window_el_kbd = window_el.clone();
 
     spawn_local(async move {
         let mut rx_key = rx_key;
@@ -188,34 +201,52 @@ async fn run_terminal_session(canvas: HtmlCanvasElement, ws_url: &str, theme: &s
                         break;
                     }
                 }
-                KeyAction::FontIncrease => {
-                    let mut size = font_size_kbd.borrow_mut();
-                    *size = (*size + FONT_SIZE_STEP).min(FONT_SIZE_MAX);
-                    vterm_kbd.borrow().render_to_canvas(&canvas_kbd, *size);
-                }
-                KeyAction::FontDecrease => {
-                    let mut size = font_size_kbd.borrow_mut();
-                    *size = (*size - FONT_SIZE_STEP).max(FONT_SIZE_MIN);
-                    vterm_kbd.borrow().render_to_canvas(&canvas_kbd, *size);
+                KeyAction::FontIncrease | KeyAction::FontDecrease => {
+                    let new_size = {
+                        let mut size = font_size_kbd.borrow_mut();
+                        *size = if matches!(action, KeyAction::FontIncrease) {
+                            (*size + FONT_SIZE_STEP).min(FONT_SIZE_MAX)
+                        } else {
+                            (*size - FONT_SIZE_STEP).max(FONT_SIZE_MIN)
+                        };
+                        *size
+                    };
+                    let new_rows = compute_rows_for_font(window_el_kbd.as_ref(), new_size);
+                    let cols = {
+                        let mut vt = vterm_kbd.borrow_mut();
+                        let cols = vt.cols();
+                        vt.resize(cols, new_rows);
+                        vt.render_to_canvas(&canvas_kbd, new_size);
+                        cols
+                    };
+                    // Send resize to PTY
+                    let resize_msg = format!(
+                        r#"{{"type":"resize","cols":{cols},"rows":{new_rows}}}"#,
+                    );
+                    let _ = ws_write_kbd
+                        .borrow_mut()
+                        .send(Message::Bytes(resize_msg.into_bytes()))
+                        .await;
                 }
             }
         }
     });
 
     // Read terminal output from server
+    let mut current_title = String::new();
     while let Some(msg) = ws_read.next().await {
         match msg {
             Ok(Message::Bytes(data)) => {
                 vterm_rc.borrow_mut().process(&data);
-                vterm_rc
-                    .borrow()
-                    .render_to_canvas(&canvas, *font_size.borrow());
+                let vterm = vterm_rc.borrow();
+                vterm.render_to_canvas(&canvas, *font_size.borrow());
+                update_title(title_el.as_ref(), &mut current_title, vterm.title());
             }
             Ok(Message::Text(text)) => {
                 vterm_rc.borrow_mut().process(text.as_bytes());
-                vterm_rc
-                    .borrow()
-                    .render_to_canvas(&canvas, *font_size.borrow());
+                let vterm = vterm_rc.borrow();
+                vterm.render_to_canvas(&canvas, *font_size.borrow());
+                update_title(title_el.as_ref(), &mut current_title, vterm.title());
             }
             Err(err) => {
                 error!("Terminal WebSocket error:", err.to_string());
@@ -303,14 +334,39 @@ fn translate_key(event: &KeyboardEvent) -> String {
     }
 }
 
-fn build_terminal_ws_url(api_base_url: &str, config: &TerminalConfig) -> String {
+/// Titlebar height in pixels (must match CSS .terminal-titlebar height)
+const TITLEBAR_HEIGHT: f64 = 36.0;
+/// Body padding (top + bottom, must match CSS .terminal-body padding)
+const BODY_PADDING: f64 = 5.0;
+
+#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+fn compute_rows_for_font(window_el: Option<&HtmlElement>, font_size: f64) -> u16 {
+    let char_height = (font_size * 1.3).ceil();
+    let available = window_el
+        .map(|el| f64::from(el.client_height()))
+        .filter(|height| *height > 0.0)
+        .unwrap_or(f64::from(DEFAULT_ROWS) * char_height + TITLEBAR_HEIGHT + BODY_PADDING);
+    let body_height = available - TITLEBAR_HEIGHT - BODY_PADDING;
+    let rows = (body_height / char_height).floor() as u16;
+    rows.max(4) // minimum 4 rows
+}
+
+fn update_title(title_el: Option<&HtmlElement>, current: &mut String, new_title: Option<&str>) {
+    if let (Some(el), Some(title)) = (title_el, new_title.filter(|val| *val != current.as_str()))
+    {
+        el.set_text_content(Some(title));
+        *current = title.to_string();
+    }
+}
+
+fn build_terminal_ws_url(api_base_url: &str, config: &TerminalConfig, rows: u16) -> String {
     let ws_base = api_base_url
         .replace("https://", "wss://")
         .replace("http://", "ws://");
 
     let encoded_cwd = String::from(js_sys::encode_uri_component(&config.cwd));
     let mut url = format!(
-        "{ws_base}/api/terminal?cwd={encoded_cwd}&cols={DEFAULT_COLS}&rows={DEFAULT_ROWS}",
+        "{ws_base}/api/terminal?cwd={encoded_cwd}&cols={DEFAULT_COLS}&rows={rows}",
     );
 
     if let Some(cmd) = &config.cmd {

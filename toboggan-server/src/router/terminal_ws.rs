@@ -101,9 +101,11 @@ async fn handle_terminal(socket: WebSocket, cwd: String, cmd: Option<String>, co
     tokio::time::sleep(Duration::from_millis(20)).await;
     spawn_pty_writer(pair.master.take_writer(), rx_pty);
 
-    // Pre-send DA1 response so fish doesn't wait 10s
-    // This goes through the writer channel to the PTY master input (shell's stdin)
-    let _ = tx_pty.send(DA1_RESPONSE.to_vec());
+    // Pre-send DA1 response so fish doesn't wait 10s (only for interactive shells,
+    // not for commands — command shells exit quickly and the response would echo as text)
+    if cmd.is_none() {
+        let _ = tx_pty.send(DA1_RESPONSE.to_vec());
+    }
 
     let ws_reader_task = spawn_ws_reader(ws_receiver, tx_pty, pair.master);
     let ws_sender_task = spawn_ws_sender(rx_ws, ws_sender);

@@ -262,6 +262,10 @@ struct TermScreen {
     autowrap: bool,
     /// Deferred wrap: cursor hit the right edge, next print will wrap
     wrap_pending: bool,
+    /// Window title set by OSC 0/1/2 escape sequences
+    title: Option<String>,
+    /// Inside an OSC 8 hyperlink — suppress underline rendering
+    in_hyperlink: bool,
     attrs: Attrs,
     default_fg: Rgb,
     default_bg: Rgb,
@@ -282,6 +286,18 @@ impl VirtualTerminal {
 
     pub fn render_to_canvas(&self, canvas: &HtmlCanvasElement, font_size: f64) {
         self.screen.render_to_canvas(canvas, font_size);
+    }
+
+    pub fn title(&self) -> Option<&str> {
+        self.screen.title.as_deref()
+    }
+
+    pub fn cols(&self) -> u16 {
+        self.screen.cols
+    }
+
+    pub fn resize(&mut self, cols: u16, rows: u16) {
+        self.screen.resize(cols, rows);
     }
 }
 
@@ -354,11 +370,53 @@ impl TermScreen {
             scroll_bottom: rows - 1,
             autowrap: true,
             wrap_pending: false,
+            title: None,
+            in_hyperlink: false,
             attrs,
             default_fg,
             default_bg,
             colors,
         }
+    }
+
+    #[allow(clippy::cast_possible_truncation)]
+    fn resize(&mut self, cols: u16, rows: u16) {
+        if cols == self.cols && rows == self.rows {
+            return;
+        }
+        self.cols = cols;
+        self.rows = rows;
+
+        let mut new_grid = vec![
+            vec![
+                Cell {
+                    fg: self.default_fg,
+                    bg: self.default_bg,
+                    ..Cell::default()
+                };
+                cols as usize
+            ];
+            rows as usize
+        ];
+
+        // Copy existing content
+        for (row_idx, row) in new_grid.iter_mut().enumerate() {
+            let Some(old_row) = self.grid.get(row_idx) else {
+                break;
+            };
+            for (col_idx, cell) in row.iter_mut().enumerate() {
+                let Some(old_cell) = old_row.get(col_idx) else {
+                    break;
+                };
+                *cell = *old_cell;
+            }
+        }
+
+        self.grid = new_grid;
+        self.cursor_row = self.cursor_row.min(rows.saturating_sub(1));
+        self.cursor_col = self.cursor_col.min(cols.saturating_sub(1));
+        self.scroll_top = 0;
+        self.scroll_bottom = rows.saturating_sub(1);
     }
 
     #[allow(
@@ -498,7 +556,7 @@ impl TermScreen {
                 cell.bold = self.attrs.bold;
                 cell.dim = self.attrs.dim;
                 cell.italic = self.attrs.italic;
-                cell.underline = self.attrs.underline;
+                cell.underline = self.attrs.underline && !self.in_hyperlink;
                 cell.reverse = self.attrs.reverse;
                 cell.strikethrough = self.attrs.strikethrough;
             }
@@ -988,7 +1046,23 @@ impl vte::Perform for TermScreen {
     }
     fn put(&mut self, _byte: u8) {}
     fn unhook(&mut self) {}
-    fn osc_dispatch(&mut self, _params: &[&[u8]], _bell_terminated: bool) {}
+    fn osc_dispatch(&mut self, params: &[&[u8]], _bell_terminated: bool) {
+        match params.first().copied() {
+            // OSC 0/2: set window title
+            Some(b"0" | b"2") => {
+                if let Some(title_bytes) = params.get(1) {
+                    self.title = String::from_utf8(title_bytes.to_vec()).ok();
+                }
+            }
+            // OSC 8: hyperlink — toggle in_hyperlink based on whether URI is present
+            Some(b"8") => {
+                // OSC 8 ; params ; uri ST — non-empty uri opens, empty uri closes
+                let uri = params.get(2).copied().unwrap_or_default();
+                self.in_hyperlink = !uri.is_empty();
+            }
+            _ => {}
+        }
+    }
 }
 
 impl TermScreen {

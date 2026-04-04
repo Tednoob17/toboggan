@@ -215,7 +215,10 @@ section.center {
 	overflow: hidden;
 }
 
-/* Wide layout: remove side margins for terminal-heavy slides */
+/* Wide layout: maximize space for terminal-heavy slides */
 section.wide {
 	width: 95vw;
+	margin-top: 0.25rem;
+	min-height: calc(100% - 0.25rem);
+	max-height: calc(100% - 0.25rem);
 }

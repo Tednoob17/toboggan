@@ -1,6 +1,6 @@
 :host {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     width: 100%;
     height: 100%;
@@ -13,6 +13,7 @@
     overflow: hidden;
     max-width: 100%;
     max-height: 100%;
+    height: 100%;
 }
 
 /* Dark theme (default) */
@@ -102,6 +103,8 @@
 .terminal-body {
     padding: 2px 3px 3px;
     overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
 }
 
 .terminal-canvas {
