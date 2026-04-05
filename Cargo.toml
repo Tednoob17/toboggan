@@ -52,19 +52,19 @@ clawspec-core = "0.4.2"
 tempfile = "3.24.0"
 
 # Other dependencies
-comrak = "0.50.0"
+comrak = "0.52.0"
 miette = "7.6.0"
 comfy-table = "7.2.1"
 
 # Desktop dependencies
 iced = "0.14.0"
-tokio-tungstenite = { version = "0.28.0", default-features = false }
+tokio-tungstenite = { version = "0.29.0", default-features = false }
 reqwest = { version = "0.13.1", default-features = false }
 lucide-icons = "0.563.0"
 async-stream = "0.3.6"
 
 # Other dependencies
-scraper = "0.25.0"
+scraper = "0.26.0"
 
 # Server-specific dependencies
 rust-embed = "8.9.0"
@@ -78,6 +78,7 @@ owo-colors = "4.2.3"
 ratatui = "0.30.0"
 crossterm = "0.29.0"
 tui-logger = "0.18.0"
+tachyonfx = "0.25"
 
 # Mobile-specific dependencies (iOS & Android)
 uniffi = "0.31.0"
@@ -85,6 +86,12 @@ uniffi = "0.31.0"
 
 [workspace.lints.rust]
 unsafe_code = "deny"
+elided_lifetimes_in_paths = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_lifetimes = "warn"
+unused_qualifications = "warn"
+unreachable_pub = "warn"
 missing_docs = "allow"
 
 [workspace.lints.clippy]
@@ -94,6 +101,7 @@ pedantic = { level = "warn", priority = -1 }
 undocumented_unsafe_blocks = "deny"
 
 dbg_macro = "warn"
+empty_line_after_doc_comments = "warn"
 expect_used = "warn"
 if_then_some_else_none = "warn"
 indexing_slicing = "warn"
@@ -103,8 +111,18 @@ print_stderr = "warn"
 print_stdout = "warn"
 rc_buffer = "warn"
 rc_mutex = "warn"
+redundant_clone = "warn"
+redundant_type_annotations = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+str_to_string = "warn"
 unnecessary_safety_doc = "warn"
 unwrap_used = "warn"
 
 missing-errors-doc = "allow"
 module_name_repetitions = "allow"
+
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.release]
+codegen-units = 1

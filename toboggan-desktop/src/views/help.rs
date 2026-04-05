@@ -5,7 +5,7 @@ use crate::constants::{FONT_SIZE_LARGE, FONT_SIZE_MEDIUM, FONT_SIZE_SMALL, FONT_
 use crate::message::Message;
 use crate::widgets::{create_muted_text, create_text};
 
-pub fn view() -> Element<'static, Message> {
+pub(super) fn view() -> Element<'static, Message> {
     let help_content = column![
         create_text("Toboggan Desktop Help", 24.0),
         create_text("", FONT_SIZE_SMALL),
@@ -43,7 +43,7 @@ pub fn view() -> Element<'static, Message> {
         .height(Length::Fill)
         .center_x(Length::Fill)
         .center_y(Length::Fill)
-        .style(|_theme: &iced::Theme| iced::widget::container::Style {
+        .style(|_theme: &iced::Theme| container::Style {
             background: Some(iced::Background::Color(iced::Color::from_rgba(
                 0.98, 0.98, 0.98, 0.95,
             ))),

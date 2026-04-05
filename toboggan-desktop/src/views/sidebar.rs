@@ -9,7 +9,7 @@ use crate::state::AppState;
 use crate::styles;
 use crate::widgets::{create_body_text, create_title_text};
 
-pub fn view(state: &AppState) -> Element<'_, Message> {
+pub(super) fn view(state: &AppState) -> Element<'_, Message> {
     let mut sidebar_content = column![create_title_text("Slides")]
         .spacing(SPACING_MEDIUM)
         .padding(PADDING_CONTAINER);
@@ -27,7 +27,7 @@ pub fn view(state: &AppState) -> Element<'_, Message> {
                 format!("{}. {}", index + 1, content::render_content(&slide.title))
             };
 
-            let slide_button = widget::button(widget::text(slide_text))
+            let slide_button = button(widget::text(slide_text))
                 .on_press(Message::SendCommand(Command::GoTo { slide: slide_id }))
                 .padding(Padding::new(4.0).right(8.0).left(8.0))
                 .style(if is_current {
@@ -50,12 +50,14 @@ pub fn view(state: &AppState) -> Element<'_, Message> {
             container(
                 column![
                     create_body_text("Next Slide"),
-                    container(if matches!(&next_slide.title, toboggan_core::Content::Text { text } if text.is_empty()) {
-                        widget::text("No title").size(12.0)
-                    } else {
-                        let title_content = content::render_content(&next_slide.title);
-                        widget::text(title_content).size(12.0)
-                    })
+                    container(
+                        if matches!(&next_slide.title, Content::Text { text } if text.is_empty()) {
+                            widget::text("No title").size(12.0)
+                        } else {
+                            let title_content = content::render_content(&next_slide.title);
+                            widget::text(title_content).size(12.0)
+                        }
+                    )
                     .padding(SPACING_SMALL)
                     .style(styles::preview_container())
                 ]

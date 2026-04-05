@@ -147,7 +147,7 @@ fn presentation_controls_view(_state: &AppState) -> Element<'_, Message> {
         .into()
 }
 
-pub fn view(state: &AppState) -> Element<'_, Message> {
+pub(super) fn view(state: &AppState) -> Element<'_, Message> {
     let connection_status = connection_status_view(&state.connection_status);
     let navigation_controls = navigation_controls_view();
     let presentation_controls = presentation_controls_view(state);

@@ -5,7 +5,7 @@ use wasm_bindgen::JsValue;
 pub fn log_dom_error(operation: &str, error: &JsValue) {
     let error_msg = error
         .as_string()
-        .unwrap_or_else(|| "Unknown error".to_string());
+        .unwrap_or_else(|| "Unknown error".to_owned());
     error!("DOM operation failed:", operation, "Error:", error_msg);
 }
 

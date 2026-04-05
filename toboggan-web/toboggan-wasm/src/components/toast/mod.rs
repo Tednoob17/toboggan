@@ -12,7 +12,7 @@ use crate::{create_and_append_element, create_shadow_root_with_style, dom_try};
 const CSS: &str = include_str!("style.css");
 
 #[derive(Debug, Clone, Copy)]
-pub enum ToastType {
+pub(crate) enum ToastType {
     Error,
     Warning,
     Info,
@@ -31,7 +31,7 @@ impl Display for ToastType {
 }
 
 #[derive(Debug)]
-pub struct TobogganToastElement {
+pub(crate) struct TobogganToastElement {
     container: Option<HtmlElement>,
     duration_ms: u32,
 }
@@ -46,7 +46,7 @@ impl Default for TobogganToastElement {
 }
 
 impl TobogganToastElement {
-    pub fn toast(&self, toast_type: ToastType, message: &str) {
+    pub(crate) fn toast(&self, toast_type: ToastType, message: &str) {
         let Some(container) = &self.container else {
             return;
         };
@@ -77,10 +77,9 @@ impl TobogganToastElement {
         Self::animate_toast_entry(container, &toast);
         let _ = container.append_child(&toast);
 
-        let toast_clone = toast.clone();
         Timeout::new(self.duration_ms, move || {
-            if let Some(parent) = toast_clone.parent_node() {
-                let _ = parent.remove_child(&toast_clone);
+            if let Some(parent) = toast.parent_node() {
+                let _ = parent.remove_child(&toast);
             }
         })
         .forget();

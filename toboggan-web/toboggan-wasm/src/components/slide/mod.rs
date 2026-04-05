@@ -2,27 +2,63 @@ use toboggan_core::{Slide, SlideKind};
 use wasm_bindgen::JsCast;
 use web_sys::{Element, HtmlElement};
 
-use crate::components::WasmElement;
-use crate::{create_and_append_element, create_shadow_root_with_style, dom_try, render_content};
+use crate::components::{TobogganTerminalElement, WasmElement};
+use crate::{
+    create_and_append_element, create_html_element, create_shadow_root_with_style, dom_try,
+    render_content,
+};
 
 const CSS: &str = include_str!("style.css");
 
 #[derive(Debug, Default)]
-pub struct TobogganSlideElement {
+pub(crate) struct TobogganSlideElement {
     container: Option<Element>,
     slide: Option<Slide>,
+    terminals: Vec<TobogganTerminalElement>,
+    api_base_url: String,
 }
 
 impl TobogganSlideElement {
-    pub fn set_slide(&mut self, slide: Option<Slide>, current_step: usize) {
+    pub(crate) fn set_api_base_url(&mut self, url: &str) {
+        url.clone_into(&mut self.api_base_url);
+    }
+
+    pub(crate) fn set_slide(&mut self, slide: Option<Slide>, current_step: usize) {
+        // Stop any existing terminal sessions
+        for terminal in &self.terminals {
+            terminal.stop_terminal();
+        }
+        self.terminals.clear();
+
         self.slide = slide;
         self.render_slide();
         self.set_current_step(current_step);
+
+        // Start terminals if the slide has any
+        if let Some(slide) = &self.slide
+            && !slide.terminals.is_empty()
+            && let Some(container) = &self.container
+        {
+            let wrapper = create_html_element("div");
+            wrapper.set_class_name("toboggan-terminals");
+
+            for config in &slide.terminals {
+                let el = create_html_element("div");
+                el.set_class_name("toboggan-terminal");
+                let mut terminal = TobogganTerminalElement::default();
+                terminal.render(&el);
+                terminal.start_terminal(config, &self.api_base_url);
+                let _ = wrapper.append_child(&el);
+                self.terminals.push(terminal);
+            }
+
+            let _ = container.append_child(&wrapper);
+        }
     }
 
     /// Set the current step state on the DOM.
     /// `step` represents how many steps have been revealed (0 = none, 1 = first step visible, etc.)
-    pub fn set_current_step(&self, step: usize) {
+    pub(crate) fn set_current_step(&self, step: usize) {
         let Some(container) = &self.container else {
             return;
         };
@@ -70,7 +106,7 @@ impl TobogganSlideElement {
                 SlideKind::Part => "part",
                 SlideKind::Standard => "standard",
             };
-            classes.push(kind_class.to_string());
+            classes.push(kind_class.to_owned());
 
             let class_string = classes.join(" ");
             container.set_class_name(&class_string);
@@ -94,7 +130,7 @@ impl TobogganSlideElement {
             // Clear any previous styles
             container.set_class_name("");
             let _ = container.remove_attribute("style");
-            "<article></article>".to_string()
+            "<article></article>".to_owned()
         };
 
         container.set_inner_html(&content);

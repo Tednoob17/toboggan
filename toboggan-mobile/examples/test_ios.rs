@@ -8,13 +8,13 @@ use toboggan::{ClientConfig, ClientNotificationHandler, ConnectionStatus, State,
 
 fn main() {
     let config = ClientConfig {
-        url: "http://localhost:8080".to_string(),
+        url: "http://localhost:8080".to_owned(),
         max_retries: 10,
         retry_delay: Duration::from_secs(1),
     };
 
     let handler = Arc::new(NotificationHandler);
-    let client = TobogganClient::new(config, "Test Client".to_string(), handler);
+    let client = TobogganClient::new(config, "Test Client".to_owned(), handler);
 
     client.connect();
     println!("state: {:?}", client.get_state());

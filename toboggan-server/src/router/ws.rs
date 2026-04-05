@@ -13,7 +13,7 @@ use tracing::{error, info, warn};
 use crate::TobogganState;
 use crate::services::{ClientService, TalkService};
 
-pub async fn websocket_handler(
+pub(super) async fn websocket_handler(
     ws: WebSocketUpgrade,
     ConnectInfo(addr): ConnectInfo<SocketAddr>,
     State(state): State<TobogganState>,

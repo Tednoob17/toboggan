@@ -29,6 +29,7 @@ utoipa-scalar = { workspace = true, features = ["axum"] }
 rust-embed = { workspace = true }
 mime_guess = { workspace = true }
 notify = { workspace = true }
+portable-pty = "0.9.0"
 
 [dev-dependencies]
 toboggan-core = { path = "../toboggan-core", features = ["openapi", "test-utils"] }

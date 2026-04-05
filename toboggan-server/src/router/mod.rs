@@ -16,6 +16,7 @@ use crate::TobogganState;
 
 mod api;
 mod static_assets;
+mod terminal_ws;
 mod ws;
 
 pub fn routes(assets_dir: Option<PathBuf>, openapi: OpenApi) -> Router<TobogganState> {
@@ -38,7 +39,8 @@ pub fn routes_with_cors(
                 .route("/slides/{index}", get(api::get_slide_by_index))
                 .route("/command", post(api::post_command))
                 .route("/clients", get(api::get_clients))
-                .route("/ws", get(ws::websocket_handler)),
+                .route("/ws", get(ws::websocket_handler))
+                .route("/terminal", get(terminal_ws::terminal_websocket_handler)),
         )
         .layer(TraceLayer::new_for_http())
         .route("/health", get(health))
@@ -101,10 +103,7 @@ async fn health(State(state): State<TobogganState>) -> impl IntoResponse {
 fn create_cors_layer(allowed_origins: Option<&[String]>) -> CorsLayer {
     let mut cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
-        .allow_headers([
-            axum::http::header::CONTENT_TYPE,
-            axum::http::header::AUTHORIZATION,
-        ]);
+        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     match allowed_origins {
         Some(origins) if !origins.is_empty() => {

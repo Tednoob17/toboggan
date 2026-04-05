@@ -65,11 +65,11 @@ impl Settings {
     /// Returns error if configuration is invalid
     pub fn validate(&self) -> Result<(), String> {
         if self.max_clients == 0 {
-            return Err("max_clients must be greater than 0".to_string());
+            return Err("max_clients must be greater than 0".to_owned());
         }
 
         if self.heartbeat_interval_secs == 0 {
-            return Err("heartbeat_interval_secs must be greater than 0".to_string());
+            return Err("heartbeat_interval_secs must be greater than 0".to_owned());
         }
 
         if !self.talk.exists() {
@@ -77,7 +77,7 @@ impl Settings {
         }
 
         if self.talk.extension().is_none_or(|ext| ext != "toml") {
-            return Err("Talk file must have .toml extension".to_string());
+            return Err("Talk file must have .toml extension".to_owned());
         }
 
         if let Some(ref assets_dir) = self.public_dir {

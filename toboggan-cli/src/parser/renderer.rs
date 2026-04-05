@@ -18,7 +18,7 @@ pub(super) struct HtmlRenderer<'a> {
 
 impl<'a> HtmlRenderer<'a> {
     #[must_use]
-    pub(super) fn new(options: &'a Options, plugins: &'a Plugins, style: Style) -> Self {
+    pub(super) fn new(options: &'a Options<'_>, plugins: &'a Plugins<'_>, style: Style) -> Self {
         Self {
             options,
             plugins,
@@ -93,8 +93,8 @@ mod tests {
     fn test_render_steps() {
         let renderer = setup_test_renderer();
         let steps = vec![
-            ("First step".to_string(), vec![]),
-            ("Second step".to_string(), vec!["highlight".to_string()]),
+            ("First step".to_owned(), vec![]),
+            ("Second step".to_owned(), vec!["highlight".to_owned()]),
         ];
 
         let content = renderer.render_steps("Before steps", &steps);

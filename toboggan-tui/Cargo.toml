@@ -20,6 +20,7 @@ clap = { workspace = true, features = ["env", "derive"] }
 tracing= { workspace = true }
 tracing-subscriber= { workspace = true }
 tui-logger = { workspace = true, features = ["tracing-support"]}
+tachyonfx = { workspace = true }
 derive_more = { workspace = true, features = ["display"] }
 
 [lints]

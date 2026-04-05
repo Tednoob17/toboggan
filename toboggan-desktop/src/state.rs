@@ -4,13 +4,13 @@ use toboggan_core::{Content, Slide, SlideId, State as PresentationState, Talk};
 
 /// Cached markdown content for a slide
 #[derive(Debug, Clone, Default)]
-pub struct CachedMarkdown {
+pub(crate) struct CachedMarkdown {
     pub body_items: Vec<markdown::Item>,
     pub notes_items: Vec<markdown::Item>,
 }
 
 #[derive(Debug, Clone)]
-pub struct AppState {
+pub(crate) struct AppState {
     pub connection_status: ConnectionStatus,
     pub talk: Option<Talk>,
     pub slides: Vec<Slide>,
@@ -35,7 +35,7 @@ fn content_to_markdown_text(content: &Content) -> String {
 }
 
 /// Parse slides into cached markdown items
-pub fn parse_slides_markdown(slides: &[Slide]) -> Vec<CachedMarkdown> {
+pub(crate) fn parse_slides_markdown(slides: &[Slide]) -> Vec<CachedMarkdown> {
     slides
         .iter()
         .map(|slide| {
@@ -69,17 +69,17 @@ impl Default for AppState {
 }
 
 impl AppState {
-    pub fn current_slide(&self) -> Option<&Slide> {
+    pub(crate) fn current_slide(&self) -> Option<&Slide> {
         self.current_slide
             .and_then(|id| self.slides.get(id.index()))
     }
 
-    pub fn current_markdown(&self) -> Option<&CachedMarkdown> {
+    pub(crate) fn current_markdown(&self) -> Option<&CachedMarkdown> {
         self.current_slide
             .and_then(|id| self.cached_markdown.get(id.index()))
     }
 
-    pub fn next_slide(&self) -> Option<&Slide> {
+    pub(crate) fn next_slide(&self) -> Option<&Slide> {
         if let Some(current_id) = self.current_slide {
             let next_idx = current_id.index() + 1;
             self.slides.get(next_idx)
@@ -88,14 +88,14 @@ impl AppState {
         }
     }
 
-    pub fn slide_index(&self) -> Option<(usize, usize)> {
+    pub(crate) fn slide_index(&self) -> Option<(usize, usize)> {
         self.current_slide
             .map(|id| (id.display_number(), self.slides.len()))
     }
 
     /// Returns `(current_step, step_count)` for the current slide.
     #[must_use]
-    pub fn step_info(&self) -> Option<(usize, usize)> {
+    pub(crate) fn step_info(&self) -> Option<(usize, usize)> {
         let slide_id = self.current_slide?;
         let step_count = self.step_counts.get(slide_id.index()).copied().unwrap_or(0);
         self.presentation_state

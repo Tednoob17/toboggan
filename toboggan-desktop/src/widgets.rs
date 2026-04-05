@@ -8,25 +8,25 @@ use crate::constants::{
 use crate::message::Message;
 
 // Helper function to create text with consistent styling
-pub fn create_text(content: &str, size: f32) -> Text<'_> {
+pub(crate) fn create_text(content: &str, size: f32) -> Text<'_> {
     text(content).size(size)
 }
 
-pub fn create_muted_text(content: &str) -> Text<'_> {
+pub(crate) fn create_muted_text(content: &str) -> Text<'_> {
     text(content).size(FONT_SIZE_SMALL).color(COLOR_MUTED)
 }
 
 // Theme-aware text functions
-pub fn create_title_text(content: &str) -> Text<'_> {
+pub(crate) fn create_title_text(content: &str) -> Text<'_> {
     text(content).size(FONT_SIZE_TITLE)
 }
 
-pub fn create_body_text(content: &str) -> Text<'_> {
+pub(crate) fn create_body_text(content: &str) -> Text<'_> {
     text(content).size(FONT_SIZE_MEDIUM)
 }
 
 // Helper function to create icon-text buttons
-pub fn create_icon_button<'a>(
+pub(crate) fn create_icon_button<'a>(
     icon: Element<'a, Message>,
     label: &'a str,
     message: Message,
@@ -40,20 +40,23 @@ pub fn create_icon_button<'a>(
     .padding(PADDING_MEDIUM)
 }
 
-pub fn create_simple_button(label: &str, message: Message) -> Button<'_, Message> {
+pub(crate) fn create_simple_button(label: &str, message: Message) -> Button<'_, Message> {
     button(text(label).size(FONT_SIZE_MEDIUM))
         .on_press(message)
         .padding(PADDING_SMALL)
 }
 
 // Helper function to create status rows with icon and text
-pub fn create_status_row<'a>(icon: Element<'a, Message>, status_text: &'a str) -> Row<'a, Message> {
+pub(crate) fn create_status_row<'a>(
+    icon: Element<'a, Message>,
+    status_text: &'a str,
+) -> Row<'a, Message> {
     row![icon, text(status_text).size(FONT_SIZE_MEDIUM)]
         .spacing(SPACING_MEDIUM)
         .align_y(Alignment::Center)
 }
 
-pub fn create_status_row_with_button<'a>(
+pub(crate) fn create_status_row_with_button<'a>(
     icon: Element<'a, Message>,
     status_text: &'a str,
     button_elem: Element<'a, Message>,
@@ -64,7 +67,7 @@ pub fn create_status_row_with_button<'a>(
 }
 
 // Navigation button helper
-pub fn create_nav_button<'a>(
+pub(crate) fn create_nav_button<'a>(
     icon: Element<'a, Message>,
     label: &'a str,
     message: Message,
@@ -81,7 +84,7 @@ pub fn create_nav_button<'a>(
 }
 
 #[derive(Copy, Clone)]
-pub enum NavButtonPosition {
+pub(crate) enum NavButtonPosition {
     Leading,
     Trailing,
 }

@@ -25,14 +25,14 @@ impl TextRenderer {
         let (result, _) = measure_render(|| serde_saphyr::to_string(talk));
         Ok(result
             .map_err(|err| crate::error::TobogganCliError::Serialize {
-                format: "YAML".to_string(),
+                format: "YAML".to_owned(),
                 message: err.to_string(),
             })?
             .into_bytes())
     }
 
     pub fn metrics(talk: &Talk, format: &str) -> Result<RenderMetrics> {
-        let input_size = std::mem::size_of_val(talk);
+        let input_size = size_of_val(talk);
 
         let (output, render_time) = match format {
             "toml" => {
@@ -48,7 +48,7 @@ impl TextRenderer {
                 (
                     result
                         .map_err(|err| crate::error::TobogganCliError::Serialize {
-                            format: "YAML".to_string(),
+                            format: "YAML".to_owned(),
                             message: err.to_string(),
                         })?
                         .len(),
@@ -57,8 +57,8 @@ impl TextRenderer {
             }
             _ => {
                 return Err(crate::error::TobogganCliError::Serialize {
-                    format: format.to_string(),
-                    message: "Unsupported text format".to_string(),
+                    format: format.to_owned(),
+                    message: "Unsupported text format".to_owned(),
                 });
             }
         };

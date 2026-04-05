@@ -1,4 +1,3 @@
-use std::mem;
 use std::sync::{Arc, RwLock};
 use std::time::{Duration, Instant};
 
@@ -119,7 +118,7 @@ impl WebSocketClient {
             warn!("Illegal disposed state, cannot connect");
             return;
         }
-        mem::drop(state);
+        drop(state);
 
         self.attempt_connection().await;
     }
@@ -214,7 +213,7 @@ impl WebSocketClient {
             tokio::time::sleep(retry_delay).await;
             let state = state_clone.lock().await;
             if !state.is_disposed {
-                mem::drop(state);
+                drop(state);
                 reconnect_with_channel(
                     &config,
                     &client_name,
@@ -242,7 +241,7 @@ impl WebSocketClient {
                 interval.tick().await;
                 let mut last_ping_guard = last_ping.lock().await;
                 *last_ping_guard = Some(Instant::now());
-                mem::drop(last_ping_guard);
+                drop(last_ping_guard);
                 let _ = tx_cmd.send(Command::Ping);
             }
         });
@@ -299,7 +298,7 @@ async fn reconnect_with_channel(
         status: ConnectionStatus::Connected,
     });
     let _ = tx_cmd.send(Command::Register {
-        name: client_name.to_string(),
+        name: client_name.to_owned(),
     });
 
     tokio::spawn(handle_outgoing_commands(rx_cmd, write));

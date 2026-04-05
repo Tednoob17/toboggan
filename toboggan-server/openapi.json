@@ -602,6 +602,13 @@
             ],
             "default": {}
           },
+          "terminals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TerminalConfig"
+            },
+            "default": []
+          },
           "title": {
             "oneOf": [
               {

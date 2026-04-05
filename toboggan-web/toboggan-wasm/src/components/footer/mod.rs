@@ -6,13 +6,13 @@ use crate::{create_and_append_element, create_shadow_root_with_style, dom_try};
 const CSS: &str = include_str!("style.css");
 
 #[derive(Debug, Default)]
-pub struct TobogganFooterElement {
+pub(crate) struct TobogganFooterElement {
     container: Option<Element>,
     content: Option<String>,
 }
 
 impl TobogganFooterElement {
-    pub fn set_content(&mut self, content: Option<String>) {
+    pub(crate) fn set_content(&mut self, content: Option<String>) {
         self.content = content;
         self.render_content();
     }

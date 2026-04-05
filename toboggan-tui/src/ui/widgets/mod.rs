@@ -4,35 +4,35 @@ use crate::events::AppAction;
 use crate::ui::styles;
 
 mod title_bar;
-pub use self::title_bar::TitleBar;
+pub(crate) use self::title_bar::TitleBar;
 
 mod progress_bar;
-pub use self::progress_bar::ProgressBar;
+pub(crate) use self::progress_bar::ProgressBar;
 
 mod slide_list;
-pub use self::slide_list::SlideList;
+pub(crate) use self::slide_list::SlideList;
 
 mod current_slide;
-pub use self::current_slide::CurrentSlide;
+pub(crate) use self::current_slide::CurrentSlide;
 
 mod next_slide_preview;
-pub use self::next_slide_preview::NextSlidePreview;
+pub(crate) use self::next_slide_preview::NextSlidePreview;
 
 mod speaker_notes;
-pub use self::speaker_notes::SpeakerNotes;
+pub(crate) use self::speaker_notes::SpeakerNotes;
 
 mod help_panel;
 use ratatui::symbols::border;
 use ratatui::widgets::{Block, Paragraph};
 
-pub use self::help_panel::HelpPanel;
+pub(crate) use self::help_panel::HelpPanel;
 
 /// Helper function to render "no content" message
 pub(crate) fn render_no_content(
     area: Rect,
     buf: &mut Buffer,
     message: &str,
-    border_set: border::Set,
+    border_set: border::Set<'_>,
 ) {
     let title = Line::from(Span::styled(
         format!(" <{message}> "),

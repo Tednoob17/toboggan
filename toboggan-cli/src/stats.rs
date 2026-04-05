@@ -70,7 +70,7 @@ impl PresentationStats {
                     // Add to current part or create implicit "Introduction"
                     if current_part.is_none() && !has_slides_before_first_part {
                         has_slides_before_first_part = true;
-                        let intro_part = "(Introduction)".to_string();
+                        let intro_part = "(Introduction)".to_owned();
                         stats.core.part_order.insert(0, intro_part.clone());
                         stats.core.slides_per_part.insert(intro_part.clone(), 0);
                         stats.core.words_per_part.insert(intro_part.clone(), 0);
@@ -499,10 +499,10 @@ impl PresentationStats {
         // Duration recommendations
         if total_minutes > 50 {
             recommendations
-                .push("Consider splitting this into multiple shorter presentations".to_string());
+                .push("Consider splitting this into multiple shorter presentations".to_owned());
         } else if total_minutes < 2 {
             recommendations.push(
-                "This presentation might be too short - consider adding more content".to_string(),
+                "This presentation might be too short - consider adding more content".to_owned(),
             );
         }
 
@@ -532,12 +532,11 @@ impl PresentationStats {
             let avg_words_per_slide = self.core.total_words / self.core.total_slides;
             if avg_words_per_slide > 100 {
                 recommendations.push(
-                    "High word density - consider more slides with less text each".to_string(),
+                    "High word density - consider more slides with less text each".to_owned(),
                 );
             } else if avg_words_per_slide < 20 {
                 recommendations.push(
-                    "Low word density - slides might benefit from more detailed content"
-                        .to_string(),
+                    "Low word density - slides might benefit from more detailed content".to_owned(),
                 );
             }
         }
@@ -560,18 +559,18 @@ mod tests {
     #[test]
     fn test_statistics_calculation() {
         let talk_metadata = TalkMetadata {
-            title: "Test Talk".to_string(),
+            title: "Test Talk".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
         };
 
         let intro_slide = Slide::new("Introduction").with_body(Content::Text {
-            text: "Hello world this is a test".to_string(),
+            text: "Hello world this is a test".to_owned(),
         });
 
         let part_slide = Slide::part("Part One").with_body(Content::Text {
-            text: "Part introduction".to_string(),
+            text: "Part introduction".to_owned(),
         });
 
         let slides = vec![
@@ -600,7 +599,7 @@ mod tests {
     #[test]
     fn test_diagram_slide_counting() {
         let talk_metadata = TalkMetadata {
-            title: "Test Talk".to_string(),
+            title: "Test Talk".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
@@ -608,7 +607,7 @@ mod tests {
 
         // Simulate a diagram slide with counter: title="3.5 Diagram" body=SVG
         let mut diagram_slide = Slide::new("Diagram").with_body(Content::Html {
-            raw: r#"<svg width="100" height="100"><circle cx="50" cy="50" r="40"/><text x="50" y="50">Label</text></svg>"#.to_string(),
+            raw: r#"<svg width="100" height="100"><circle cx="50" cy="50" r="40"/><text x="50" y="50">Label</text></svg>"#.to_owned(),
             style: Style::default(),
             alt: None,
         });
@@ -641,7 +640,7 @@ mod tests {
     #[test]
     fn test_notes_not_double_counted_in_duration() {
         let talk_metadata = TalkMetadata {
-            title: "Test Talk".to_string(),
+            title: "Test Talk".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
@@ -650,10 +649,10 @@ mod tests {
         // Create a slide with content words (2 in title + 6 in body = 8 total) and 4 notes words
         let slide = Slide::new("Test Slide")
             .with_body(Content::Text {
-                text: "one two three four five six".to_string(),
+                text: "one two three four five six".to_owned(),
             })
             .with_notes(Content::Text {
-                text: "note1 note2 note3 note4".to_string(),
+                text: "note1 note2 note3 note4".to_owned(),
             });
 
         let slides = vec![SlideProcessingResult::Processed(slide)];
@@ -701,14 +700,14 @@ mod tests {
     #[test]
     fn test_html_content_analysis() {
         let talk_metadata = TalkMetadata {
-            title: "Test Talk".to_string(),
+            title: "Test Talk".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
         };
 
         let slide = Slide::new("Title").with_body(Content::Html {
-            raw: r"<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>".to_string(),
+            raw: r"<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>".to_owned(),
             style: Style::default(),
             alt: None,
         });
@@ -727,14 +726,14 @@ mod tests {
     #[test]
     fn test_step_counting() {
         let talk_metadata = TalkMetadata {
-            title: "Test Talk".to_string(),
+            title: "Test Talk".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
         };
 
         let slide = Slide::new("Title").with_body(Content::Html {
-            raw: r#"<div class="step">Step 1</div><div class="step">Step 2</div><div class="step">Step 3</div>"#.to_string(),
+            raw: r#"<div class="step">Step 1</div><div class="step">Step 2</div><div class="step">Step 3</div>"#.to_owned(),
             style: Style::default(),
             alt: None,
         });

@@ -10,8 +10,8 @@ use crate::ui::widgets::{
     CurrentSlide, HelpPanel, NextSlidePreview, ProgressBar, SlideList, SpeakerNotes, TitleBar,
 };
 
-pub mod styles;
-pub mod widgets;
+pub(crate) mod styles;
+pub(crate) mod widgets;
 
 #[derive(Default)]
 pub struct PresenterComponents {
@@ -57,6 +57,11 @@ impl StatefulWidget for &PresenterComponents {
                 Constraint::Length(layout::CONTROL_PROGRESS_WIDTH),
             ]);
         let [title_area, progress_area] = top_layout.areas(top_area);
+
+        // Store layout areas for effect targeting
+        state.layout_areas.title_bar = title_area;
+        state.layout_areas.current_slide = current_area;
+        state.layout_areas.content = content_area;
 
         (&self.title_bar).render(title_area, buf, state);
         (&self.progress_bar).render(progress_area, buf, state);

@@ -1,13 +1,16 @@
 use web_sys::HtmlElement;
 
 mod footer;
-pub use self::footer::*;
+pub(crate) use self::footer::*;
 
 mod slide;
-pub use self::slide::*;
+pub(crate) use self::slide::*;
+
+mod terminal;
+pub(crate) use self::terminal::*;
 
 mod toast;
-pub use self::toast::*;
+pub(crate) use self::toast::*;
 
 pub(crate) trait WasmElement {
     fn render(&mut self, host: &HtmlElement);

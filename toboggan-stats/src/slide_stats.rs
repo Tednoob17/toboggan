@@ -139,7 +139,7 @@ impl PresentationStats {
                 // Add to current part or create implicit "Introduction"
                 if current_part.is_none() && !has_slides_before_first_part {
                     has_slides_before_first_part = true;
-                    let intro_part = "(Introduction)".to_string();
+                    let intro_part = "(Introduction)".to_owned();
                     stats.part_order.insert(0, intro_part.clone());
                     stats.slides_per_part.insert(intro_part.clone(), 0);
                     stats.words_per_part.insert(intro_part.clone(), 0);
@@ -249,7 +249,7 @@ mod tests {
     #[test]
     fn test_slide_stats_from_slide() {
         let slide = Slide::new("Test Slide").with_body(Content::Text {
-            text: "Hello world test".to_string(),
+            text: "Hello world test".to_owned(),
         });
 
         let stats = SlideStats::from_slide(&slide);
@@ -263,7 +263,7 @@ mod tests {
     #[test]
     fn test_slide_stats_with_html() {
         let slide = Slide::new("Title").with_body(Content::Html {
-            raw: r"<ul><li>Item 1</li><li>Item 2</li></ul><img src='test.jpg'>".to_string(),
+            raw: r"<ul><li>Item 1</li><li>Item 2</li></ul><img src='test.jpg'>".to_owned(),
             style: Style::default(),
             alt: None,
         });
@@ -276,7 +276,7 @@ mod tests {
     #[test]
     fn test_slide_stats_with_steps() {
         let slide = Slide::new("Title").with_body(Content::Html {
-            raw: r#"<div class="step">Step 1</div><div class="step">Step 2</div>"#.to_string(),
+            raw: r#"<div class="step">Step 1</div><div class="step">Step 2</div>"#.to_owned(),
             style: Style::default(),
             alt: None,
         });
@@ -289,10 +289,10 @@ mod tests {
     fn test_slide_stats_with_notes() {
         let slide = Slide::new("Title")
             .with_body(Content::Text {
-                text: "Body content".to_string(),
+                text: "Body content".to_owned(),
             })
             .with_notes(Content::Text {
-                text: "Speaker notes here".to_string(),
+                text: "Speaker notes here".to_owned(),
             });
 
         let stats = SlideStats::from_slide(&slide);
@@ -304,11 +304,11 @@ mod tests {
     fn test_presentation_stats_from_slides() {
         let slides = vec![
             Slide::new("Introduction").with_body(Content::Text {
-                text: "Welcome everyone".to_string(),
+                text: "Welcome everyone".to_owned(),
             }),
             Slide::part("Part One"),
             Slide::new("Content").with_body(Content::Text {
-                text: "Some content here".to_string(),
+                text: "Some content here".to_owned(),
             }),
         ];
 
@@ -343,10 +343,10 @@ mod tests {
         let slides = vec![
             Slide::new("Title")
                 .with_body(Content::Text {
-                    text: "one two three four".to_string(),
+                    text: "one two three four".to_owned(),
                 })
                 .with_notes(Content::Text {
-                    text: "note1 note2".to_string(),
+                    text: "note1 note2".to_owned(),
                 }),
         ];
 

@@ -174,7 +174,7 @@ async fn test_command_operations(app: &mut TestClient<TobogganTestServer>) -> an
 
     // Test register command
     let register_command = Command::Register {
-        name: "Test Client".to_string(),
+        name: "Test Client".to_owned(),
     };
     let _register_response = app
         .post("/api/command")?

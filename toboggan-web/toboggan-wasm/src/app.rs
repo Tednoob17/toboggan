@@ -39,7 +39,7 @@ struct TobogganElements {
     toast: TobogganToastElement,
 }
 
-pub struct App {
+pub(crate) struct App {
     api: Rc<TobogganApi>,
     kbd: KeyboardService,
     com: Rc<RefCell<CommunicationService>>,
@@ -51,7 +51,7 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(config: AppConfig) -> Self {
+    pub(crate) fn new(config: AppConfig) -> Self {
         let AppConfig {
             api_base_url,
             websocket,
@@ -99,7 +99,7 @@ impl WasmElement for App {
         // Set initial state class
         let current_classes = host.class_name();
         let new_classes = if current_classes.is_empty() {
-            "init".to_string()
+            "init".to_owned()
         } else {
             format!("{current_classes} init")
         };
@@ -110,6 +110,7 @@ impl WasmElement for App {
 
             let el = create_html_element("div");
             el.set_class_name("toboggan-slide");
+            elements.slide.set_api_base_url(self.api.base_url());
             elements.slide.render(&el);
             host.append_child(&el).unwrap_throw();
 
@@ -454,7 +455,7 @@ fn update_root_state_class(
         .collect();
 
     let new_classes = if classes.is_empty() {
-        state_class.to_string()
+        state_class.to_owned()
     } else {
         format!("{} {state_class}", classes.join(" "))
     };

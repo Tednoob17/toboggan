@@ -61,7 +61,7 @@ async fn connect_and_register_client(
 
     // Send Register command with client name
     let register_cmd = Command::Register {
-        name: client_name.to_string(),
+        name: client_name.to_owned(),
     };
     let register_msg = serde_json::to_string(&register_cmd)?;
     ws_sender

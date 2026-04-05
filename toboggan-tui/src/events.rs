@@ -3,7 +3,7 @@ use toboggan_client::ConnectionStatus;
 use toboggan_core::{Command, Notification, Slide, SlideId, TalkResponse};
 
 #[derive(Debug, Clone)]
-pub enum AppEvent {
+pub(crate) enum AppEvent {
     Key(KeyEvent),
     Tick,
 
@@ -15,7 +15,7 @@ pub enum AppEvent {
 }
 
 #[derive(Debug, Clone, Copy, derive_more::Display)]
-pub enum AppAction {
+pub(crate) enum AppAction {
     // Slide navigation
     First,
     Previous,
@@ -120,13 +120,13 @@ impl AppAction {
     }
 }
 
-pub struct ActionDetails {
+pub(crate) struct ActionDetails {
     pub(crate) keys: Vec<&'static str>,
     pub(crate) description: &'static str,
 }
 
 impl ActionDetails {
-    pub fn new(keys: Vec<&'static str>, description: &'static str) -> Self {
+    pub(crate) fn new(keys: Vec<&'static str>, description: &'static str) -> Self {
         Self { keys, description }
     }
 }

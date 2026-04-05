@@ -17,7 +17,7 @@ pub(super) fn default_options() -> Options<'static> {
     options.extension.superscript = true;
     options.extension.footnotes = true;
     options.extension.description_lists = true;
-    options.extension.front_matter_delimiter = Some(FRONT_MATTER_DELIMITER.to_string());
+    options.extension.front_matter_delimiter = Some(FRONT_MATTER_DELIMITER.to_owned());
     options.extension.alerts = true;
     options.extension.subscript = true;
     options.extension.spoiler = true;
@@ -50,7 +50,7 @@ mod tests {
         assert!(options.extension.table);
         assert_eq!(
             options.extension.front_matter_delimiter,
-            Some(FRONT_MATTER_DELIMITER.to_string())
+            Some(FRONT_MATTER_DELIMITER.to_owned())
         );
     }
 

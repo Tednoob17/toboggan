@@ -18,7 +18,7 @@ use crate::utils::Timer;
 
 const PING_INTERVAL_MS: u32 = 60_000; // 1 minute
 
-pub struct CommunicationService {
+pub(crate) struct CommunicationService {
     client_name: String,
     tx_msg: UnboundedSender<CommunicationMessage>,
     tx_cmd: UnboundedSender<Command>,
@@ -30,7 +30,7 @@ pub struct CommunicationService {
 }
 
 impl CommunicationService {
-    pub fn new(
+    pub(crate) fn new(
         client_name: impl Into<String>,
         config: WebSocketConfig,
         tx_msg: UnboundedSender<CommunicationMessage>,
@@ -50,7 +50,7 @@ impl CommunicationService {
         }
     }
 
-    pub fn connect(&mut self) {
+    pub(crate) fn connect(&mut self) {
         self.send_status(ConnectionStatus::Connecting);
 
         let ws = match WebSocket::open(&self.config.url) {

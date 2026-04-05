@@ -31,7 +31,7 @@ impl From<TalkResponse> for Talk {
         } = value;
 
         Self {
-            title: title.clone(),
+            title,
             date: date.to_string(),
             slides: titles,
         }

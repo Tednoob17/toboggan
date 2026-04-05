@@ -73,7 +73,7 @@ pub fn strip_slide_counter(text: &str) -> String {
     }
     // Must have at least one digit and a '.'
     if idx == 0 || bytes.get(idx) != Some(&b'.') {
-        return text.to_string();
+        return text.to_owned();
     }
     idx += 1; // skip '.'
 
@@ -83,9 +83,9 @@ pub fn strip_slide_counter(text: &str) -> String {
     }
     // Must have space after
     if bytes.get(idx) == Some(&b' ') {
-        text.get(idx + 1..).unwrap_or("").to_string()
+        text.get(idx + 1..).unwrap_or("").to_owned()
     } else {
-        text.to_string()
+        text.to_owned()
     }
 }
 
@@ -179,14 +179,14 @@ mod tests {
     #[test]
     fn test_count_steps_from_content() {
         let html_with_steps = Content::Html {
-            raw: r#"<div class="step">One</div><div class="step">Two</div>"#.to_string(),
+            raw: r#"<div class="step">One</div><div class="step">Two</div>"#.to_owned(),
             style: toboggan_core::Style::default(),
             alt: None,
         };
         assert_eq!(count_steps_from_content(&html_with_steps), 2);
 
         let text_content = Content::Text {
-            text: "No steps here".to_string(),
+            text: "No steps here".to_owned(),
         };
         assert_eq!(count_steps_from_content(&text_content), 0);
 

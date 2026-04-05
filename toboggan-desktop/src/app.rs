@@ -48,7 +48,7 @@ impl App {
         };
 
         // Load talk and slides immediately, then connect
-        let api_for_loading = api_client.clone();
+        let api_for_loading = api_client;
         (
             app,
             Task::batch([
@@ -175,7 +175,7 @@ impl App {
         let (mut ws_client, mut rx_msg) =
             WebSocketClient::new(tx_cmd.clone(), rx_cmd, "Desktop", self.config.websocket());
 
-        self.cmd_sender = Some(tx_cmd.clone());
+        self.cmd_sender = Some(tx_cmd);
 
         // Start WebSocket connection and message forwarding in background
         tokio::spawn(async move {
@@ -342,7 +342,7 @@ impl App {
                 // DON'T update state immediately - wait for data to be fetched
                 // Use shared refetch_talk_and_slides utility
                 let api = self.api.clone();
-                let state_for_update = state.clone();
+                let state_for_update = state;
                 Task::perform(
                     async move {
                         let result = refetch_talk_and_slides(&api).await;
@@ -360,7 +360,7 @@ impl App {
             }
             CommunicationMessage::Error { error } => {
                 error!("WebSocket error: {}", error);
-                self.state.error_message = Some(error.clone());
+                self.state.error_message = Some(error);
                 Task::none()
             }
             // Client registration events - no UI action needed in desktop
