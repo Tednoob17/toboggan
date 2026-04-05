@@ -93,8 +93,8 @@ mod tests {
     fn test_render_steps() {
         let renderer = setup_test_renderer();
         let steps = vec![
-            ("First step".to_string(), vec![]),
-            ("Second step".to_string(), vec!["highlight".to_string()]),
+            ("First step".to_owned(), vec![]),
+            ("Second step".to_owned(), vec!["highlight".to_owned()]),
         ];
 
         let content = renderer.render_steps("Before steps", &steps);

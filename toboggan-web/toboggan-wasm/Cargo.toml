@@ -61,6 +61,13 @@ vte = { version = "0.15.0", default-features = false }
 [dev-dependencies]
 
 [lints.rust]
+unsafe_code = "deny"
+elided_lifetimes_in_paths = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_lifetimes = "warn"
+unused_qualifications = "warn"
+unreachable_pub = "warn"
 missing_docs = "allow"
 
 [lints.clippy]
@@ -70,6 +77,7 @@ pedantic = { level = "warn", priority = -1 }
 undocumented_unsafe_blocks = "deny"
 
 dbg_macro = "warn"
+empty_line_after_doc_comments = "warn"
 expect_used = "warn"
 if_then_some_else_none = "warn"
 indexing_slicing = "warn"
@@ -79,6 +87,10 @@ print_stderr = "warn"
 print_stdout = "warn"
 rc_buffer = "warn"
 rc_mutex = "warn"
+redundant_clone = "warn"
+redundant_type_annotations = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+str_to_string = "warn"
 unnecessary_safety_doc = "warn"
 unwrap_used = "warn"
 

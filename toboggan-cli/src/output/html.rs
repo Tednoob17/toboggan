@@ -173,7 +173,7 @@ mod tests {
     #[test]
     fn test_render_text_content() {
         let content = Content::Text {
-            text: "Hello <world>".to_string(),
+            text: "Hello <world>".to_owned(),
         };
         assert_eq!(render_content(&content, None), "Hello &lt;world&gt;");
     }
@@ -181,7 +181,7 @@ mod tests {
     #[test]
     fn test_render_html_content() {
         let content = Content::Html {
-            raw: "<p>Hello</p>".to_string(),
+            raw: "<p>Hello</p>".to_owned(),
             style: Style::default(),
             alt: None,
         };
@@ -191,7 +191,7 @@ mod tests {
     #[test]
     fn test_render_content_with_wrapper() {
         let content = Content::Text {
-            text: "Hello".to_string(),
+            text: "Hello".to_owned(),
         };
         assert_eq!(
             render_content(&content, Some("article")),
@@ -207,10 +207,10 @@ mod tests {
         let slide = Slide {
             kind: SlideKind::Cover,
             title: Content::Text {
-                text: "Welcome".to_string(),
+                text: "Welcome".to_owned(),
             },
             body: Content::Html {
-                raw: "<p>Hello World</p>".to_string(),
+                raw: "<p>Hello World</p>".to_owned(),
                 style: Style::default(),
                 alt: None,
             },

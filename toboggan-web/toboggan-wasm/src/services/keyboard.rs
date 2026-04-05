@@ -9,7 +9,7 @@ use wasm_bindgen::JsCast;
 use web_sys::KeyboardEvent;
 
 #[derive(Debug, Clone)]
-pub struct KeyboardMapping(HashMap<&'static str, Command>);
+pub(crate) struct KeyboardMapping(HashMap<&'static str, Command>);
 
 impl Default for KeyboardMapping {
     fn default() -> Self {
@@ -29,22 +29,22 @@ impl Default for KeyboardMapping {
 }
 
 impl KeyboardMapping {
-    pub fn get(&self, key: &str) -> Option<Command> {
+    pub(crate) fn get(&self, key: &str) -> Option<Command> {
         self.0.get(key).cloned()
     }
 }
 
-pub struct KeyboardService {
+pub(crate) struct KeyboardService {
     tx: UnboundedSender<Command>,
     mapping: KeyboardMapping,
 }
 
 impl KeyboardService {
-    pub fn new(tx: UnboundedSender<Command>, mapping: KeyboardMapping) -> Self {
+    pub(crate) fn new(tx: UnboundedSender<Command>, mapping: KeyboardMapping) -> Self {
         Self { tx, mapping }
     }
 
-    pub fn start(&mut self) {
+    pub(crate) fn start(&mut self) {
         let tx = self.tx.clone();
         let mapping = self.mapping.clone();
 

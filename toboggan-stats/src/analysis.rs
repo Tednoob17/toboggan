@@ -179,14 +179,14 @@ mod tests {
     #[test]
     fn test_count_steps_from_content() {
         let html_with_steps = Content::Html {
-            raw: r#"<div class="step">One</div><div class="step">Two</div>"#.to_string(),
+            raw: r#"<div class="step">One</div><div class="step">Two</div>"#.to_owned(),
             style: toboggan_core::Style::default(),
             alt: None,
         };
         assert_eq!(count_steps_from_content(&html_with_steps), 2);
 
         let text_content = Content::Text {
-            text: "No steps here".to_string(),
+            text: "No steps here".to_owned(),
         };
         assert_eq!(count_steps_from_content(&text_content), 0);
 

@@ -11,7 +11,7 @@ use crate::{
 const CSS: &str = include_str!("style.css");
 
 #[derive(Debug, Default)]
-pub struct TobogganSlideElement {
+pub(crate) struct TobogganSlideElement {
     container: Option<Element>,
     slide: Option<Slide>,
     terminals: Vec<TobogganTerminalElement>,
@@ -19,11 +19,11 @@ pub struct TobogganSlideElement {
 }
 
 impl TobogganSlideElement {
-    pub fn set_api_base_url(&mut self, url: &str) {
-        self.api_base_url = url.to_string();
+    pub(crate) fn set_api_base_url(&mut self, url: &str) {
+        url.clone_into(&mut self.api_base_url);
     }
 
-    pub fn set_slide(&mut self, slide: Option<Slide>, current_step: usize) {
+    pub(crate) fn set_slide(&mut self, slide: Option<Slide>, current_step: usize) {
         // Stop any existing terminal sessions
         for terminal in &self.terminals {
             terminal.stop_terminal();
@@ -58,7 +58,7 @@ impl TobogganSlideElement {
 
     /// Set the current step state on the DOM.
     /// `step` represents how many steps have been revealed (0 = none, 1 = first step visible, etc.)
-    pub fn set_current_step(&self, step: usize) {
+    pub(crate) fn set_current_step(&self, step: usize) {
         let Some(container) = &self.container else {
             return;
         };
@@ -106,7 +106,7 @@ impl TobogganSlideElement {
                 SlideKind::Part => "part",
                 SlideKind::Standard => "standard",
             };
-            classes.push(kind_class.to_string());
+            classes.push(kind_class.to_owned());
 
             let class_string = classes.join(" ");
             container.set_class_name(&class_string);
@@ -130,7 +130,7 @@ impl TobogganSlideElement {
             // Clear any previous styles
             container.set_class_name("");
             let _ = container.remove_attribute("style");
-            "<article></article>".to_string()
+            "<article></article>".to_owned()
         };
 
         container.set_inner_html(&content);

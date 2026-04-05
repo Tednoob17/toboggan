@@ -165,7 +165,7 @@ mod tests {
         // Test pause comment
         let pause_comment = "<!-- pause :highlight -->";
         if let CommentType::Pause(classes) = parse_comment_content(pause_comment) {
-            assert_eq!(classes, vec!["highlight".to_string()]);
+            assert_eq!(classes, vec!["highlight".to_owned()]);
         } else {
             panic!("Expected Pause variant");
         }
@@ -231,7 +231,7 @@ mod tests {
         if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_with_cmd) {
             assert_eq!(cwd, ".");
             assert_eq!(theme, None);
-            assert_eq!(cmd, Some("bacon test".to_string()));
+            assert_eq!(cmd, Some("bacon test".to_owned()));
         } else {
             panic!("Expected Term variant with command");
         }
@@ -241,7 +241,7 @@ mod tests {
         if let CommentType::Term { cwd, theme, cmd } = parse_comment_content(term_full) {
             assert_eq!(cwd, "./src");
             assert_eq!(theme, Some(Theme::Light));
-            assert_eq!(cmd, Some("hx main.rs".to_string()));
+            assert_eq!(cmd, Some("hx main.rs".to_owned()));
         } else {
             panic!("Expected Term variant with theme and command");
         }
@@ -265,7 +265,7 @@ mod tests {
         // Test that legacy functions still work
         let pause_comment = "<!-- pause :class1 class2 -->";
         let classes = parse_pause(pause_comment).expect("a pause");
-        assert_eq!(classes, vec!["class1".to_string(), "class2".to_string()]);
+        assert_eq!(classes, vec!["class1".to_owned(), "class2".to_owned()]);
 
         let notes_comment = "<!-- notes -->";
         assert!(is_notes(notes_comment));

@@ -249,7 +249,7 @@ const LIGHT_COLORS: [Rgb; 16] = [
     }, // 15 bright white (text)
 ];
 
-pub struct VirtualTerminal {
+pub(super) struct VirtualTerminal {
     screen: TermScreen,
     parser: vte::Parser,
 }
@@ -282,26 +282,26 @@ struct TermScreen {
 }
 
 impl VirtualTerminal {
-    pub fn new(cols: u16, rows: u16, theme: Theme) -> Self {
+    pub(super) fn new(cols: u16, rows: u16, theme: Theme) -> Self {
         Self {
             screen: TermScreen::new(cols, rows, theme),
             parser: vte::Parser::new(),
         }
     }
 
-    pub fn process(&mut self, data: &[u8]) {
+    pub(super) fn process(&mut self, data: &[u8]) {
         self.parser.advance(&mut self.screen, data);
     }
 
-    pub fn render_to_canvas(&self, canvas: &HtmlCanvasElement, font_size: f64) {
+    pub(super) fn render_to_canvas(&self, canvas: &HtmlCanvasElement, font_size: f64) {
         self.screen.render_to_canvas(canvas, font_size);
     }
 
-    pub fn title(&self) -> Option<&str> {
+    pub(super) fn title(&self) -> Option<&str> {
         self.screen.title.as_deref()
     }
 
-    pub fn resize(&mut self, cols: u16, rows: u16) {
+    pub(super) fn resize(&mut self, cols: u16, rows: u16) {
         self.screen.resize(cols, rows);
     }
 }

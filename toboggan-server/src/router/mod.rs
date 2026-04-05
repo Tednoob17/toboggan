@@ -103,10 +103,7 @@ async fn health(State(state): State<TobogganState>) -> impl IntoResponse {
 fn create_cors_layer(allowed_origins: Option<&[String]>) -> CorsLayer {
     let mut cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
-        .allow_headers([
-            header::CONTENT_TYPE,
-            header::AUTHORIZATION,
-        ]);
+        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     match allowed_origins {
         Some(origins) if !origins.is_empty() => {

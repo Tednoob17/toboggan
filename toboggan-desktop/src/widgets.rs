@@ -47,7 +47,10 @@ pub(crate) fn create_simple_button(label: &str, message: Message) -> Button<'_, 
 }
 
 // Helper function to create status rows with icon and text
-pub(crate) fn create_status_row<'a>(icon: Element<'a, Message>, status_text: &'a str) -> Row<'a, Message> {
+pub(crate) fn create_status_row<'a>(
+    icon: Element<'a, Message>,
+    status_text: &'a str,
+) -> Row<'a, Message> {
     row![icon, text(status_text).size(FONT_SIZE_MEDIUM)]
         .spacing(SPACING_MEDIUM)
         .align_y(Alignment::Center)

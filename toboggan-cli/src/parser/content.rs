@@ -365,7 +365,7 @@ Content here."#;
 
         let (_slide, front_matter) = parse_markdown_content(markdown)?;
 
-        assert_eq!(front_matter.title, Some("Frontmatter Title".to_string()));
+        assert_eq!(front_matter.title, Some("Frontmatter Title".to_owned()));
         assert_eq!(front_matter.classes, vec!["custom-class"]);
 
         Ok(())

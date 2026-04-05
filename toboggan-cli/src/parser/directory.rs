@@ -466,9 +466,9 @@ mod tests {
             .iter()
             .map(|entry| entry.file_name().to_string_lossy().into_owned())
             .collect();
-        assert!(filenames.contains(&"slide1.md".to_string()));
-        assert!(filenames.contains(&"slide2.md".to_string()));
-        assert!(!filenames.contains(&"_cover.md".to_string()));
+        assert!(filenames.contains(&"slide1.md".to_owned()));
+        assert!(filenames.contains(&"slide2.md".to_owned()));
+        assert!(!filenames.contains(&"_cover.md".to_owned()));
         Ok(())
     }
 

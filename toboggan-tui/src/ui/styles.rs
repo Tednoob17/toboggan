@@ -56,13 +56,15 @@ pub(crate) mod slide {
 
     use super::{Modifier, Style, colors};
 
-    pub(crate) const COVER_STYLE: Style = Style::new().fg(colors::YELLOW).add_modifier(Modifier::BOLD);
+    pub(crate) const COVER_STYLE: Style =
+        Style::new().fg(colors::YELLOW).add_modifier(Modifier::BOLD);
 
     pub(crate) const PART_STYLE: Style = Style::new()
         .fg(colors::MAGENTA)
         .add_modifier(Modifier::BOLD);
 
-    pub(crate) const STANDARD_STYLE: Style = Style::new().fg(colors::WHITE).add_modifier(Modifier::BOLD);
+    pub(crate) const STANDARD_STYLE: Style =
+        Style::new().fg(colors::WHITE).add_modifier(Modifier::BOLD);
 
     /// Get style and indicator for a slide kind
     #[must_use]

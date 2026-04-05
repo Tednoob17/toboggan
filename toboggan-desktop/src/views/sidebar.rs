@@ -50,12 +50,14 @@ pub(super) fn view(state: &AppState) -> Element<'_, Message> {
             container(
                 column![
                     create_body_text("Next Slide"),
-                    container(if matches!(&next_slide.title, Content::Text { text } if text.is_empty()) {
-                        widget::text("No title").size(12.0)
-                    } else {
-                        let title_content = content::render_content(&next_slide.title);
-                        widget::text(title_content).size(12.0)
-                    })
+                    container(
+                        if matches!(&next_slide.title, Content::Text { text } if text.is_empty()) {
+                            widget::text("No title").size(12.0)
+                        } else {
+                            let title_content = content::render_content(&next_slide.title);
+                            widget::text(title_content).size(12.0)
+                        }
+                    )
                     .padding(SPACING_SMALL)
                     .style(styles::preview_container())
                 ]

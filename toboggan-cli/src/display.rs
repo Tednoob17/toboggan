@@ -282,7 +282,7 @@ mod tests {
 
     fn create_test_results() -> ParseResult {
         let talk_metadata = TalkMetadata {
-            title: "Test Presentation".to_string(),
+            title: "Test Presentation".to_owned(),
             date: toboggan_core::Date::today(),
             footer: None,
             head: None,
@@ -294,8 +294,8 @@ mod tests {
             SlideProcessingResult::Processed(Slide::new("First Topic")),
             SlideProcessingResult::Skipped(Slide::new("Optional Content")),
             SlideProcessingResult::Processed(Slide::new("Second Topic")),
-            SlideProcessingResult::Ignored("Invalid file format".to_string()),
-            SlideProcessingResult::Error("Parse error in slide".to_string()),
+            SlideProcessingResult::Ignored("Invalid file format".to_owned()),
+            SlideProcessingResult::Error("Parse error in slide".to_owned()),
         ];
 
         ParseResult {

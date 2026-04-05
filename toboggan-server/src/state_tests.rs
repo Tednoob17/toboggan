@@ -28,7 +28,7 @@ mod tests {
         // Register command with name (server assigns client_id in ws handler)
         let notification = state
             .handle_command(&Command::Register {
-                name: "Test Client".to_string(),
+                name: "Test Client".to_owned(),
             })
             .await;
 
@@ -56,7 +56,7 @@ mod tests {
             .create_initial_notification()
             .await;
         let (client_id, _rx) = ClientService::from_ref(&state)
-            .register_client("Test Client".to_string(), ip_addr, initial_notification)
+            .register_client("Test Client".to_owned(), ip_addr, initial_notification)
             .await
             .expect("register client");
 
@@ -84,7 +84,7 @@ mod tests {
             .create_initial_notification()
             .await;
         let (client_id, _rx) = client_service
-            .register_client("Test Client".to_string(), ip_addr, initial_notification)
+            .register_client("Test Client".to_owned(), ip_addr, initial_notification)
             .await
             .expect("register client");
 

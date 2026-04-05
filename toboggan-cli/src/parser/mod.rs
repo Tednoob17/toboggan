@@ -117,7 +117,7 @@ mod tests {
         )?;
         create_test_file(dir_path, "slide1.md", "# First Slide\n\nContent here.")?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let result = parser.parse(None, None)?;
         let talk = result.to_talk();
 
@@ -139,7 +139,7 @@ mod tests {
         create_test_file(&part_dir, "_part.md", "# Introduction")?;
         create_test_file(&part_dir, "slide1.md", "# Content Slide")?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let result = parser.parse(None, None)?;
         let talk = result.to_talk();
 
@@ -157,9 +157,9 @@ mod tests {
 
         create_test_file(dir_path, "_cover.md", "# Original Title")?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let custom_date = Date::new(2024, 12, 25).expect("valid date");
-        let result = parser.parse(Some("Override Title".to_string()), Some(custom_date))?;
+        let result = parser.parse(Some("Override Title".to_owned()), Some(custom_date))?;
         let _talk = result.to_talk();
 
         assert_eq!(result.talk_metadata.title, "Override Title");
@@ -197,7 +197,7 @@ mod tests {
             "# Another Regular Slide\n\nThis should be included.",
         )?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let result = parser.parse(None, None)?;
         let talk = result.to_talk();
 
@@ -248,7 +248,7 @@ mod tests {
             "# Content Slide\n\nThis should be included.",
         )?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let result = parser.parse(None, None)?;
         let talk = result.to_talk();
 
@@ -295,7 +295,7 @@ mod tests {
             "# Content Slide\n\nThis should be included.",
         )?;
 
-        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_string())?;
+        let parser = FolderParser::new(dir_path.to_path_buf(), "base16-ocean.light".to_owned())?;
         let result = parser.parse(None, None)?;
         let talk = result.to_talk();
 

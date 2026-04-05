@@ -5,22 +5,22 @@ use toboggan_core::{Slide, SlideId, TalkResponse};
 
 /// Client for interacting with the Toboggan API
 #[derive(Debug, Clone)]
-pub struct TobogganApi {
+pub(crate) struct TobogganApi {
     api_base_url: String,
 }
 
 impl TobogganApi {
     /// Returns the API base URL
     #[must_use]
-    pub fn base_url(&self) -> &str {
+    pub(crate) fn base_url(&self) -> &str {
         &self.api_base_url
     }
 
     /// Creates a new API client with the given base URL
     #[must_use]
-    pub fn new(api_base_url: &str) -> Self {
+    pub(crate) fn new(api_base_url: &str) -> Self {
         Self {
-            api_base_url: api_base_url.trim_end_matches('/').to_string(),
+            api_base_url: api_base_url.trim_end_matches('/').to_owned(),
         }
     }
 
@@ -34,7 +34,7 @@ impl TobogganApi {
     }
 
     /// Fetches the current talk
-    pub async fn get_talk(&self) -> Result<TalkResponse, Error> {
+    pub(crate) async fn get_talk(&self) -> Result<TalkResponse, Error> {
         self.get("api/talk?footer=true&head=true").await
     }
 
@@ -44,7 +44,7 @@ impl TobogganApi {
     // }
 
     /// Fetches a specific slide by ID
-    pub async fn get_slide(&self, slide_id: SlideId) -> Result<Slide, Error> {
+    pub(crate) async fn get_slide(&self, slide_id: SlideId) -> Result<Slide, Error> {
         self.get(&format!("api/slides/{}", slide_id.index())).await
     }
 }

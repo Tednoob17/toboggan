@@ -271,8 +271,8 @@ mod tests {
 
     fn create_test_parse_result_for_counter() -> ParseResult {
         let talk_metadata = TalkMetadata {
-            title: "Test Presentation".to_string(),
-            date: toboggan_core::Date::today(),
+            title: "Test Presentation".to_owned(),
+            date: Date::today(),
             footer: None,
             head: None,
         };
@@ -327,8 +327,8 @@ mod tests {
     #[allow(clippy::indexing_slicing)]
     fn test_counter_logic_with_skipped_parts() {
         let talk_metadata = TalkMetadata {
-            title: "Test Presentation".to_string(),
-            date: toboggan_core::Date::today(),
+            title: "Test Presentation".to_owned(),
+            date: Date::today(),
             footer: None,
             head: None,
         };

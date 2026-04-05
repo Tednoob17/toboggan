@@ -4,16 +4,16 @@ use std::time::Duration;
 use toboggan_core::{ClientId, State};
 
 mod api;
-pub use self::api::TobogganApi;
+pub(crate) use self::api::TobogganApi;
 
 mod communication;
-pub use self::communication::CommunicationService;
+pub(crate) use self::communication::CommunicationService;
 
 mod keyboard;
-pub use self::keyboard::*;
+pub(crate) use self::keyboard::*;
 
 #[derive(Debug, Clone)]
-pub enum ConnectionStatus {
+pub(crate) enum ConnectionStatus {
     Connecting,
     Connected,
     Closed,
@@ -49,7 +49,7 @@ impl Display for ConnectionStatus {
 
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
-pub enum CommunicationMessage {
+pub(crate) enum CommunicationMessage {
     ConnectionStatusChange { status: ConnectionStatus },
     StateChange { state: State },
     TalkChange { state: State },

@@ -29,8 +29,8 @@ impl StateClassMapper<ConnectionStatus> for ConnectionStatus {
 /// Format slide information as "current/total" string
 #[must_use]
 pub fn format_slide_info(current: Option<u8>, total: Option<usize>) -> String {
-    let current_str = current.map_or_else(|| "-".to_string(), |current| (current + 1).to_string());
-    let total_str = total.map_or_else(|| "-".to_string(), |total| total.to_string());
+    let current_str = current.map_or_else(|| "-".to_owned(), |current| (current + 1).to_string());
+    let total_str = total.map_or_else(|| "-".to_owned(), |total| total.to_string());
     format!("{current_str}/{total_str}")
 }
 

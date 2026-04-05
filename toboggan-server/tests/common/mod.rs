@@ -2,7 +2,7 @@
 use toboggan_core::{Date, Slide, Talk};
 
 #[allow(dead_code)]
-pub fn create_test_talk() -> Talk {
+pub(crate) fn create_test_talk() -> Talk {
     Talk::new("Test Talk")
         .with_date(Date::ymd(2025, 1, 1))
         .add_slide(Slide::cover("Cover Slide"))
@@ -11,7 +11,7 @@ pub fn create_test_talk() -> Talk {
 }
 
 #[allow(dead_code)]
-pub fn create_multi_slide_talk() -> Talk {
+pub(crate) fn create_multi_slide_talk() -> Talk {
     Talk::new("Multi-Client Sync Test Talk")
         .with_date(Date::ymd(2025, 1, 25))
         .add_slide(Slide::cover("Cover Slide").with_body("This is the cover slide"))

@@ -27,12 +27,12 @@ const FONT_SIZE_MIN: f64 = 8.0;
 const FONT_SIZE_MAX: f64 = 32.0;
 
 #[derive(Debug, Default)]
-pub struct TobogganTerminalElement {
+pub(crate) struct TobogganTerminalElement {
     container: Option<Element>,
 }
 
 impl TobogganTerminalElement {
-    pub fn start_terminal(&self, config: &TerminalConfig, api_base_url: &str) {
+    pub(crate) fn start_terminal(&self, config: &TerminalConfig, api_base_url: &str) {
         let Some(container) = &self.container else {
             error!("start_terminal called before render");
             return;
@@ -119,7 +119,7 @@ impl TobogganTerminalElement {
         });
     }
 
-    pub fn stop_terminal(&self) {
+    pub(crate) fn stop_terminal(&self) {
         if let Some(container) = &self.container {
             container.set_inner_html("");
         }
@@ -170,7 +170,7 @@ fn setup_button_click(btn: &Element, tx: mpsc::UnboundedSender<KeyAction>, actio
     closure.forget();
 }
 
-#[allow(clippy::await_holding_refcell_ref)] // Safe: single-threaded WASM
+#[allow(clippy::await_holding_refcell_ref, clippy::too_many_lines)] // Safe: single-threaded WASM
 async fn run_terminal_session(
     canvas: HtmlCanvasElement,
     ws_url: &str,
@@ -340,37 +340,37 @@ fn translate_key(event: &KeyboardEvent) -> String {
     // Control key combinations (Ctrl only, not Cmd)
     if ctrl {
         return match key.as_str() {
-            "c" => "\x03".to_string(),
-            "d" => "\x04".to_string(),
-            "z" => "\x1a".to_string(),
-            "l" => "\x0c".to_string(),
-            "a" => "\x01".to_string(),
-            "e" => "\x05".to_string(),
-            "u" => "\x15".to_string(),
-            "k" => "\x0b".to_string(),
-            "w" => "\x17".to_string(),
-            "r" => "\x12".to_string(),
+            "c" => "\x03".to_owned(),
+            "d" => "\x04".to_owned(),
+            "z" => "\x1a".to_owned(),
+            "l" => "\x0c".to_owned(),
+            "a" => "\x01".to_owned(),
+            "e" => "\x05".to_owned(),
+            "u" => "\x15".to_owned(),
+            "k" => "\x0b".to_owned(),
+            "w" => "\x17".to_owned(),
+            "r" => "\x12".to_owned(),
             _ => String::new(),
         };
     }
 
     // Special keys
     match key.as_str() {
-        "Enter" => "\r".to_string(),
-        "Backspace" => "\x7f".to_string(),
-        "Tab" => "\t".to_string(),
-        "Escape" => "\x1b".to_string(),
-        "ArrowUp" => "\x1b[A".to_string(),
-        "ArrowDown" => "\x1b[B".to_string(),
-        "ArrowRight" => "\x1b[C".to_string(),
-        "ArrowLeft" => "\x1b[D".to_string(),
-        "Home" => "\x1b[H".to_string(),
-        "End" => "\x1b[F".to_string(),
-        "Delete" => "\x1b[3~".to_string(),
-        "PageUp" => "\x1b[5~".to_string(),
-        "PageDown" => "\x1b[6~".to_string(),
+        "Enter" => "\r".to_owned(),
+        "Backspace" => "\x7f".to_owned(),
+        "Tab" => "\t".to_owned(),
+        "Escape" => "\x1b".to_owned(),
+        "ArrowUp" => "\x1b[A".to_owned(),
+        "ArrowDown" => "\x1b[B".to_owned(),
+        "ArrowRight" => "\x1b[C".to_owned(),
+        "ArrowLeft" => "\x1b[D".to_owned(),
+        "Home" => "\x1b[H".to_owned(),
+        "End" => "\x1b[F".to_owned(),
+        "Delete" => "\x1b[3~".to_owned(),
+        "PageUp" => "\x1b[5~".to_owned(),
+        "PageDown" => "\x1b[6~".to_owned(),
         // Single printable character
-        ch if ch.len() == 1 => ch.to_string(),
+        ch if ch.len() == 1 => ch.to_owned(),
         // Ignore modifier-only keys, etc.
         _ => String::new(),
     }
@@ -411,7 +411,7 @@ async fn resize_and_render(
     vterm: &Rc<RefCell<VirtualTerminal>>,
     canvas: &HtmlCanvasElement,
     ws_write: &Rc<
-        RefCell<futures::stream::SplitSink<gloo::net::websocket::futures::WebSocket, Message>>,
+        RefCell<futures::stream::SplitSink<WebSocket, Message>>,
     >,
     cols: u16,
     rows: u16,
@@ -436,7 +436,7 @@ async fn resize_and_render(
 fn update_title(title_el: Option<&HtmlElement>, current: &mut String, new_title: Option<&str>) {
     if let (Some(el), Some(title)) = (title_el, new_title.filter(|val| *val != current.as_str())) {
         el.set_text_content(Some(title));
-        *current = title.to_string();
+        *current = title.to_owned();
     }
 }
 
