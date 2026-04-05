@@ -58,6 +58,11 @@ impl StatefulWidget for &PresenterComponents {
             ]);
         let [title_area, progress_area] = top_layout.areas(top_area);
 
+        // Store layout areas for effect targeting
+        state.layout_areas.title_bar = title_area;
+        state.layout_areas.current_slide = current_area;
+        state.layout_areas.content = content_area;
+
         (&self.title_bar).render(title_area, buf, state);
         (&self.progress_bar).render(progress_area, buf, state);
 

@@ -6,6 +6,7 @@ use toboggan_stats::SlideStats;
 use tracing::{debug, info};
 
 use crate::connection_handler::ConnectionHandler;
+use crate::effects::{self, EffectKey, Effects, LayoutAreas};
 use crate::events::{AppAction, AppEvent};
 
 #[derive(Debug, Clone, Default)]
@@ -18,7 +19,6 @@ pub enum AppDialog {
 }
 
 pub struct AppState {
-    // pub(crate) config: Config,
     pub(crate) connection_status: ConnectionStatus,
     pub(crate) current_slide_id: Option<SlideId>,
 
@@ -29,6 +29,9 @@ pub struct AppState {
 
     pub(crate) dialog: AppDialog,
     pub(crate) terminal_size: (u16, u16),
+
+    pub(crate) effects: Effects,
+    pub(crate) layout_areas: LayoutAreas,
 }
 
 impl AppState {
@@ -42,6 +45,8 @@ impl AppState {
             presentation_state: State::Init,
             dialog: AppDialog::None,
             terminal_size: (80, 24),
+            effects: Effects::default(),
+            layout_areas: LayoutAreas::default(),
         }
     }
 
@@ -103,10 +108,19 @@ impl AppState {
             }
             AppEvent::ConnectionStatus(status) => {
                 info!("{status}");
+                let was_connected = self.is_connected();
                 if let ConnectionStatus::Error { message } = &status {
                     self.dialog = AppDialog::Error(message.clone());
                 }
                 self.connection_status = status;
+                let is_connected = self.is_connected();
+                if was_connected != is_connected {
+                    let area = self.layout_areas.title_bar;
+                    self.effects.add_unique_effect(
+                        EffectKey::ConnectionPulse,
+                        effects::connection_pulse_effect(area, is_connected),
+                    );
+                }
             }
             AppEvent::NotificationReceived(notification) => {
                 self.handle_notification(notification);
@@ -130,6 +144,7 @@ impl AppState {
         action: AppAction,
         connection_handler: &ConnectionHandler,
     ) -> ControlFlow<()> {
+        let was_no_dialog = matches!(self.dialog, AppDialog::None);
         self.dialog = match action {
             AppAction::Close => AppDialog::None,
             AppAction::Help => AppDialog::Help,
@@ -144,32 +159,73 @@ impl AppState {
                 AppDialog::None
             }
         };
+        // Trigger dialog open effect
+        if was_no_dialog && !matches!(self.dialog, AppDialog::None) {
+            // Dialog area will be computed during render; use content area as approximation
+            let area = self.layout_areas.content;
+            self.effects
+                .add_unique_effect(EffectKey::DialogOverlay, effects::dialog_open_effect(area));
+        }
         ControlFlow::Continue(())
     }
 
     fn handle_notification(&mut self, notification: Notification) {
         match notification {
-            Notification::State { state } => {
-                self.current_slide_id = state.current();
-                self.presentation_state = state;
+            Notification::State { state } | Notification::TalkChange { state } => {
+                self.apply_state_change(state);
             }
-            Notification::TalkChange { state } => {
-                // Presentation updated - state already has correct slide position
-                self.current_slide_id = state.current();
-                self.presentation_state = state;
+            Notification::Blink => {
+                self.effects
+                    .add_unique_effect(EffectKey::Blink, effects::blink_effect());
             }
             Notification::Pong
-            | Notification::Blink
             | Notification::Registered { .. }
             | Notification::ClientConnected { .. }
-            | Notification::ClientDisconnected { .. } => {
-                // Pong: heartbeat response, no UI action needed
-                // Blink: visual effect not implemented in TUI
-                // Client registration events - no UI action needed in TUI
-            }
+            | Notification::ClientDisconnected { .. } => {}
             Notification::Error { message } => {
                 self.dialog = AppDialog::Error(message);
             }
+        }
+    }
+
+    fn apply_state_change(&mut self, new_state: State) {
+        let old_slide_id = self.current_slide_id;
+        let was_init = matches!(self.presentation_state, State::Init);
+        let was_done = matches!(self.presentation_state, State::Done { .. });
+
+        self.current_slide_id = new_state.current();
+        self.presentation_state = new_state;
+
+        let slide_area = self.layout_areas.current_slide;
+
+        // Init -> Running: whole UI materializes
+        if was_init && matches!(self.presentation_state, State::Running { .. }) {
+            self.effects.add_unique_effect(
+                EffectKey::StateTransition,
+                effects::init_to_running_effect(self.layout_areas.content),
+            );
+            return;
+        }
+
+        // Running -> Done: celebratory glow
+        if !was_done && matches!(self.presentation_state, State::Done { .. }) {
+            self.effects.add_unique_effect(
+                EffectKey::StateTransition,
+                effects::running_to_done_effect(),
+            );
+        }
+
+        // Slide change or step change effects
+        if old_slide_id != self.current_slide_id {
+            self.effects.add_unique_effect(
+                EffectKey::SlideTransition,
+                effects::slide_transition_effect(slide_area),
+            );
+        } else if old_slide_id.is_some() {
+            self.effects.add_unique_effect(
+                EffectKey::StepReveal,
+                effects::step_reveal_effect(slide_area),
+            );
         }
     }
 }

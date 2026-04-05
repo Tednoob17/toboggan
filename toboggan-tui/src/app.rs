@@ -16,6 +16,7 @@ use crate::state::AppState;
 use crate::ui::PresenterComponents;
 
 const EVENT_POLL_TIMEOUT: Duration = Duration::from_millis(50);
+const ANIMATION_POLL_TIMEOUT: Duration = Duration::from_millis(16);
 const TICK_DELAY: Duration = Duration::from_millis(250);
 
 pub struct App {
@@ -62,11 +63,21 @@ impl App {
         self.start_keyboard_handler();
 
         let mut last_tick = Instant::now();
+        let mut last_frame = Instant::now();
         'main_loop: loop {
-            self.render_app(terminal).context("render")?;
+            let elapsed = last_frame.elapsed();
+            last_frame = Instant::now();
+            self.render_app(terminal, elapsed).context("render")?;
+
+            // Dynamic poll: 16ms during animations, 50ms when idle
+            let poll_timeout = if self.state.borrow().effects.is_running() {
+                ANIMATION_POLL_TIMEOUT
+            } else {
+                EVENT_POLL_TIMEOUT
+            };
 
             // Handle crossterm events (resize, etc.)
-            if crossterm::event::poll(EVENT_POLL_TIMEOUT).context("poll event")?
+            if crossterm::event::poll(poll_timeout).context("poll event")?
                 && let Ok(Event::Resize(cols, rows)) = event::read()
             {
                 let mut state = self.state.borrow_mut();
@@ -116,13 +127,19 @@ impl App {
         Ok(())
     }
 
-    fn render_app(&mut self, terminal: &mut DefaultTerminal) -> Result<()> {
+    fn render_app(&mut self, terminal: &mut DefaultTerminal, elapsed: Duration) -> Result<()> {
         let shared_state = Rc::clone(&self.state);
         terminal
             .draw(move |frame| {
                 let components = PresenterComponents::default();
+                let area = frame.area();
                 let mut state = shared_state.borrow_mut();
-                frame.render_stateful_widget(&components, frame.area(), &mut state);
+                frame.render_stateful_widget(&components, area, &mut state);
+
+                // Process tachyonfx effects on the rendered buffer
+                state
+                    .effects
+                    .process_effects(elapsed.into(), frame.buffer_mut(), area);
             })
             .context("drawing")?;
 

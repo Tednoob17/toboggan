@@ -78,6 +78,7 @@ owo-colors = "4.2.3"
 ratatui = "0.30.0"
 crossterm = "0.29.0"
 tui-logger = "0.18.0"
+tachyonfx = "0.25"
 
 # Mobile-specific dependencies (iOS & Android)
 uniffi = "0.31.0"
