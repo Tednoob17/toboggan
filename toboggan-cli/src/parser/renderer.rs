@@ -18,7 +18,7 @@ pub(super) struct HtmlRenderer<'a> {
 
 impl<'a> HtmlRenderer<'a> {
     #[must_use]
-    pub(super) fn new(options: &'a Options, plugins: &'a Plugins, style: Style) -> Self {
+    pub(super) fn new(options: &'a Options<'_>, plugins: &'a Plugins<'_>, style: Style) -> Self {
         Self {
             options,
             plugins,

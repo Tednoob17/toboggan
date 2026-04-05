@@ -11,7 +11,7 @@ use crate::message::Message;
 use crate::state::AppState;
 use crate::styles;
 
-pub fn view(state: &AppState) -> Element<'_, Message> {
+pub(super) fn view(state: &AppState) -> Element<'_, Message> {
     if let Some(slide) = state.current_slide() {
         let cached_md = state.current_markdown();
 
@@ -73,7 +73,7 @@ pub fn view(state: &AppState) -> Element<'_, Message> {
             content_column = content_column.push(
                 container(
                     column![
-                        iced::widget::text("Speaker Notes")
+                        widget::text("Speaker Notes")
                             .size(FONT_SIZE_LARGE)
                             .color(COLOR_MUTED),
                         container(

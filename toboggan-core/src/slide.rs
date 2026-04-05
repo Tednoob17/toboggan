@@ -131,7 +131,7 @@ impl Slide {
 }
 
 impl Display for Slide {
-    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         if let Content::Empty = self.title {
             write!(fmt, "{}", self.body)
         } else {
@@ -165,7 +165,7 @@ impl Style {
 }
 
 impl Display for Style {
-    fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+    fn fmt(&self, fmt: &mut Formatter<'_>) -> fmt::Result {
         let classes = self.classes.join(" ");
         write!(fmt, "{classes}")
     }

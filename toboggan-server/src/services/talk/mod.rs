@@ -165,7 +165,7 @@ impl TalkService {
 
     async fn command_first(&self, state: &mut State) -> Notification {
         let Some(total_slides) = self.require_slides().await else {
-            return Notification::error(Self::NO_SLIDES_ERROR.to_string());
+            return Notification::error(Self::NO_SLIDES_ERROR.to_owned());
         };
 
         let should_transition = matches!(state, State::Init) || !state.is_first_slide(total_slides);
@@ -179,7 +179,7 @@ impl TalkService {
 
     async fn command_last(&self, state: &mut State) -> Notification {
         let Some(total_slides) = self.require_slides().await else {
-            return Notification::error(Self::NO_SLIDES_ERROR.to_string());
+            return Notification::error(Self::NO_SLIDES_ERROR.to_owned());
         };
 
         let last_slide = SlideId::new(total_slides - 1);
@@ -203,7 +203,7 @@ impl TalkService {
     async fn command_next(&self, state: &mut State) -> Notification {
         let Some(total_slides) = self.require_slides().await else {
             warn!("{}", Self::NO_SLIDES_ERROR);
-            return Notification::error(Self::NO_SLIDES_ERROR.to_string());
+            return Notification::error(Self::NO_SLIDES_ERROR.to_owned());
         };
 
         match state {
@@ -218,7 +218,7 @@ impl TalkService {
 
     async fn command_previous(&self, state: &mut State) -> Notification {
         let Some(total_slides) = self.require_slides().await else {
-            return Notification::error(Self::NO_SLIDES_ERROR.to_string());
+            return Notification::error(Self::NO_SLIDES_ERROR.to_owned());
         };
 
         match state {

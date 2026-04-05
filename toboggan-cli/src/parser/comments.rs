@@ -80,7 +80,7 @@ fn parse_code_comment(comment_content: &str) -> CommentType {
     let parts: Vec<&str> = content_after_code.splitn(2, ':').collect();
 
     if let (Some(info_part), Some(path_part)) = (parts.first(), parts.get(1)) {
-        let info = info_part.trim().to_string();
+        let info = info_part.trim().to_owned();
         let path = PathBuf::from(path_part.trim());
         CommentType::Code { info, path }
     } else {
@@ -104,7 +104,7 @@ fn parse_term_comment(comment_content: &str) -> CommentType {
         let cmd = if cmd.is_empty() {
             None
         } else {
-            Some(cmd.to_string())
+            Some(cmd.to_owned())
         };
         (opts.trim(), cmd)
     } else {
@@ -116,7 +116,7 @@ fn parse_term_comment(comment_content: &str) -> CommentType {
 
     match parts.first() {
         Some(cwd_part) if !cwd_part.trim().is_empty() => {
-            let cwd = cwd_part.trim().to_string();
+            let cwd = cwd_part.trim().to_owned();
             let theme = parts
                 .get(1)
                 .map(|val| val.trim())

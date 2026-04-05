@@ -15,7 +15,7 @@ use crate::state::AppState;
 use crate::styles;
 use crate::widgets::create_text;
 
-pub fn main_view(state: &AppState) -> Element<'_, Message> {
+pub(crate) fn main_view(state: &AppState) -> Element<'_, Message> {
     let main_content = if state.show_help {
         help::view()
     } else {

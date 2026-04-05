@@ -17,7 +17,7 @@ impl StatefulWidget for &SlideList {
         let selected = state.current_slide_id;
 
         // Create list items for each slide
-        let items: Vec<ListItem> = state
+        let items: Vec<ListItem<'_>> = state
             .talk
             .titles
             .iter()

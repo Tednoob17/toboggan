@@ -70,7 +70,7 @@ impl PresentationStats {
                     // Add to current part or create implicit "Introduction"
                     if current_part.is_none() && !has_slides_before_first_part {
                         has_slides_before_first_part = true;
-                        let intro_part = "(Introduction)".to_string();
+                        let intro_part = "(Introduction)".to_owned();
                         stats.core.part_order.insert(0, intro_part.clone());
                         stats.core.slides_per_part.insert(intro_part.clone(), 0);
                         stats.core.words_per_part.insert(intro_part.clone(), 0);
@@ -499,10 +499,10 @@ impl PresentationStats {
         // Duration recommendations
         if total_minutes > 50 {
             recommendations
-                .push("Consider splitting this into multiple shorter presentations".to_string());
+                .push("Consider splitting this into multiple shorter presentations".to_owned());
         } else if total_minutes < 2 {
             recommendations.push(
-                "This presentation might be too short - consider adding more content".to_string(),
+                "This presentation might be too short - consider adding more content".to_owned(),
             );
         }
 
@@ -532,12 +532,12 @@ impl PresentationStats {
             let avg_words_per_slide = self.core.total_words / self.core.total_slides;
             if avg_words_per_slide > 100 {
                 recommendations.push(
-                    "High word density - consider more slides with less text each".to_string(),
+                    "High word density - consider more slides with less text each".to_owned(),
                 );
             } else if avg_words_per_slide < 20 {
                 recommendations.push(
                     "Low word density - slides might benefit from more detailed content"
-                        .to_string(),
+                        .to_owned(),
                 );
             }
         }

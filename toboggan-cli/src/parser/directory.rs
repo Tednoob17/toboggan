@@ -227,7 +227,7 @@ pub(super) fn parse_frontmatter(content: &str, file_path: &str) -> Result<FrontM
 
         TobogganCliError::parse_frontmatter(
             file_path,
-            content.to_string(), // Use original content with delimiters for context
+            content.to_owned(), // Use original content with delimiters for context
             span,
             source,
         )
@@ -272,14 +272,14 @@ pub(super) fn process_talk_metadata(
     if let Some(footer) = toboggan_dir.get_footer()? {
         let path = footer.path();
         debug!("Processing footer: {}", path.display());
-        let content = std::fs::read_to_string(&path)?;
+        let content = fs::read_to_string(&path)?;
         metadata.footer = Some(content);
     }
 
     if let Some(head) = toboggan_dir.get_head()? {
         let path = head.path();
         debug!("Processing head: {}", path.display());
-        let content = std::fs::read_to_string(&path)?;
+        let content = fs::read_to_string(&path)?;
         metadata.head = Some(content);
     }
 

@@ -77,7 +77,7 @@ impl App {
             };
 
             // Handle crossterm events (resize, etc.)
-            if crossterm::event::poll(poll_timeout).context("poll event")?
+            if event::poll(poll_timeout).context("poll event")?
                 && let Ok(Event::Resize(cols, rows)) = event::read()
             {
                 let mut state = self.state.borrow_mut();

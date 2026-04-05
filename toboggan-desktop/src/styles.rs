@@ -4,7 +4,7 @@ use iced::{Background, Border, Theme};
 use crate::constants::{BORDER_RADIUS, BORDER_WIDTH};
 
 // Container styles
-pub fn card_container() -> impl Fn(&Theme) -> container::Style {
+pub(crate) fn card_container() -> impl Fn(&Theme) -> container::Style {
     |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {
@@ -19,7 +19,7 @@ pub fn card_container() -> impl Fn(&Theme) -> container::Style {
     }
 }
 
-pub fn footer_container() -> impl Fn(&Theme) -> container::Style {
+pub(crate) fn footer_container() -> impl Fn(&Theme) -> container::Style {
     |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {
@@ -34,7 +34,7 @@ pub fn footer_container() -> impl Fn(&Theme) -> container::Style {
     }
 }
 
-pub fn error_container() -> impl Fn(&Theme) -> container::Style {
+pub(crate) fn error_container() -> impl Fn(&Theme) -> container::Style {
     |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {
@@ -50,7 +50,7 @@ pub fn error_container() -> impl Fn(&Theme) -> container::Style {
     }
 }
 
-pub fn preview_container() -> impl Fn(&Theme) -> container::Style {
+pub(crate) fn preview_container() -> impl Fn(&Theme) -> container::Style {
     |theme: &Theme| {
         let palette = theme.extended_palette();
         container::Style {

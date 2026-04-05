@@ -52,7 +52,7 @@ fn render_slide(slide: &Slide) -> String {
         SlideKind::Part => "part",
         SlideKind::Standard => "standard",
     };
-    classes.push(kind_class.to_string());
+    classes.push(kind_class.to_owned());
 
     let class_string = classes.join(" ");
 
@@ -83,7 +83,7 @@ fn render_slide(slide: &Slide) -> String {
 /// * `talk` - The presentation data
 /// * `custom_head_html` - Optional custom HTML to insert at the end of the `<head>` element
 #[allow(clippy::unnecessary_wraps)]
-pub fn generate_html(talk: &Talk, custom_head_html: Option<&str>) -> Result<Vec<u8>> {
+pub(super) fn generate_html(talk: &Talk, custom_head_html: Option<&str>) -> Result<Vec<u8>> {
     // Render all slides
     let slides_html =
         talk.slides

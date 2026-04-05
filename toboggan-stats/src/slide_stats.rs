@@ -139,7 +139,7 @@ impl PresentationStats {
                 // Add to current part or create implicit "Introduction"
                 if current_part.is_none() && !has_slides_before_first_part {
                     has_slides_before_first_part = true;
-                    let intro_part = "(Introduction)".to_string();
+                    let intro_part = "(Introduction)".to_owned();
                     stats.part_order.insert(0, intro_part.clone());
                     stats.slides_per_part.insert(intro_part.clone(), 0);
                     stats.words_per_part.insert(intro_part.clone(), 0);

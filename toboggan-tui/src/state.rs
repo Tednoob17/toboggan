@@ -10,7 +10,7 @@ use crate::effects::{self, EffectKey, Effects, LayoutAreas};
 use crate::events::{AppAction, AppEvent};
 
 #[derive(Debug, Clone, Default)]
-pub enum AppDialog {
+pub(crate) enum AppDialog {
     Help,
     Log,
     Error(String),
@@ -89,7 +89,7 @@ impl AppState {
     }
 
     // Event handling methods
-    pub fn handle_event(
+    pub(crate) fn handle_event(
         &mut self,
         event: AppEvent,
         connection_handler: &ConnectionHandler,

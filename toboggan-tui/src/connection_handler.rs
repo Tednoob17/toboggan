@@ -1,5 +1,5 @@
 // Re-export toboggan-client types
-pub use toboggan_client::{CommunicationMessage, WebSocketClient};
+pub(crate) use toboggan_client::{CommunicationMessage, WebSocketClient};
 use toboggan_client::{ConnectionStatus, TobogganConfig};
 use toboggan_core::{Command, Notification};
 use tokio::sync::mpsc;
@@ -7,7 +7,7 @@ use tracing::{error, info};
 
 use crate::events::AppEvent;
 
-pub struct ConnectionHandler {
+pub(crate) struct ConnectionHandler {
     config: TobogganConfig,
     event_tx: mpsc::UnboundedSender<AppEvent>,
     command_tx: Option<mpsc::UnboundedSender<Command>>,
@@ -15,7 +15,7 @@ pub struct ConnectionHandler {
 
 impl ConnectionHandler {
     #[must_use]
-    pub fn new(config: TobogganConfig, event_tx: mpsc::UnboundedSender<AppEvent>) -> Self {
+    pub(crate) fn new(config: TobogganConfig, event_tx: mpsc::UnboundedSender<AppEvent>) -> Self {
         Self {
             config,
             event_tx,
@@ -24,7 +24,7 @@ impl ConnectionHandler {
     }
 
     /// Start WebSocket client connection using toboggan-client
-    pub fn start(&mut self) {
+    pub(crate) fn start(&mut self) {
         info!("Starting WebSocket client using toboggan-client");
 
         let (command_tx, command_rx) = mpsc::unbounded_channel();
@@ -33,7 +33,7 @@ impl ConnectionHandler {
         let websocket_config = self.config.websocket();
 
         let (mut ws_client, mut message_rx) =
-            WebSocketClient::new(command_tx.clone(), command_rx, "TUI", websocket_config);
+            WebSocketClient::new(command_tx, command_rx, "TUI", websocket_config);
 
         let event_tx = self.event_tx.clone();
         let _ = event_tx.send(AppEvent::ConnectionStatus(ConnectionStatus::Closed));
@@ -76,7 +76,7 @@ impl ConnectionHandler {
     }
 
     /// Send a command through the WebSocket connection
-    pub fn send_command(&self, command: &Command) {
+    pub(crate) fn send_command(&self, command: &Command) {
         if let Some(command_tx) = &self.command_tx {
             if let Err(err) = command_tx.send(command.clone()) {
                 error!("Failed to send command through WebSocket: {err}");

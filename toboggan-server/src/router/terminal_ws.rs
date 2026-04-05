@@ -12,13 +12,13 @@ use tokio::sync::mpsc;
 use tracing::{error, info, warn};
 
 #[derive(Debug, Deserialize)]
-pub struct TerminalParams {
-    pub cwd: Option<String>,
-    pub cmd: Option<String>,
+pub(super) struct TerminalParams {
+    cwd: Option<String>,
+    cmd: Option<String>,
     #[serde(default = "default_cols")]
-    pub cols: u16,
+    cols: u16,
     #[serde(default = "default_rows")]
-    pub rows: u16,
+    rows: u16,
 }
 
 fn default_cols() -> u16 {
@@ -29,11 +29,11 @@ fn default_rows() -> u16 {
     24
 }
 
-pub async fn terminal_websocket_handler(
+pub(super) async fn terminal_websocket_handler(
     ws: WebSocketUpgrade,
     Query(params): Query<TerminalParams>,
 ) -> Response {
-    let cwd = params.cwd.unwrap_or_else(|| ".".to_string());
+    let cwd = params.cwd.unwrap_or_else(|| ".".to_owned());
     let cmd = params.cmd;
     info!(%cwd, ?cmd, cols = params.cols, rows = params.rows, "Terminal WebSocket upgrade requested");
     ws.on_upgrade(move |socket| handle_terminal(socket, cwd, cmd, params.cols, params.rows))
@@ -77,7 +77,7 @@ async fn handle_terminal(
         }
     };
 
-    let shell = std::env::var("SHELL").unwrap_or_else(|_| "sh".to_string());
+    let shell = std::env::var("SHELL").unwrap_or_else(|_| "sh".to_owned());
     let mut command = CommandBuilder::new(&shell);
     command.cwd(&abs_cwd);
     command.env("TERM", "xterm-256color");

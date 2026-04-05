@@ -223,14 +223,14 @@ impl SlideContentParser {
         }
     }
 
-    fn notes(&self, renderer: &HtmlRenderer) -> Content {
+    fn notes(&self, renderer: &HtmlRenderer<'_>) -> Content {
         match self {
             Self::Init | Self::Base { .. } => Content::Empty,
             Self::Notes { notes, .. } => notes.render_with(renderer),
         }
     }
 
-    fn body(&self, renderer: &HtmlRenderer) -> Content {
+    fn body(&self, renderer: &HtmlRenderer<'_>) -> Content {
         match self {
             Self::Init => Content::Empty,
             Self::Base { inner, .. } | Self::Notes { inner, .. } => inner.render_with(renderer),
@@ -247,8 +247,8 @@ impl SlideContentParser {
     pub fn parse<'a, I>(
         mut self,
         iterator: I,
-        options: &Options,
-        plugins: &Plugins,
+        options: &Options<'_>,
+        plugins: &Plugins<'_>,
         name: Option<&str>,
         path: Option<&Path>,
     ) -> Result<(Slide, FrontMatter)>
@@ -256,7 +256,7 @@ impl SlideContentParser {
         I: Iterator<Item = &'a MarkdownNode<'a>>,
     {
         let file_name = path.map_or_else(
-            || "<unknown>".to_string(),
+            || "<unknown>".to_owned(),
             |path| path.to_string_lossy().to_string(),
         );
 
@@ -277,7 +277,7 @@ impl SlideContentParser {
                 text: self
                     .title()
                     .or_else(|| name.map(ToString::to_string))
-                    .unwrap_or_else(|| DEFAULT_SLIDE_TITLE.to_string()),
+                    .unwrap_or_else(|| DEFAULT_SLIDE_TITLE.to_owned()),
             },
             body,
             notes: self.notes(&renderer),

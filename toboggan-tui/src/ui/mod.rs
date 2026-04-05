@@ -10,8 +10,8 @@ use crate::ui::widgets::{
     CurrentSlide, HelpPanel, NextSlidePreview, ProgressBar, SlideList, SpeakerNotes, TitleBar,
 };
 
-pub mod styles;
-pub mod widgets;
+pub(crate) mod styles;
+pub(crate) mod widgets;
 
 #[derive(Default)]
 pub struct PresenterComponents {

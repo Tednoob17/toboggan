@@ -62,7 +62,7 @@ impl RenderMetrics {
 }
 
 #[allow(clippy::cast_possible_truncation)]
-pub fn measure_render<F, T>(func: F) -> (T, u64)
+pub(super) fn measure_render<F, T>(func: F) -> (T, u64)
 where
     F: FnOnce() -> T,
 {

@@ -3,7 +3,7 @@ use toboggan_core::Content;
 
 use crate::message::Message;
 
-pub fn render_content(content: &Content) -> String {
+pub(super) fn render_content(content: &Content) -> String {
     match content {
         Content::Empty => String::new(),
         Content::Text { text } => text.clone(),
@@ -11,7 +11,7 @@ pub fn render_content(content: &Content) -> String {
     }
 }
 
-pub fn render_content_element(content: &Content) -> Element<'_, Message> {
+pub(super) fn render_content_element(content: &Content) -> Element<'_, Message> {
     match content {
         Content::Empty => iced::widget::text("").size(20.0).into(),
         Content::Text { text } => {

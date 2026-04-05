@@ -209,7 +209,7 @@ impl From<clap::Error> for TobogganCliError {
 impl From<toml::ser::Error> for TobogganCliError {
     fn from(source: toml::ser::Error) -> Self {
         Self::Serialize {
-            format: "TOML".to_string(),
+            format: "TOML".to_owned(),
             message: source.to_string(),
         }
     }
@@ -218,7 +218,7 @@ impl From<toml::ser::Error> for TobogganCliError {
 impl From<serde_json::Error> for TobogganCliError {
     fn from(source: serde_json::Error) -> Self {
         Self::Serialize {
-            format: "JSON".to_string(),
+            format: "JSON".to_owned(),
             message: source.to_string(),
         }
     }
@@ -227,14 +227,14 @@ impl From<serde_json::Error> for TobogganCliError {
 impl From<serde_saphyr::Error> for TobogganCliError {
     fn from(source: serde_saphyr::Error) -> Self {
         Self::Serialize {
-            format: "YAML".to_string(),
+            format: "YAML".to_owned(),
             message: source.to_string(),
         }
     }
 }
 
-impl From<std::io::Error> for TobogganCliError {
-    fn from(source: std::io::Error) -> Self {
+impl From<io::Error> for TobogganCliError {
+    fn from(source: io::Error) -> Self {
         Self::ReadFile {
             path: PathBuf::from("<unknown>"),
             source,

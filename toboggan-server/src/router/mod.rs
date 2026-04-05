@@ -104,8 +104,8 @@ fn create_cors_layer(allowed_origins: Option<&[String]>) -> CorsLayer {
     let mut cors = CorsLayer::new()
         .allow_methods([Method::GET, Method::POST])
         .allow_headers([
-            axum::http::header::CONTENT_TYPE,
-            axum::http::header::AUTHORIZATION,
+            header::CONTENT_TYPE,
+            header::AUTHORIZATION,
         ]);
 
     match allowed_origins {
