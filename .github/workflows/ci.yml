@@ -101,7 +101,7 @@ jobs:
 
   build-desktop:
     name: Desktop
-    runs-on: ubuntu-latest-4core
+    runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
