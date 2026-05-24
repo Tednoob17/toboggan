@@ -1,3 +1,59 @@
+[workspace]
+members = ["."]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.92"
+license = "MIT OR Apache-2.0"
+authors = ["Igor Laborie <ilaborie@gmail.com>"]
+repository = "https://github.com/ilaborie/toboggan"
+
+[workspace.dependencies]
+iced = "0.14.0"
+lucide-icons = "0.563.0"
+tokio = "1.48.0"
+async-stream = "0.3.6"
+anyhow = "1.0.100"
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+elided_lifetimes_in_paths = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_lifetimes = "warn"
+unused_qualifications = "warn"
+unreachable_pub = "warn"
+missing_docs = "allow"
+
+[workspace.lints.clippy]
+perf = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+
+undocumented_unsafe_blocks = "deny"
+dbg_macro = "warn"
+empty_line_after_doc_comments = "warn"
+expect_used = "warn"
+if_then_some_else_none = "warn"
+indexing_slicing = "warn"
+large_include_file = "warn"
+min_ident_chars = "warn"
+print_stderr = "warn"
+print_stdout = "warn"
+rc_buffer = "warn"
+rc_mutex = "warn"
+redundant_clone = "warn"
+redundant_type_annotations = "warn"
+rest_pat_in_fully_bound_structs = "warn"
+str_to_string = "warn"
+unnecessary_safety_doc = "warn"
+unwrap_used = "warn"
+
+missing-errors-doc = "allow"
+module_name_repetitions = "allow"
+
 [package]
 name = "toboggan-desktop"
 version = "0.1.0"
@@ -12,13 +68,10 @@ toboggan-core = { path = "../toboggan-core", features = ["std"] }
 toboggan-client = { path = "../toboggan-client" }
 
 iced = { workspace = true, features = ["tokio", "advanced", "markdown", "highlighter", "image"] }
-# Force naga termcolor feature - see https://github.com/gfx-rs/wgpu/pull/7482
 naga = { version = "27", features = ["termcolor"] }
 lucide-icons = { workspace = true }
-
 tokio = { workspace = true, features = ["full"] }
 async-stream = { workspace = true }
-
 anyhow = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }

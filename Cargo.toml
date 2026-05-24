@@ -6,7 +6,6 @@ members = [
   "toboggan-cli",
   "toboggan-client",
   "toboggan-tui",
-  "toboggan-desktop",
   "toboggan-mobile",
 ]
 exclude = ["toboggan-esp32", "toboggan-py"]
@@ -56,12 +55,9 @@ comrak = "0.52.0"
 miette = "7.6.0"
 comfy-table = "7.2.1"
 
-# Desktop dependencies
-iced = "0.14.0"
+# Network dependencies
 tokio-tungstenite = { version = "0.29.0", default-features = false }
 reqwest = { version = "0.13.1", default-features = false }
-lucide-icons = "0.563.0"
-async-stream = "0.3.6"
 
 # Other dependencies
 scraper = "0.26.0"

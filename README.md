@@ -78,18 +78,46 @@ cargo run -p toboggan-tui
 - Node.js 20+ (for web frontend)
 - `mise` (optional, for task automation)
 
+### Workspace layout
+
+The project is split into **two Cargo workspaces** to manage build resources:
+
+```
+toboggan/                  # Main workspace (fast build, ~4 GB RAM)
+├── toboggan-core/         # Core domain models (no_std compatible)
+├── toboggan-stats/        # Slide statistics engine
+├── toboggan-server/       # Axum WebSocket + REST server
+├── toboggan-cli/          # Markdown → TOML CLI
+├── toboggan-client/       # Shared WebSocket client library
+├── toboggan-tui/          # Terminal UI (ratatui)
+└── toboggan-mobile/       # iOS/Android Rust library via UniFFI
+
+toboggan-desktop/          # Separate workspace (iced + wgpu)
+                           # Heavier build, compiled independently
+                           # See "Desktop" section below
+```
+
+> **Why 2 workspaces?** `toboggan-desktop` uses `iced` which pulls the entire
+> Rust GPU ecosystem (wgpu, naga, ash...). Isolating it keeps the main build
+> fast and compatible with free CI runners (7 GB RAM limit).
+
 ### Build all components
 
 ```bash
-# Using mise (recommended)
-mise check  # Format, lint, and test
-mise build  # Build all components
-
-# Or using cargo directly
+# Main build (CLI + server + TUI - fast, ~4 GB RAM)
 cargo build --release
-cargo test
-cargo fmt
-cargo clippy
+
+# Desktop build (iced/wgpu - separate, ~8+ GB RAM)
+cargo build --release --manifest-path toboggan-desktop/Cargo.toml
+
+# Or in one command
+cargo build --release && cargo build --release --manifest-path toboggan-desktop/Cargo.toml
+
+# Light build (essentials only)
+cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
+
+# Web frontend (required before building the server)
+cd toboggan-web && npm install && npm run build && cd ..
 ```
 
 ### Platform-specific builds
@@ -110,10 +138,17 @@ cd toboggan-mobile
 ./build.sh
 ```
 
-#### Desktop
+#### Desktop (separate workspace)
 ```bash
-cargo build -p toboggan-desktop --release
+# Build from the dedicated workspace
+cargo build --release --manifest-path toboggan-desktop/Cargo.toml
+
+# Or directly from the folder
+cd toboggan-desktop && cargo build --release
 ```
+
+**Note**: Desktop requires ~8+ GB RAM due to GPU dependencies (wgpu/naga).
+On memory-constrained machines, prefer the TUI or web client.
 
 #### Terminal UI
 ```bash
@@ -126,19 +161,31 @@ Toboggan is designed as a modular system with clear separation of concerns. The 
 
 ### Workspace Components
 
+The project is organized into **two Cargo workspaces** to manage build resources:
+
 ```
-toboggan/
-├── toboggan-core/       # Core domain models and business logic
-├── toboggan-server/     # Axum server with WebSocket & REST
-├── toboggan-client/     # Shared client library with WebSocket support
-├── toboggan-cli/        # Command-line tool for Markdown → TOML conversion
-├── toboggan-web/        # Web frontend with TypeScript and WASM client
-├── toboggan-tui/        # Terminal UI client using ratatui
-├── toboggan-desktop/    # Native desktop app using iced framework
-├── toboggan-mobile/        # iOS Rust library with UniFFI bindings
-├── TobogganApp/         # Native iOS app using SwiftUI
-└── toboggan-esp32/      # ESP32 embedded client (excluded from workspace)
+toboggan/                          # MAIN workspace (~4 GB RAM build)
+├── toboggan-core/                 # Core domain models (no_std compatible)
+├── toboggan-stats/                # Slide statistics engine
+├── toboggan-server/               # Axum WebSocket + REST server
+├── toboggan-cli/                  # Command-line Markdown → TOML converter
+├── toboggan-client/               # Shared async WebSocket client
+├── toboggan-tui/                  # Terminal UI (ratatui + crossterm)
+├── toboggan-mobile/               # iOS/Android bindings via UniFFI
+├── toboggan-web/                  # TypeScript frontend + WASM crate
+└── TobogganApp/                   # SwiftUI iOS application
+
+toboggan-desktop/                  # SEPARATE workspace (iced + wgpu)
+                                   # Heavier build, compiled independently
+                                   # See "Building" section for instructions
+
+toboggan-esp32/                    # ESP32 embedded (excluded, future)
+toboggan-py/                       # Python bindings (excluded, future)
 ```
+
+> **Why 2 workspaces?** `toboggan-desktop` uses `iced` which pulls the entire
+> Rust GPU ecosystem (wgpu, naga, ash...). By isolating it, the main build
+> stays fast and fits in 4-6 GB RAM, compatible with free CI runners.
 
 ### Core Design Principles
 
