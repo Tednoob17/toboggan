@@ -4,7 +4,12 @@
 Write your slides in Markdown or TOML, serve them via a WebSocket-enabled server,
 and present from any client — web browser, terminal, desktop app, or mobile device.
 
-## Philosophy
+## Inspiration
+
+The name *Toboggan* comes from the French word for *slides* (as in a
+slide deck). It's a project originally started by **Guillaume Lagrange**
+(you-know-who), which I took over to advance and evolve into the
+multi-platform system it is today.
 
 Inspired by the Italian animated series *Huntik*, Toboggan lets you become a
 **Seeker** of knowledge. Your presentations are your **Titans** — powerful,

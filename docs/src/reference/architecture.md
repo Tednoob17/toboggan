@@ -2,41 +2,20 @@
 
 Toboggan is organized as a Rust workspace with multiple crates:
 
-```
-toboggan/
-├── toboggan-core/          # Core types & no_std logic
-├── toboggan-server/        # Axum WebSocket server
-├── toboggan-cli/           # CLI (Markdown → TOML)
-├── toboggan-tui/           # Terminal UI (Ratatui)
-├── toboggan-client/        # Shared WebSocket client
-├── toboggan-web/           # Web frontend (TypeScript + WASM)
-├── toboggan-desktop/       # Desktop app (Iced + wgpu)
-│   └── (separate workspace)
-├── toboggan-mobile/        # iOS bindings (UniFFI)
-├── toboggan-stats/         # Presentation statistics
-└── toboggan-esp32/         # ESP32 embedded client
-```
+![Toboggan architecture diagram](architecture.svg)
 
-## Data flow
-
-```
-┌─────────────┐     WebSocket      ┌──────────────┐
-│  toboggan-  │ ◄──────────────►   │   Clients    │
-│   server    │                    │              │
-│             │                    │  ├─ toboggan- │
-│  - Axum     │    HTTP REST       │  │   tui      │
-│  - Talk     │ ◄──────────────►   │  ├─ toboggan- │
-│    state    │                    │  │   web      │
-│  - WebSocket│                    │  ├─ toboggan- │
-└──────┬──────┘                    │  │   desktop  │
-       │                          │  └─ toboggan- │
-       │ Loads                     │     mobile   │
-       ▼                          └──────────────┘
-┌─────────────┐
-│   TOML     │
-│ Presentation│
-└─────────────┘
-```
+| Crate | Role |
+|-------|------|
+| `toboggan-core` | Core types & `no_std` logic |
+| `toboggan-server` | Axum WebSocket server (talk state owner) |
+| `toboggan-cli` | Markdown → TOML conversion |
+| `toboggan-client` | Shared WebSocket client library |
+| `toboggan-tui` | Terminal UI (Ratatui) |
+| `toboggan-web` | Web frontend (TypeScript + WASM) |
+| `toboggan-desktop` | Desktop app (Iced + wgpu, separate workspace) |
+| `toboggan-mobile` | iOS bindings (UniFFI) |
+| `toboggan-stats` | Presentation statistics |
+| `toboggan-esp32` | ESP32 embedded client |
 
 ## Key design decisions
 
