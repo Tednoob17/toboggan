@@ -528,8 +528,11 @@ impl PresentationStats {
         }
 
         // Content density recommendations
-        if self.core.total_slides > 0 {
-            let avg_words_per_slide = self.core.total_words / self.core.total_slides;
+        let avg_words_per_slide = self
+            .core
+            .total_words
+            .checked_div(self.core.total_slides)
+            .unwrap_or(0);
             if avg_words_per_slide > 100 {
                 recommendations.push(
                     "High word density - consider more slides with less text each".to_owned(),
@@ -539,7 +542,6 @@ impl PresentationStats {
                     "Low word density - slides might benefit from more detailed content".to_owned(),
                 );
             }
-        }
 
         if recommendations.is_empty() {
             None

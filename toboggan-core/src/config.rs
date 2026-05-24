@@ -164,12 +164,12 @@ mod tests {
     }
 
     #[test]
-    #[allow(clippy::unwrap_used)]
+    #[allow(clippy::unwrap_used, clippy::duration_suboptimal_units)]
     fn test_humantime_serialization() {
         let config = RetryConfig {
             max_retries: 5,
             initial_retry_delay: Duration::from_secs(2),
-            max_retry_delay: Duration::from_mins(1),
+            max_retry_delay: Duration::from_secs(60),
             backoff_factor: 1.5,
             use_jitter: false,
         };
