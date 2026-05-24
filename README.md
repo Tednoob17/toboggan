@@ -4,6 +4,8 @@ A modern, multi-platform presentation system built in Rust with real-time synchr
 
 [![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-2024-orange.svg)](https://www.rust-lang.org)
+[![Docs](https://img.shields.io/badge/docs-mdbook-blue)](https://tednoob17.github.io/toboggan/)
+[![CI](https://github.com/Tednoob17/toboggan/actions/workflows/ci.yml/badge.svg)](https://github.com/Tednoob17/toboggan/actions/workflows/ci.yml)
 
 ## Overview
 
