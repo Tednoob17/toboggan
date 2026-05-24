@@ -11,6 +11,7 @@
 - [Desktop App](guide/desktop.md)
 - [TUI Client](guide/tui.md)
 - [Web Client](guide/web.md)
+- [Presenting from Any Device](guide/remote.md)
 
 # Reference
 
