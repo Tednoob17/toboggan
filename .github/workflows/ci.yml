@@ -42,6 +42,16 @@ jobs:
       - name: Test
         run: cargo test --release
 
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mdbook
+        run: curl -sSfL https://github.com/rust-lang/mdBook/releases/download/v0.4.45/mdbook-v0.4.45-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C /usr/local/bin/
+      - name: Build docs
+        run: mdbook build docs/
+
   build-web:
     name: Web frontend
     runs-on: ubuntu-latest
