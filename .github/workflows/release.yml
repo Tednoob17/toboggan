@@ -4,102 +4,146 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-binaries:
-    name: Build ${{ matrix.target }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-unknown-linux-gnu
-            os: ubuntu-latest
-            archive-suffix: ""
-          - target: x86_64-apple-darwin
-            os: macos-latest
-            archive-suffix: ""
-          - target: aarch64-apple-darwin
-            os: macos-latest
-            archive-suffix: ""
-          - target: x86_64-pc-windows-msvc
-            os: windows-latest
-            archive-suffix: ".exe"
+  build-linux:
+    name: Linux (x86_64)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: |
+            target/release/toboggan-cli
+            target/release/toboggan-server
+            target/release/toboggan-tui
+      - name: Rename for clarity
+        run: |
+          mkdir -p /tmp/upload
+          cp target/release/toboggan-cli     /tmp/upload/toboggan-cli-linux-amd64
+          cp target/release/toboggan-server  /tmp/upload/toboggan-server-linux-amd64
+          cp target/release/toboggan-tui     /tmp/upload/toboggan-tui-linux-amd64
+      - name: Upload (clear names)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: /tmp/upload/*
 
-    runs-on: ${{ matrix.os }}
+  build-macos:
+    name: macOS (${{ matrix.target == 'x86_64-apple-darwin' && 'Intel' || 'Apple Silicon' }})
+    strategy:
+      matrix:
+        target: [x86_64-apple-darwin, aarch64-apple-darwin]
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
           target: ${{ matrix.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }} -p toboggan-cli -p toboggan-server -p toboggan-tui
+      - name: Rename
+        run: |
+          mkdir -p /tmp/upload
+          ext="${{ matrix.target == 'x86_64-apple-darwin' && 'macos-amd64' || 'macos-arm64' }}"
+          cp target/${{ matrix.target }}/release/toboggan-cli    /tmp/upload/toboggan-cli-$ext
+          cp target/${{ matrix.target }}/release/toboggan-server /tmp/upload/toboggan-server-$ext
+          cp target/${{ matrix.target }}/release/toboggan-tui    /tmp/upload/toboggan-tui-$ext
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: /tmp/upload/*
 
-      - name: Build (main workspace)
-        run: cargo build --release --target ${{ matrix.target }}
-        timeout-minutes: 60
-
-      - name: Package binaries
+  build-windows:
+    name: Windows (x86_64)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Build
+        run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
+      - name: Rename
         shell: bash
         run: |
-          cd target/${{ matrix.target }}/release
-          mkdir -p /tmp/toboggan-${{ matrix.target }}
-          for bin in toboggan-cli toboggan-server toboggan-tui; do
-            cp "$bin${{ matrix.archive-suffix }}" /tmp/toboggan-${{ matrix.target }}/
-          done
-          cd /tmp
-          tar czf toboggan-${{ matrix.target }}.tar.gz toboggan-${{ matrix.target }}/
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+          mkdir -p /tmp/upload
+          cp target/release/toboggan-cli.exe    /tmp/upload/toboggan-cli-windows-amd64.exe
+          cp target/release/toboggan-server.exe /tmp/upload/toboggan-server-windows-amd64.exe
+          cp target/release/toboggan-tui.exe    /tmp/upload/toboggan-tui-windows-amd64.exe
+      - name: Upload
+        uses: softprops/action-gh-release@v2
         with:
-          name: toboggan-${{ matrix.target }}
-          path: /tmp/toboggan-${{ matrix.target }}.tar.gz
+          tag_name: ${{ github.event.release.tag_name }}
+          files: /tmp/upload/*
 
   build-deb:
-    name: Build .deb packages
+    name: Debian packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-
-      - name: Build release binaries
+      - name: Build
         run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
-
       - name: Install cargo-deb
         uses: taiki-e/install-action@v2
         with:
           tool: cargo-deb
-
-      - name: Build .deb packages
+      - name: Build .deb
         run: |
           cargo deb -p toboggan-cli --no-build
           cargo deb -p toboggan-server --no-build
           cargo deb -p toboggan-tui --no-build
-
-      - name: Upload .deb artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: deb-packages
-          path: target/debian/*.deb
-
-  publish:
-    name: Publish to GitHub Release
-    needs: [build-binaries, build-deb]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download all artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: /tmp/artifacts
-
-      - name: Attach to release
+      - name: Rename
+        run: |
+          mkdir -p /tmp/upload
+          for f in target/debian/*.deb; do
+            base=$(basename "$f" .deb)
+            name="${base%%_*}"
+            cp "$f" "/tmp/upload/${name}-linux-amd64.deb"
+          done
+      - name: Upload
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            /tmp/artifacts/toboggan-*/*.tar.gz
-            /tmp/artifacts/deb-packages/*.deb
+          tag_name: ${{ github.event.release.tag_name }}
+          files: /tmp/upload/*
+
+  build-desktop:
+    name: Desktop (Linux)
+    runs-on: ubuntu-latest-8core
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxkbcommon-dev libwayland-dev libegl1-mesa-dev libgles2-mesa-dev
+      - name: Build
+        run: cargo build --release --manifest-path toboggan-desktop/Cargo.toml
+      - name: Rename
+        run: |
+          mkdir -p /tmp/upload
+          cp toboggan-desktop/target/release/toboggan-desktop /tmp/upload/toboggan-desktop-linux-amd64
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: /tmp/upload/*
