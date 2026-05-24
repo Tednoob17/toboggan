@@ -21,17 +21,16 @@ jobs:
           toolchain: stable
       - name: Build
         run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
-      - name: Rename for clarity
+      - name: Package
         run: |
-          mkdir -p /tmp/upload
-          cp target/release/toboggan-cli     /tmp/upload/toboggan-cli-linux-amd64
-          cp target/release/toboggan-server  /tmp/upload/toboggan-server-linux-amd64
-          cp target/release/toboggan-tui     /tmp/upload/toboggan-tui-linux-amd64
-      - name: Upload (clear names)
-        uses: softprops/action-gh-release@v2
+          mkdir -p /tmp/assets
+          cp target/release/toboggan-cli    /tmp/assets/toboggan-cli-linux-amd64
+          cp target/release/toboggan-server /tmp/assets/toboggan-server-linux-amd64
+          cp target/release/toboggan-tui    /tmp/assets/toboggan-tui-linux-amd64
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: /tmp/upload/*
+          name: assets-linux
+          path: /tmp/assets/*
 
   build-macos:
     name: macOS (${{ matrix.target == 'x86_64-apple-darwin' && 'Intel' || 'Apple Silicon' }})
@@ -47,22 +46,24 @@ jobs:
           target: ${{ matrix.target }}
       - name: Build
         run: cargo build --release --target ${{ matrix.target }} -p toboggan-cli -p toboggan-server -p toboggan-tui
-      - name: Rename
+      - name: Package
         run: |
-          mkdir -p /tmp/upload
+          mkdir -p /tmp/assets
           ext="${{ matrix.target == 'x86_64-apple-darwin' && 'macos-amd64' || 'macos-arm64' }}"
-          cp target/${{ matrix.target }}/release/toboggan-cli    /tmp/upload/toboggan-cli-$ext
-          cp target/${{ matrix.target }}/release/toboggan-server /tmp/upload/toboggan-server-$ext
-          cp target/${{ matrix.target }}/release/toboggan-tui    /tmp/upload/toboggan-tui-$ext
-      - name: Upload
-        uses: softprops/action-gh-release@v2
+          cp target/${{ matrix.target }}/release/toboggan-cli    /tmp/assets/toboggan-cli-$ext
+          cp target/${{ matrix.target }}/release/toboggan-server /tmp/assets/toboggan-server-$ext
+          cp target/${{ matrix.target }}/release/toboggan-tui    /tmp/assets/toboggan-tui-$ext
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: /tmp/upload/*
+          name: assets-macos-${{ matrix.target == 'x86_64-apple-darwin' && 'amd64' || 'arm64' }}
+          path: /tmp/assets/*
 
   build-windows:
     name: Windows (x86_64)
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -70,18 +71,16 @@ jobs:
           toolchain: stable
       - name: Build
         run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
-      - name: Rename
-        shell: bash
+      - name: Package
         run: |
-          mkdir -p /tmp/upload
-          cp target/release/toboggan-cli.exe    /tmp/upload/toboggan-cli-windows-amd64.exe
-          cp target/release/toboggan-server.exe /tmp/upload/toboggan-server-windows-amd64.exe
-          cp target/release/toboggan-tui.exe    /tmp/upload/toboggan-tui-windows-amd64.exe
-      - name: Upload
-        uses: softprops/action-gh-release@v2
+          mkdir -p /tmp/assets
+          cp target/release/toboggan-cli.exe    /tmp/assets/toboggan-cli-windows-amd64.exe
+          cp target/release/toboggan-server.exe /tmp/assets/toboggan-server-windows-amd64.exe
+          cp target/release/toboggan-tui.exe    /tmp/assets/toboggan-tui-windows-amd64.exe
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: /tmp/upload/*
+          name: assets-windows
+          path: /tmp/assets/*
 
   build-deb:
     name: Debian packages
@@ -102,19 +101,18 @@ jobs:
           cargo deb -p toboggan-cli --no-build
           cargo deb -p toboggan-server --no-build
           cargo deb -p toboggan-tui --no-build
-      - name: Rename
+      - name: Package
         run: |
-          mkdir -p /tmp/upload
+          mkdir -p /tmp/assets
           for f in target/debian/*.deb; do
             base=$(basename "$f" .deb)
             name="${base%%_*}"
-            cp "$f" "/tmp/upload/${name}-linux-amd64.deb"
+            cp "$f" "/tmp/assets/${name}-linux-amd64.deb"
           done
-      - name: Upload
-        uses: softprops/action-gh-release@v2
+      - uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.event.release.tag_name }}
-          files: /tmp/upload/*
+          name: assets-deb
+          path: /tmp/assets/*
 
   build-desktop:
     name: Desktop (Linux)
@@ -130,12 +128,28 @@ jobs:
           sudo apt-get install -y libxkbcommon-dev libwayland-dev libegl1-mesa-dev libgles2-mesa-dev
       - name: Build
         run: cargo build --release --manifest-path toboggan-desktop/Cargo.toml
-      - name: Rename
+      - name: Package
         run: |
-          mkdir -p /tmp/upload
-          cp toboggan-desktop/target/release/toboggan-desktop /tmp/upload/toboggan-desktop-linux-amd64
-      - name: Upload
-        uses: softprops/action-gh-release@v2
+          mkdir -p /tmp/assets
+          cp toboggan-desktop/target/release/toboggan-desktop /tmp/assets/toboggan-desktop-linux-amd64
+      - uses: actions/upload-artifact@v4
+        with:
+          name: assets-desktop
+          path: /tmp/assets/*
+
+  publish:
+    name: Upload to Release
+    needs: [build-linux, build-macos, build-windows, build-deb, build-desktop]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: /tmp/assets
+          pattern: assets-*
+          merge-multiple: true
+      - name: List files
+        run: ls -lh /tmp/assets/
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.release.tag_name }}
-          files: /tmp/upload/*
+          files: /tmp/assets/*
