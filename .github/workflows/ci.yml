@@ -37,7 +37,7 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           toolchain: stable
-      - name: Build
+      - name: Build (main workspace)
         run: cargo build --release
       - name: Test
         run: cargo test --release
@@ -89,7 +89,7 @@ jobs:
         run: cargo build --release -p toboggan-server
 
   build-cli:
-    name: CLI
+    name: CLI + TUI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

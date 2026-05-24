@@ -77,3 +77,7 @@ idea.md
 *.local.*
 TODO.md
 logo/AppIcons.zip
+# Local documentation files (not tracked)
+/ARTICLE.md
+/ROADMAP.md
+/rapport.md

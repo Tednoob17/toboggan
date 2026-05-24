@@ -169,7 +169,7 @@ mod tests {
         let config = RetryConfig {
             max_retries: 5,
             initial_retry_delay: Duration::from_secs(2),
-            max_retry_delay: Duration::from_secs(60),
+            max_retry_delay: Duration::from_mins(1),
             backoff_factor: 1.5,
             use_jitter: false,
         };
