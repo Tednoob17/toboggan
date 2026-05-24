@@ -73,14 +73,14 @@ jobs:
         run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
       - name: Package
         run: |
-          mkdir -p /tmp/assets
-          cp target/release/toboggan-cli.exe    /tmp/assets/toboggan-cli-windows-amd64.exe
-          cp target/release/toboggan-server.exe /tmp/assets/toboggan-server-windows-amd64.exe
-          cp target/release/toboggan-tui.exe    /tmp/assets/toboggan-tui-windows-amd64.exe
+          mkdir -p "${{ runner.temp }}/assets"
+          cp target/release/toboggan-cli.exe    "${{ runner.temp }}/assets/toboggan-cli-windows-amd64.exe"
+          cp target/release/toboggan-server.exe "${{ runner.temp }}/assets/toboggan-server-windows-amd64.exe"
+          cp target/release/toboggan-tui.exe    "${{ runner.temp }}/assets/toboggan-tui-windows-amd64.exe"
       - uses: actions/upload-artifact@v4
         with:
           name: assets-windows
-          path: /tmp/assets/*
+          path: ${{ runner.temp }}/assets/*
 
   build-deb:
     name: Debian packages
