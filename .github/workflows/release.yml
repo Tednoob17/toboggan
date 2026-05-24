@@ -1,0 +1,105 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-binaries:
+    name: Build ${{ matrix.target }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            archive-suffix: ""
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            archive-suffix: ""
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            archive-suffix: ""
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            archive-suffix: ".exe"
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+
+      - name: Build (main workspace)
+        run: cargo build --release --target ${{ matrix.target }}
+        timeout-minutes: 60
+
+      - name: Package binaries
+        shell: bash
+        run: |
+          cd target/${{ matrix.target }}/release
+          mkdir -p /tmp/toboggan-${{ matrix.target }}
+          for bin in toboggan-cli toboggan-server toboggan-tui; do
+            cp "$bin${{ matrix.archive-suffix }}" /tmp/toboggan-${{ matrix.target }}/
+          done
+          cd /tmp
+          tar czf toboggan-${{ matrix.target }}.tar.gz toboggan-${{ matrix.target }}/
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: toboggan-${{ matrix.target }}
+          path: /tmp/toboggan-${{ matrix.target }}.tar.gz
+
+  build-deb:
+    name: Build .deb packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+
+      - name: Build release binaries
+        run: cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
+
+      - name: Install cargo-deb
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-deb
+
+      - name: Build .deb packages
+        run: |
+          cargo deb -p toboggan-cli --no-build
+          cargo deb -p toboggan-server --no-build
+          cargo deb -p toboggan-tui --no-build
+
+      - name: Upload .deb artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-packages
+          path: target/debian/*.deb
+
+  publish:
+    name: Publish to GitHub Release
+    needs: [build-binaries, build-deb]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/artifacts
+
+      - name: Attach to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            /tmp/artifacts/toboggan-*/*.tar.gz
+            /tmp/artifacts/deb-packages/*.deb

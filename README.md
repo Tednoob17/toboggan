@@ -19,17 +19,100 @@ Toboggan is a presentation system that allows you to create, serve, and control 
 - **🎯 Educational Focus**: Perfect for exploring Rust ecosystem
 
 
-## Quick Start
+## Installation
+
+### Download pre-built binaries
+
+Pre-compiled binaries for Linux, macOS, and Windows are available on the
+[Releases page](https://github.com/Tednoob17/toboggan/releases).
+
+Each release includes:
+- `toboggan-cli` — convert Markdown to TOML
+- `toboggan-server` — WebSocket presentation server
+- `toboggan-tui` — terminal UI client
+
+**Linux/macOS:**
+```bash
+# Download the latest release
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-x86_64-unknown-linux-gnu.tar.gz -o toboggan.tar.gz
+
+# Extract and install to /usr/local/bin (system-wide)
+tar -xzf toboggan.tar.gz
+sudo cp toboggan-x86_64-unknown-linux-gnu/* /usr/local/bin/
+
+# Or install to ~/.local/bin (user-only, no sudo needed)
+mkdir -p ~/.local/bin
+cp toboggan-x86_64-unknown-linux-gnu/* ~/.local/bin/
+# Make sure ~/.local/bin is in your PATH:
+# echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+# Verify
+toboggan-cli --help
+toboggan-server --help
+toboggan-tui --help
+```
+
+**Windows:**
+```powershell
+# Download and extract
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-x86_64-pc-windows-msvc.tar.gz -o toboggan.zip
+# Extract to a folder and add it to your PATH (System Properties → Environment Variables)
+```
+
+### Install via .deb (Debian/Ubuntu)
+
+```bash
+# Download individual .deb packages
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-cli_0.1.0-1_amd64.deb -o toboggan-cli.deb
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-server_0.1.0-1_amd64.deb -o toboggan-server.deb
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-tui_0.1.0-1_amd64.deb -o toboggan-tui.deb
+
+# Install them
+sudo dpkg -i toboggan-cli.deb toboggan-server.deb toboggan-tui.deb
+
+# Install dependencies if missing
+sudo apt-get install -f
+```
+
+### Run the server as a systemd service (Linux)
+
+```bash
+# Create a systemd service file
+sudo tee /etc/systemd/system/toboggan.service << 'EOF'
+[Unit]
+Description=Toboggan Presentation Server
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/toboggan-server /path/to/your/presentation.toml
+Restart=on-failure
+User=youruser
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Enable and start
+sudo systemctl daemon-reload
+sudo systemctl enable toboggan.service
+sudo systemctl start toboggan.service
+
+# View logs
+journalctl -u toboggan.service -f
+```
 
 ### Install from source
 
 ```bash
 # Clone the repository
-git clone https://github.com/ilaborie/toboggan
+git clone https://github.com/Tednoob17/toboggan
 cd toboggan
 
-# Build all components
+# Build the main workspace (CLI + server + TUI)
 cargo build --release
+
+# For the desktop app (requires more RAM):
+cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 
 # Run the server with example presentation
 cargo run -p toboggan-server
