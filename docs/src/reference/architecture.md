@@ -2,7 +2,7 @@
 
 Toboggan is organized as a Rust workspace with multiple crates:
 
-![Toboggan architecture diagram](architecture.svg)
+![Toboggan architecture diagram](architecture.png)
 
 | Crate | Role |
 |-------|------|
