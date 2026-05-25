@@ -46,7 +46,7 @@ Toboggan supports **bold**, *italic*, and `code` in Markdown.
 
 ### 4. Add more slides
 
-```toml
+````toml
 [[slides]]
 title = "Key Points"
 body = '''
@@ -70,7 +70,7 @@ fn hello() {
 [[slides]]
 title = "Thanks!"
 body = "Thank you for watching!"
-```
+````
 
 ### 5. Run the server
 

@@ -4,7 +4,7 @@ The TOML presentation format is the native format for Toboggan.
 
 ## Full example
 
-```toml
+````toml
 [presentation]
 title = "My Talk"
 author = "Jane Doe"
@@ -53,7 +53,7 @@ body = '''
 - Second concept
 - Third concept
 '''
-```
+````
 
 ## Field reference
 
