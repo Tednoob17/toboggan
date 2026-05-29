@@ -1,0 +1,520 @@
+title = "How to Fuzz Like a Pro"
+date = "2024-06-12"
+
+[[slides]]
+kind = "Cover"
+
+[slides.style]
+classes = ["no_title", "cover"]
+
+[slides.title]
+type = "Text"
+text = "How to Fuzz Like a Pro"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>How to Fuzz Like a Pro</h1>
+<blockquote>
+<p>Property-based testing for smart contracts with Echidna</p>
+</blockquote>
+<p style="margin-top: 2em;"><strong>Nat Chin</strong> &amp; <strong>Josselin Feist</strong></p>
+<p>DeFi Security Summit — 2024</p>
+"""
+alt = """
+# How to Fuzz Like a Pro
+> Property-based testing for smart contracts with Echidna
+
+**Nat Chin** & **Josselin Feist**
+DeFi Security Summit — 2024
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Who Are We?"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Nat Chin</h2>
+<ul>
+<li>Security Engineer at Trail of Bits</li>
+<li>Focus: smart contract auditing, fuzzing infrastructure</li>
+<li>Creator of Echidna's corpus collection features</li>
+</ul>
+<h2>Josselin Feist</h2>
+<ul>
+<li>Principal Security Engineer at Trail of Bits</li>
+<li>Creator of Slither, Echidna maintainer</li>
+<li>10+ years in program analysis and security</li>
+</ul>
+"""
+alt = """
+## Nat Chin
+- Security Engineer at Trail of Bits
+- Focus: smart contract auditing, fuzzing infrastructure
+- Creator of Echidna's corpus collection features
+
+## Josselin Feist
+- Principal Security Engineer at Trail of Bits
+- Creator of Slither, Echidna maintainer
+- 10+ years in program analysis and security
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "Why Fuzzing Matters"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "The Problem"
+
+[slides.body]
+type = "Html"
+raw = """
+<div class="step step-0">
+<h2>Smart contracts are high-value targets</h2>
+<ul>
+<li>$3.8B lost in DeFi hacks in 2023 alone</li>
+<li>Traditional testing misses edge cases</li>
+<li>Manual review is slow and expensive</li>
+</ul>
+</div>
+<div class="step step-1">
+<h2>Fuzzing finds what humans miss</h2>
+<ul>
+<li>Automated input generation explores edge cases</li>
+<li>Property-based testing validates invariants</li>
+<li>Continuous fuzzing catches regressions</li>
+</ul>
+</div>
+"""
+alt = """
+## The Problem
+- $3.8B lost in DeFi hacks in 2023 alone
+- Traditional testing misses edge cases
+- Manual review is slow and expensive
+
+## Fuzzing finds what humans miss
+- Automated input generation explores edge cases
+- Property-based testing validates invariants
+- Continuous fuzzing catches regressions
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "What is Echidna?"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Echidna: The Haskell smart contract fuzzer</h2>
+<ul>
+<li>Open-source fuzzer for Ethereum smart contracts</li>
+<li>Supports Solidity and Vyper</li>
+<li>Property-based: you write invariants, Echidna breaks them</li>
+<li>Found 300+ real-world vulnerabilities</li>
+</ul>
+<div class="step step-1">
+<h3>Key capabilities</h3>
+<ul>
+<li>Sequence-level fuzzing (multi-transaction)</li>
+<li>Filtered fuzzing (selective function calls)</li>
+<li>Assertion testing</li>
+<li>Gas-aware test generation</li>
+<li>Corpus collection and replay</li>
+</ul>
+</div>
+"""
+alt = """
+## Echidna: The Haskell smart contract fuzzer
+- Open-source fuzzer for Ethereum smart contracts
+- Supports Solidity and Vyper
+- Property-based: you write invariants, Echidna breaks them
+- Found 300+ real-world vulnerabilities
+
+### Key capabilities
+- Sequence-level fuzzing (multi-transaction)
+- Filtered fuzzing (selective function calls)
+- Assertion testing
+- Gas-aware test generation
+- Corpus collection and replay
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "Writing Invariants"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "What Are Invariants?"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Properties that must always hold true</h2>
+<p>An invariant is a condition that should never be violated, regardless of the sequence of operations.</p>
+<div class="step step-1">
+<h3>Example invariants</h3>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Invariant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total supply</td>
+<td>sum(balances) == totalSupply</td>
+</tr>
+<tr>
+<td>Access control</td>
+<td>only owner can mint</td>
+</tr>
+<tr>
+<td>Liquidity</td>
+<td>pool never empties below threshold</td>
+</tr>
+<tr>
+<td>Interest rates</td>
+<td>rate stays within [0, MAX_RATE]</td>
+</tr>
+</tbody>
+</table>
+</div>
+"""
+alt = """
+## Properties that must always hold true
+An invariant is a condition that should never be violated, regardless of the sequence of operations.
+
+### Example invariants
+| Property | Invariant |
+|---|---|
+| Total supply | sum(balances) == totalSupply |
+| Access control | only owner can mint |
+| Liquidity | pool never empties below threshold |
+| Interest rates | rate stays within [0, MAX_RATE] |
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Writing Echidna Properties"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Two ways to write properties</h2>
+<h3>1. Boolean functions <code>echidna_*</code></h3>
+<pre><code class="language-solidity">// Invariant: totalSupply never exceeds MAX_SUPPLY
+function echidna_total_supply_never_exceeds_max() public view returns (bool) {
+    return totalSupply() <= MAX_SUPPLY;
+}
+</code></pre>
+<div class="step step-1">
+<h3>2. Assertions via <code>assert()</code></h3>
+<pre><code class="language-solidity">function deposit(uint256 amount) public {
+    uint256 oldBalance = balanceOf(msg.sender);
+    uint256 oldTotal = totalSupply();
+
+    _mint(msg.sender, amount);
+
+    // Echidna will test this assertion
+    assert(balanceOf(msg.sender) == oldBalance + amount);
+    assert(totalSupply() == oldTotal + amount);
+}
+</code></pre>
+</div>
+"""
+alt = """
+## Writing Echidna Properties
+
+### 1. Boolean functions `echidna_*`
+```solidity
+function echidna_total_supply_never_exceeds_max() public view returns (bool) {
+    return totalSupply() <= MAX_SUPPLY;
+}
+```
+
+### 2. Assertions via `assert()`
+```solidity
+function deposit(uint256 amount) public {
+    uint256 oldBalance = balanceOf(msg.sender);
+    uint256 oldTotal = totalSupply();
+    _mint(msg.sender, amount);
+    assert(balanceOf(msg.sender) == oldBalance + amount);
+    assert(totalSupply() == oldTotal + amount);
+}
+```
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Advanced: Filtered Fuzzing"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Control which functions Echidna calls</h2>
+<p>Use configuration to focus on the most attack-relevant paths:</p>
+<pre><code class="language-yaml"># echidna.yaml
+testMode: assertion
+testLimit: 100000
+seqLen: 100
+shrinkLimit: 5000
+coverage: true
+filterBlacklist: true
+filterFunctions:
+  - "deposit(uint256)"
+  - "withdraw(uint256)"
+  - "borrow(uint256)"
+  - "liquidate(address)"
+</code></pre>
+<div class="step step-1">
+<h3>Corpus collection</h3>
+<pre><code class="language-bash">echidna-test . --config echidna.yaml --corpus-dir corpus/
+echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42
+</code></pre>
+</div>
+"""
+alt = """
+## Control which functions Echidna calls
+```yaml
+# echidna.yaml
+testMode: assertion
+testLimit: 100000
+seqLen: 100
+shrinkLimit: 5000
+filterBlacklist: true
+filterFunctions:
+  - "deposit(uint256)"
+  - "withdraw(uint256)"
+  - "borrow(uint256)"
+  - "liquidate(address)"
+```
+
+### Corpus collection
+```bash
+echidna-test . --config echidna.yaml --corpus-dir corpus/
+echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42
+```
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "Real-World Findings"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Case Study: Lending Protocol"
+
+[slides.body]
+type = "Html"
+raw = """
+<div class="step step-0">
+<h2>Invariant: Liquidation never reverts</h2>
+<pre><code class="language-solidity">function echidna_liquidate_always_succeeds() public view returns (bool) {
+    // Once a position is underwater, liquidation must succeed
+    for (uint i = 0; i < positions.length; i++) {
+        if (isUnderwater(positions[i])) {
+            // This should never revert
+            return false;
+        }
+    }
+    return true;
+}
+</code></pre>
+</div>
+<div class="step step-1">
+<h3>What Echidna found</h3>
+<ul>
+<li>Rounding in the interest calculation allowed a tiny borrow that
+could never be liquidated</li>
+<li>Cost: $2.1M at risk — found before deployment</li>
+<li>Fix: minimum borrow amount + improved rounding</li>
+</ul>
+</div>
+"""
+alt = """
+## Invariant: Liquidation never reverts
+```solidity
+function echidna_liquidate_always_succeeds() public view returns (bool) {
+    for (uint i = 0; i < positions.length; i++) {
+        if (isUnderwater(positions[i])) {
+            return false;
+        }
+    }
+    return true;
+}
+```
+
+### What Echidna found
+- Rounding in interest calculation allowed a tiny borrow that could never be liquidated
+- Cost: $2.1M at risk — found before deployment
+- Fix: minimum borrow amount + improved rounding
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Best Practices"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>How to Fuzz Effectively</h2>
+<div class="step step-0">
+<h3>Start simple</h3>
+<ul>
+<li>Begin with assertion testing — the lowest friction</li>
+<li>Add one echidna_* property at a time</li>
+<li>Run with <code>--testLimit 50000</code> for quick feedback</li>
+</ul>
+</div>
+<div class="step step-1">
+<h3>Scale up</h3>
+<ul>
+<li>Use filtered fuzzing to target specific functions</li>
+<li>Run longer: <code>--testLimit 10000000</code> for deep bugs</li>
+<li>Collect and reuse corpus between runs</li>
+<li>Integrate into CI/CD for continuous fuzzing</li>
+</ul>
+</div>
+<div class="step step-2">
+<h3>Common pitfalls</h3>
+<ul>
+<li>Writing properties that are always true (tautologies)</li>
+<li>Forgetting to use <code>view</code>/<code>pure</code> functions correctly</li>
+<li>Not filtering out non-relevant functions</li>
+<li>Ignoring gas limits in the fuzzer</li>
+</ul>
+</div>
+"""
+alt = """
+## How to Fuzz Effectively
+
+### Start simple
+- Begin with assertion testing — the lowest friction
+- Add one echidna_* property at a time
+- Run with `--testLimit 50000` for quick feedback
+
+### Scale up
+- Use filtered fuzzing to target specific functions
+- Run longer: `--testLimit 10000000` for deep bugs
+- Collect and reuse corpus between runs
+- Integrate into CI/CD for continuous fuzzing
+
+### Common pitfalls
+- Writing properties that are always true (tautologies)
+- Forgetting to use view/pure functions correctly
+- Not filtering out non-relevant functions
+- Ignoring gas limits in the fuzzer
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "Conclusion"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Key Takeaways"
+
+[slides.body]
+type = "Html"
+raw = """
+<h2>Fuzzing is a superpower</h2>
+<ul>
+<li>Property-based testing catches what unit tests miss</li>
+<li>Echidna makes it easy to write and run invariants</li>
+<li>Start with assertions, graduate to custom properties</li>
+</ul>
+<div class="step step-1">
+<h3>Resources</h3>
+<ul>
+<li>Echidna: <a href="https://github.com/crytic/echidna">github.com/crytic/echidna</a></li>
+<li>Building Secure Contracts: <a href="https://github.com/crytic/building-secure-contracts">github.com/crytic/building-secure-contracts</a></li>
+<li>Slither: <a href="https://github.com/crytic/slither">github.com/crytic/slither</a></li>
+</ul>
+</div>
+"""
+alt = """
+## Fuzzing is a superpower
+- Property-based testing catches what unit tests miss
+- Echidna makes it easy to write and run invariants
+- Start with assertions, graduate to custom properties
+
+### Resources
+- Echidna: https://github.com/crytic/echidna
+- Building Secure Contracts: https://github.com/crytic/building-secure-contracts
+- Slither: https://github.com/crytic/slither
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.style]
+classes = ["no_title", "center"]
+
+[slides.title]
+type = "Text"
+text = "Thank You"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Thank You!</h1>
+<blockquote>
+<p>Questions? Come find us!</p>
+</blockquote>
+<p>Nat Chin &amp; Josselin Feist</p>
+<p><em>Trail of Bits — Security Research</em></p>
+"""
+alt = """
+# Thank You!
+> Questions? Come find us!
+
+Nat Chin & Josselin Feist
+*Trail of Bits — Security Research*
+"""
+
+[slides.notes]
+type = "Text"
+text = "Remind the audience about Echidna's GitHub repo. Encourage them to try fuzzing their own contracts. Mention the Trail of Bits audit services."
