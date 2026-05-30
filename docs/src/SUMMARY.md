@@ -13,6 +13,7 @@
 - [TUI Client](guide/tui.md)
 - [Web Client](guide/web.md)
 - [Presenting from Any Device](guide/remote.md)
+- [Showcase: Rebuilt Trail of Bits Slides](guide/showcase.md)
 
 # Reference
 
