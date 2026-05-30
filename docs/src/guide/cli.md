@@ -25,7 +25,7 @@ See [CLI Troubleshooting](guide/cli-troubleshooting.md) for common issues and fi
 | `-o, --output` | Output file path (default: stdout) |
 | `-t, --title` | Override the talk title |
 | `-d, --date` | Override the talk date (`YYYY-MM-DD`) |
-| `-f, --format` | Output format: `toml`, `json`, `yaml`, `cbor`, `msgpack`, `bincode`, or `html` |
+| `-f, --format` | Output format: `toml`, `json`, `yaml`, or `html` |
 | `--theme` | Syntax highlighting theme |
 | `--list-themes` | Print the available themes and exit |
 | `--no-counter` | Disable automatic part/slide numbering |
@@ -40,7 +40,8 @@ The CLI expects a source folder with markdown or HTML files:
 ```text
 slides/
 ├── _cover.md
-├── _footer.md
+├── _footer.html
+├── _head.html
 ├── 01-introduction/
 │   ├── _part.md
 │   └── 01-welcome.md
@@ -49,9 +50,11 @@ slides/
 ```
 
 - `_cover.md` sets the title/date metadata.
+- `_footer.html` provides a custom HTML footer (repeated on every slide).
+- `_head.html` provides custom HTML to inject into the `<head>` of the output.
 - `_part.md` creates a section divider.
 - Files are processed in alphabetical order.
-- Hidden files are ignored.
+- Hidden files (names starting with `.`) are ignored.
 
 ## Frontmatter
 

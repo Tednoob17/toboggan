@@ -76,7 +76,7 @@ ngrok http 8080
 
 ```bash
 # On your VPS with a public IP
-toboggan-server --port 8080 --access-token "my-secret" talk.toml
+toboggan-server --host 0.0.0.0 --port 8080 talk.toml
 ```
 
 Then access from anywhere: `http://your-vps-ip:8080`

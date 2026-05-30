@@ -19,7 +19,7 @@ Shared domain model used everywhere else.
 Converts a folder of Markdown/HTML sources into a serialized talk.
 
 - Entry point: `cargo run -p toboggan-cli -- <slides-folder> -o output.toml`
-- Supports output formats: `toml`, `json`, `yaml`, `cbor`, `msgpack`, `bincode`, `html`.
+- Supports output formats: `toml`, `json`, `yaml`, `html`.
 - Reads `_cover.md`, `_part.md`, `<!-- pause -->`, speaker notes, and terminal blocks.
 - Computes presentation statistics and prints slide titles plus duration estimates.
 

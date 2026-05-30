@@ -7,6 +7,7 @@
 
 - [Creating Presentations](guide/creating-presentations.md)
 - [CLI Usage](guide/cli.md)
+  - [CLI Troubleshooting](guide/cli-troubleshooting.md)
 - [Server Usage](guide/server.md)
 - [Desktop App](guide/desktop.md)
 - [TUI Client](guide/tui.md)
