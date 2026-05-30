@@ -209,3 +209,20 @@ duration = "1m"
 
 Slide content here...
 ```
+
+## Example presentations
+
+The repository includes real-world example presentations in the `slides_ex/` directory, originally created by Trail of Bits for security conferences:
+
+- **Building Secure Smart Contracts** — a folder-based presentation (`slides_ex/presentations/Building Secure Smart Contracts/`) ready to be converted with the CLI:
+  ```bash
+  toboggan-cli "slides_ex/presentations/Building Secure Smart Contracts/" -o my_talk.toml
+  toboggan-server my_talk.toml
+  ```
+
+- **How to Fuzz Like a Pro** — a pre-compiled TOML talk file that can be served directly:
+  ```bash
+  toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+  ```
+
+These examples demonstrate the project structure and frontmatter conventions used in real talks.

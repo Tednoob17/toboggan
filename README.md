@@ -116,29 +116,51 @@ cargo build --release
 # For the desktop app (requires more RAM):
 cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 
-# Run the server with example presentation
-cargo run -p toboggan-server
+# Run the server with an example presentation
+cargo run -p toboggan-server path/to/your-talk.toml
 ```
+
+### Try the example presentations
+
+```bash
+# Build the Building Secure Smart Contracts talk from source slides
+cargo run -p toboggan-cli -- "slides_ex/presentations/Building Secure Smart Contracts/" -o my-talk.toml
+cargo run -p toboggan-server -- my-talk.toml
+
+# Or serve the pre-built How to Fuzz Like a Pro talk directly
+cargo run -p toboggan-server -- "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+```
+
+Then open http://localhost:8080 in your browser.
 
 ### Create a presentation
 
 ```bash
 # Convert Markdown to TOML
-cargo run -p toboggan-cli -- examples/my-talk.md -o my-talk.toml
+cargo run -p toboggan-cli -- path/to/slides/ -o my-talk.toml
 
 # Or create TOML directly
 cat > my-talk.toml << 'EOF'
-date = "2025-01-26"
-
-[title]
-type = "Text"
-text = "My Presentation"
+title = "My Presentation"
+date = "2026-05-30"
 
 [[slides]]
 kind = "Cover"
+
 [slides.title]
 type = "Text"
 text = "Welcome"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Hello!"
+
+[slides.body]
+type = "Text"
+text = "This is my first slide."
 EOF
 ```
 
@@ -152,7 +174,7 @@ cargo run -p toboggan-server -- my-talk.toml
 open http://localhost:8080
 
 # Or use terminal client
-cargo run -p toboggan-tui
+cargo run -p toboggan-tui -- http://localhost:8080
 ```
 
 ## Building
