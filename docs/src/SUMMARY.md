@@ -18,3 +18,4 @@
 - [Presentation Format](reference/presentation-format.md)
 - [Configuration](reference/configuration.md)
 - [Architecture](reference/architecture.md)
+ - [Developer Overview](reference/developer-overview.md)
