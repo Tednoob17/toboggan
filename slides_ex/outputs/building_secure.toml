@@ -1,0 +1,549 @@
+title = "Building Secure Smart Contracts"
+date = "2026-05-30"
+
+[[slides]]
+kind = "Cover"
+
+[slides.title]
+type = "Text"
+text = "Building Secure Smart Contracts"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Building Secure Smart Contracts</h1>
+<blockquote>
+<p>A practical guide to automated security analysis tools</p>
+</blockquote>
+"""
+alt = """
+# Building Secure Smart Contracts
+> A practical guide to automated security analysis tools
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "1. Why Security Automation?"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Why Security Automation?</h1>
+"""
+alt = """
+# Why Security Automation?
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "1.1 The DeFi Landscape"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>The DeFi Landscape</h1>
+<ul>
+<li><strong>$7.8B</strong> lost to smart contract exploits since 2018</li>
+<li><strong>80%</strong> of hacks are due to implementation bugs, not protocol design</li>
+<li>Traditional testing only covers <strong>happy paths</strong></li>
+<li>Manual audits are essential but <strong>not sufficient</strong></li>
+</ul>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Why automated tools?</h3>
+<ul>
+<li>Catch edge cases humans miss</li>
+<li>Continuous verification, not point-in-time</li>
+<li>Reproducible, scalable, quantifiable</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = """
+# The DeFi Landscape
+- **$7.8B** lost to smart contract exploits since 2018
+- **80%** of hacks are due to implementation bugs, not protocol design
+- Traditional testing only covers **happy paths**
+- Manual audits are essential but **not sufficient**
+
+### Why automated tools?
+- Catch edge cases humans miss
+- Continuous verification, not point-in-time
+- Reproducible, scalable, quantifiable
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "1.2 The Security Automation Pyramid"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>The Security Automation Pyramid</h1>
+<ul>
+<li><strong>Static Analysis</strong> — Scan code for known vulnerability patterns</li>
+<li><strong>Fuzzing / Property Testing</strong> — Validate invariants with random inputs</li>
+<li><strong>Symbolic Execution</strong> — Exhaustive exploration of execution paths</li>
+<li><strong>Formal Verification</strong> — Mathematical proofs of correctness</li>
+</ul>
+
+<div class="step step-0"><!-- begin step -->
+<blockquote>
+<p>Each layer catches what the previous one misses.
+Use them together for defense in depth.</p>
+</blockquote>
+</div><!-- end step -->
+"""
+alt = """
+# The Security Automation Pyramid
+- **Static Analysis** — Scan code for known vulnerability patterns
+- **Fuzzing / Property Testing** — Validate invariants with random inputs
+- **Symbolic Execution** — Exhaustive exploration of execution paths
+- **Formal Verification** — Mathematical proofs of correctness
+
+> Each layer catches what the previous one misses.
+> Use them together for defense in depth.
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "2. The Toolchain"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>The Toolchain</h1>
+"""
+alt = """
+# The Toolchain
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "2.1 Slither — Static Analysis"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Slither — Static Analysis</h1>
+<ul>
+<li><strong>Open-source</strong> Solidity static analysis framework</li>
+<li>Detects <strong>100+ vulnerability classes</strong></li>
+<li>Runs in <strong>seconds</strong>, integrates into CI/CD</li>
+<li><strong>4M+ downloads</strong>, used by every major audit firm</li>
+</ul>
+
+<div class="step step-0"><!-- begin step -->
+<h3>What it finds</h3>
+<ul>
+<li>Reentrancy, access control, integer overflows</li>
+<li>Uninitialized storage, unchecked return values</li>
+<li>Dangerous delegatecall, tx.origin usage</li>
+<li>And much more...</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = """
+# Slither — Static Analysis
+- **Open-source** Solidity static analysis framework
+- Detects **100+ vulnerability classes**
+- Runs in **seconds**, integrates into CI/CD
+- **4M+ downloads**, used by every major audit firm
+
+### What it finds
+- Reentrancy, access control, integer overflows
+- Uninitialized storage, unchecked return values
+- Dangerous delegatecall, tx.origin usage
+- And much more...
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "2.2 Echidna — Fuzzing"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Echidna — Fuzzing</h1>
+<ul>
+<li><strong>Property-based fuzzer</strong> for Ethereum smart contracts</li>
+<li>You write <strong>invariants</strong>, Echidna tries to <strong>break them</strong></li>
+<li>Supports Solidity and Vyper</li>
+<li>Found <strong>300+ real-world vulnerabilities</strong></li>
+</ul>
+
+<div class="step step-0"><!-- begin step -->
+<h3>How it works</h3>
+<pre style="background-color:#eff1f5;"><code><span style="color:#4f5b66;">Write invariant ──&gt; Echidna generates random sequences ──&gt; Violation found?
+</span><span style="color:#4f5b66;">                              │                                    │
+</span><span style="color:#4f5b66;">                              ▼                                    ▼
+</span><span style="color:#4f5b66;">                         Shrink input ──────────────────&gt; Report + replay file
+</span></code></pre>
+</div><!-- end step -->
+"""
+alt = """
+# Echidna — Fuzzing
+- **Property-based fuzzer** for Ethereum smart contracts
+- You write **invariants**, Echidna tries to **break them**
+- Supports Solidity and Vyper
+- Found **300+ real-world vulnerabilities**
+
+### How it works
+    Write invariant ──> Echidna generates random sequences ──> Violation found?
+                                  │                                    │
+                                  ▼                                    ▼
+                             Shrink input ──────────────────> Report + replay file
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "3. Static Analysis in Depth"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Static Analysis in Depth</h1>
+"""
+alt = """
+# Static Analysis in Depth
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "3.1 Detecting Reentrancy with Slither"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Detecting Reentrancy with Slither</h1>
+<p>Slither's data flow analysis tracks <strong>state variable writes after external calls</strong>:</p>
+<pre style="background-color:#eff1f5;"><code class="language-solidity"><span style="color:#4f5b66;">function withdraw(uint256 amount) external {
+</span><span style="color:#4f5b66;">    require(balances[msg.sender] &gt;= amount);
+</span><span style="color:#4f5b66;">    (bool ok, ) = msg.sender.call{value: amount}(&quot;&quot;);  // external call
+</span><span style="color:#4f5b66;">    balances[msg.sender] -= amount;                     // state write after call
+</span><span style="color:#4f5b66;">}
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Slither output</h3>
+<pre style="background-color:#eff1f5;"><code><span style="color:#4f5b66;">Reentrancy in withdraw(uint256):
+</span><span style="color:#4f5b66;">  External call to user-controlled address at line 42
+</span><span style="color:#4f5b66;">  State variable written after call at line 43
+</span><span style="color:#4f5b66;">  Severity: HIGH
+</span><span style="color:#4f5b66;">  SWC-ID: SWC-107
+</span></code></pre>
+</div><!-- end step -->
+"""
+alt = """
+# Detecting Reentrancy with Slither
+Slither's data flow analysis tracks **state variable writes after external calls**:
+```solidity
+function withdraw(uint256 amount) external {
+    require(balances[msg.sender] >= amount);
+    (bool ok, ) = msg.sender.call{value: amount}("");  // external call
+    balances[msg.sender] -= amount;                     // state write after call
+}
+```
+
+### Slither output
+    Reentrancy in withdraw(uint256):
+      External call to user-controlled address at line 42
+      State variable written after call at line 43
+      Severity: HIGH
+      SWC-ID: SWC-107
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "3.2 Slither's Python API"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Slither's Python API</h1>
+<p>Write custom detectors for project-specific patterns:</p>
+<pre style="background-color:#eff1f5;"><code class="language-python"><span style="color:#b48ead;">from </span><span style="color:#4f5b66;">slither </span><span style="color:#b48ead;">import </span><span style="color:#4f5b66;">Slither
+</span><span style="color:#b48ead;">from </span><span style="color:#4f5b66;">slither.core.declarations </span><span style="color:#b48ead;">import </span><span style="color:#4f5b66;">FunctionContract
+</span><span style="color:#4f5b66;">
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">find_uniswap_interactions</span><span style="color:#4f5b66;">(</span><span style="color:#bf616a;">slither</span><span style="color:#4f5b66;">: Slither):
+</span><span style="color:#4f5b66;">    </span><span style="color:#b48ead;">for </span><span style="color:#4f5b66;">contract </span><span style="color:#b48ead;">in </span><span style="color:#4f5b66;">slither.contracts:
+</span><span style="color:#4f5b66;">        </span><span style="color:#b48ead;">for </span><span style="color:#4f5b66;">function </span><span style="color:#b48ead;">in </span><span style="color:#4f5b66;">contract.functions:
+</span><span style="color:#4f5b66;">            </span><span style="color:#b48ead;">for </span><span style="color:#4f5b66;">call </span><span style="color:#b48ead;">in </span><span style="color:#4f5b66;">function.internal_calls:
+</span><span style="color:#4f5b66;">                </span><span style="color:#b48ead;">if </span><span style="color:#4f5b66;">&quot;</span><span style="color:#a3be8c;">swap</span><span style="color:#4f5b66;">&quot; in call.name:
+</span><span style="color:#4f5b66;">                    </span><span style="color:#96b5b4;">print</span><span style="color:#4f5b66;">(</span><span style="color:#b48ead;">f</span><span style="color:#4f5b66;">&quot;{function.name}</span><span style="color:#a3be8c;"> calls </span><span style="color:#4f5b66;">{call.name}&quot;)
+</span><span style="color:#4f5b66;">                    </span><span style="color:#8fa1b3;">check_slippage_protection</span><span style="color:#4f5b66;">(function)
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Use cases</h3>
+<ul>
+<li>Enforce project-specific coding standards</li>
+<li>Detect dangerous third-party interactions</li>
+<li>Validate upgradeability patterns</li>
+</ul>
+</div><!-- end step -->
+"""
+alt = """
+# Slither's Python API
+Write custom detectors for project-specific patterns:
+```python
+from slither import Slither
+from slither.core.declarations import FunctionContract
+
+def find_uniswap_interactions(slither: Slither):
+    for contract in slither.contracts:
+        for function in contract.functions:
+            for call in function.internal_calls:
+                if "swap" in call.name:
+                    print(f"{function.name} calls {call.name}")
+                    check_slippage_protection(function)
+```
+
+### Use cases
+- Enforce project-specific coding standards
+- Detect dangerous third-party interactions
+- Validate upgradeability patterns
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "4. Fuzzing in Depth"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Fuzzing in Depth</h1>
+"""
+alt = """
+# Fuzzing in Depth
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "4.1 Writing Effective Invariants"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Writing Effective Invariants</h1>
+<h3>Boolean properties</h3>
+<pre style="background-color:#eff1f5;"><code class="language-solidity"><span style="color:#4f5b66;">// echidna_ prefix = automatic property test
+</span><span style="color:#4f5b66;">function echidna_total_supply_balanced() public view returns (bool) {
+</span><span style="color:#4f5b66;">    return totalSupply() == balanceOf(address(this)) + balanceOf(owner);
+</span><span style="color:#4f5b66;">}
+</span></code></pre>
+<h3>Assertion mode</h3>
+<pre style="background-color:#eff1f5;"><code class="language-solidity"><span style="color:#4f5b66;">function mint(uint256 amount) public {
+</span><span style="color:#4f5b66;">    uint256 before = totalSupply();
+</span><span style="color:#4f5b66;">    _mint(msg.sender, amount);
+</span><span style="color:#4f5b66;">    assert(totalSupply() == before + amount);  // Echidna checks this
+</span><span style="color:#4f5b66;">}
+</span></code></pre>
+"""
+alt = """
+# Writing Effective Invariants
+### Boolean properties
+```solidity
+// echidna_ prefix = automatic property test
+function echidna_total_supply_balanced() public view returns (bool) {
+    return totalSupply() == balanceOf(address(this)) + balanceOf(owner);
+}
+```
+### Assertion mode
+```solidity
+function mint(uint256 amount) public {
+    uint256 before = totalSupply();
+    _mint(msg.sender, amount);
+    assert(totalSupply() == before + amount);  // Echidna checks this
+}
+```
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "4.2 Configuring Echidna"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Configuring Echidna</h1>
+<pre style="background-color:#eff1f5;"><code class="language-yaml"><span style="color:#a7adba;"># echidna.yaml
+</span><span style="color:#bf616a;">testMode</span><span style="color:#4f5b66;">: </span><span style="color:#a3be8c;">assertion
+</span><span style="color:#bf616a;">testLimit</span><span style="color:#4f5b66;">: </span><span style="color:#d08770;">100000
+</span><span style="color:#bf616a;">seqLen</span><span style="color:#4f5b66;">: </span><span style="color:#d08770;">100
+</span><span style="color:#bf616a;">shrinkLimit</span><span style="color:#4f5b66;">: </span><span style="color:#d08770;">5000
+</span><span style="color:#bf616a;">coverage</span><span style="color:#4f5b66;">: </span><span style="color:#d08770;">true
+</span><span style="color:#bf616a;">filterBlacklist</span><span style="color:#4f5b66;">: </span><span style="color:#d08770;">true
+</span><span style="color:#bf616a;">filterFunctions</span><span style="color:#4f5b66;">:
+</span><span style="color:#4f5b66;">  - &quot;</span><span style="color:#a3be8c;">mint(uint256)</span><span style="color:#4f5b66;">&quot;
+</span><span style="color:#4f5b66;">  - &quot;</span><span style="color:#a3be8c;">burn(uint256)</span><span style="color:#4f5b66;">&quot;
+</span><span style="color:#4f5b66;">  - &quot;</span><span style="color:#a3be8c;">transfer(address,uint256)</span><span style="color:#4f5b66;">&quot;
+</span></code></pre>
+
+<div class="step step-0"><!-- begin step -->
+<pre style="background-color:#eff1f5;"><code class="language-bash"><span style="color:#a7adba;"># Run the fuzzer
+</span><span style="color:#8fa1b3;">echidna-test</span><span style="color:#4f5b66;"> .</span><span style="color:#bf616a;"> --config</span><span style="color:#4f5b66;"> echidna.yaml
+</span><span style="color:#4f5b66;">
+</span><span style="color:#a7adba;"># Collect corpus for faster future runs
+</span><span style="color:#8fa1b3;">echidna-test</span><span style="color:#4f5b66;"> .</span><span style="color:#bf616a;"> --corpus-dir</span><span style="color:#4f5b66;"> corpus/
+</span></code></pre>
+</div><!-- end step -->
+"""
+alt = """
+# Configuring Echidna
+```yaml
+# echidna.yaml
+testMode: assertion
+testLimit: 100000
+seqLen: 100
+shrinkLimit: 5000
+coverage: true
+filterBlacklist: true
+filterFunctions:
+  - "mint(uint256)"
+  - "burn(uint256)"
+  - "transfer(address,uint256)"
+```
+
+```bash
+# Run the fuzzer
+echidna-test . --config echidna.yaml
+
+# Collect corpus for faster future runs
+echidna-test . --corpus-dir corpus/
+```
+"""
+
+[[slides]]
+kind = "Part"
+
+[slides.title]
+type = "Text"
+text = "5. Conclusion"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Conclusion</h1>
+"""
+alt = """
+# Conclusion
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "5.1 Key Takeaways"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Key Takeaways</h1>
+<ul>
+<li><strong>Automation is not optional</strong> — the scale of DeFi demands it</li>
+<li><strong>Layered approach</strong>: static analysis → fuzzing → formal verification</li>
+<li><strong>Start today</strong>: Slither runs in seconds, Echidna in minutes</li>
+<li><strong>Integrate into CI/CD</strong>: catch bugs before they reach mainnet</li>
+</ul>
+
+<div class="step step-0"><!-- begin step -->
+<h3>Recommended workflow</h3>
+<ol>
+<li>Run Slither on every PR</li>
+<li>Add Echidna tests for critical invariants</li>
+<li>Schedule periodic deep fuzzing runs</li>
+<li>Combine with manual review for maximum coverage</li>
+</ol>
+</div><!-- end step -->
+"""
+alt = """
+# Key Takeaways
+- **Automation is not optional** — the scale of DeFi demands it
+- **Layered approach**: static analysis → fuzzing → formal verification
+- **Start today**: Slither runs in seconds, Echidna in minutes
+- **Integrate into CI/CD**: catch bugs before they reach mainnet
+
+### Recommended workflow
+1. Run Slither on every PR
+2. Add Echidna tests for critical invariants
+3. Schedule periodic deep fuzzing runs
+4. Combine with manual review for maximum coverage
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "5.2 Resources"
+
+[slides.body]
+type = "Html"
+raw = """
+<h1>Resources</h1>
+<ul>
+<li><strong>Slither</strong>: <a href="https://github.com/crytic/slither">github.com/crytic/slither</a></li>
+<li><strong>Echidna</strong>: <a href="https://github.com/crytic/echidna">github.com/crytic/echidna</a></li>
+<li><strong>Building Secure Contracts</strong>: <a href="https://github.com/crytic/building-secure-contracts">github.com/crytic/building-secure-contracts</a></li>
+<li><strong>Trail of Bits Publications</strong>: <a href="https://github.com/trailofbits/publications">github.com/trailofbits/publications</a></li>
+</ul>
+"""
+alt = """
+# Resources
+- **Slither**: [github.com/crytic/slither](https://github.com/crytic/slither)
+- **Echidna**: [github.com/crytic/echidna](https://github.com/crytic/echidna)
+- **Building Secure Contracts**: [github.com/crytic/building-secure-contracts](https://github.com/crytic/building-secure-contracts)
+- **Trail of Bits Publications**: [github.com/trailofbits/publications](https://github.com/trailofbits/publications)
+"""
+
+[slides.notes]
+type = "Html"
+raw = """
+<ul>
+<li>Mention the Trail of Bits audit request process</li>
+<li>Encourage attendees to try Slither on their own projects</li>
+<li>Offer to review their Echidna test suites</li>
+</ul>
+"""
+alt = """
+- Mention the Trail of Bits audit request process
+- Encourage attendees to try Slither on their own projects
+- Offer to review their Echidna test suites
+"""

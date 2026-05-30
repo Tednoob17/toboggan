@@ -2,46 +2,57 @@
 
 ## Server configuration
 
-The server accepts command-line arguments:
+`toboggan-server` accepts the following CLI options:
 
 ```bash
-toboggan-server [OPTIONS] <PRESENTATION>
+toboggan-server [OPTIONS] <TALK>
 
 Options:
-  -p, --port <PORT>        Server port [default: 8080]
-  -w, --watch              Watch for file changes
-      --watch-delay <MS>   Watch debounce delay [default: 200]
-      --access-token <TOKEN>  Require token for API access
-      --heartbeat <SECS>   Heartbeat interval [default: 30]
-      --cleanup <SECS>     Cleanup interval [default: 30]
-      --shutdown <SECS>    Shutdown timeout [default: 10]
-  -h, --help               Print help
-  -V, --version            Print version
+  --host <IP>                  Host to bind to [default: 127.0.0.1]
+  --port <PORT>                Port to bind to [default: 8080]
+  --max-clients <N>            Maximum number of WebSocket clients [default: 100]
+  --heartbeat-interval-secs <N> Heartbeat interval [default: 30]
+  --shutdown-timeout-secs <N>   Graceful shutdown timeout [default: 30]
+  --cleanup-interval-secs <N>   Client cleanup interval [default: 60]
+  --allowed-origins <LIST>      Comma-separated CORS origins
+  --public-dir <DIR>            Static assets directory served at `/public/`
+  --watch                      Reload the talk when the file changes
 ```
 
-## Environment variables
+These options also read from environment variables:
 
 | Variable | Description |
 |----------|-------------|
-| `TOBOGGAN_SKIP_WEB_CHECK=1` | Skip web dist check at build time |
-| `RUST_LOG=toboggan_server=debug` | Enable debug logging |
+| `TOBOGGAN_HOST` | Server bind host |
+| `TOBOGGAN_PORT` | Server bind port |
+| `TOBOGGAN_MAX_CLIENTS` | Maximum number of clients |
+| `TOBOGGAN_HEARTBEAT_INTERVAL` | Heartbeat interval in seconds |
+| `TOBOGGAN_SHUTDOWN_TIMEOUT` | Shutdown timeout in seconds |
+| `TOBOGGAN_CLEANUP_INTERVAL` | Cleanup interval in seconds |
+| `TOBOGGAN_CORS_ORIGINS` | Comma-separated list of allowed origins |
+| `TOBOGGAN_PUBLIC_DIR` | Optional public assets directory |
+| `TOBOGGAN_WATCH` | Enable watch mode |
 
-## Retry configuration
+## Client configuration
 
-The client reconnection behavior can be configured in the presentation
-file via the `[client]` section:
+`toboggan-core` exposes a reusable client config helper:
 
 ```toml
 [client]
+api_url = "http://localhost:8080"
+websocket_url = "ws://localhost:8080/api/ws"
+
+[client.retry]
 max_retries = 10
 initial_retry_delay = "1s"
 max_retry_delay = "30s"
 backoff_factor = 2.0
+use_jitter = true
 ```
 
 ## Logging
 
-Toboggan uses the `env_logger` crate. Set `RUST_LOG` to control verbosity:
+The server and clients use `tracing`. Set `RUST_LOG` to control verbosity:
 
 ```bash
 RUST_LOG=info toboggan-server talk.toml

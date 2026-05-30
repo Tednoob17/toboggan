@@ -1,41 +1,23 @@
 # Web Client
 
-The web client provides a browser-based interface for viewing and
-controlling presentations.
+The web client is the browser-facing UI served by `toboggan-server`.
 
 ## Accessing
 
-Start the server, then open your browser:
+Start the server, then open:
 
-```
+```text
 http://localhost:8080
 ```
 
-## Features
+## What it does
 
-- Real-time slide display with CSS transitions
-- Navigation controls (next/previous/goto)
-- Remote control from any device (phone, tablet, laptop)
-- Presenter mode with speaker notes
+- Shows the current slide and presentation state in real time.
+- Sends navigation commands back to the server.
+- Works as the main presenter view from any modern browser.
 
-## Presenter view
+## Notes for developers
 
-Access the presenter view at `/presenter`:
-
-```
-http://localhost:8080/presenter
-```
-
-This shows the current slide, next slide preview, speaker notes, and a timer.
-
-## Kiosk mode
-
-For full-screen public displays:
-
-```
-http://localhost:8080/kiosk
-```
-
-- Hides navigation UI
-- Auto-advances slides
-- Perfect for projectors and digital signage
+- The frontend lives in `toboggan-web/`.
+- It is built with Vite and TypeScript.
+- Dev scripts are available in `package.json`: `dev`, `build`, `preview`, `serve`, `lint`, `format`, and `check`.

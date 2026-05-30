@@ -17,5 +17,6 @@
 
 - [Presentation Format](reference/presentation-format.md)
 - [Configuration](reference/configuration.md)
+- [Crate Reference](reference/crates.md)
 - [Architecture](reference/architecture.md)
- - [Developer Overview](reference/developer-overview.md)
+- [Developer Overview](reference/developer-overview.md)

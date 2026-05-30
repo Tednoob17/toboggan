@@ -1,50 +1,69 @@
 # CLI Usage
 
-The CLI (`toboggan-cli`) converts Markdown presentations to TOML format.
+`toboggan-cli` converts a folder of Markdown/HTML slides into a Toboggan talk file and prints statistics.
 
 ## Basic usage
 
 ```bash
-# Convert a markdown presentation to TOML
-toboggan-cli slides/ -f toml -o presentation.toml
+# Convert a source folder to TOML
+toboggan-cli slides/ -o presentation.toml
 
-# Convert to HTML (standalone)
-toboggan-cli slides/ -f html -o presentation.html
+# Emit JSON instead
+toboggan-cli slides/ -f json -o presentation.json
 
-# Show statistics about a presentation
-toboggan-cli slides/ --stats
+# List available syntax highlighting themes
+toboggan-cli --list-themes
 ```
 
-## Commands
+See [CLI Troubleshooting](guide/cli-troubleshooting.md) for common issues and fixes.
+
+## Arguments and options
 
 | Command | Description |
 |---------|-------------|
-| `slides/` | Path to a file or directory of markdown slides |
-| `-f, --format` | Output format: `toml`, `html`, `stat` |
-| `-o, --output` | Output file path |
-| `--stats` | Show slide statistics |
-| `--export-pdf` | Export to PDF (requires headless Chrome) |
+| `slides/` | Input directory containing your presentation source files |
+| `-o, --output` | Output file path (default: stdout) |
+| `-t, --title` | Override the talk title |
+| `-d, --date` | Override the talk date (`YYYY-MM-DD`) |
+| `-f, --format` | Output format: `toml`, `json`, `yaml`, `cbor`, `msgpack`, `bincode`, or `html` |
+| `--theme` | Syntax highlighting theme |
+| `--list-themes` | Print the available themes and exit |
+| `--no-counter` | Disable automatic part/slide numbering |
+| `--no-stats` | Skip the stats summary |
+| `--wpm` | Override the speaking rate used for duration estimates |
+| `--exclude-notes-from-duration` | Remove speaker notes from duration estimates |
 
-## Folder structure
+## Input layout
 
-```
+The CLI expects a source folder with markdown or HTML files:
+
+```text
 slides/
-├── 01-introduction.md
-├── 02-concepts.md
-│   └── 02-subtopic.md
-└── 03-conclusion.md
+├── _cover.md
+├── _footer.md
+├── 01-introduction/
+│   ├── _part.md
+│   └── 01-welcome.md
+└── 02-deep-dive/
+    └── 01-details.md
 ```
 
-Each markdown file becomes a slide. Folders can be used for nesting.
+- `_cover.md` sets the title/date metadata.
+- `_part.md` creates a section divider.
+- Files are processed in alphabetical order.
+- Hidden files are ignored.
 
-## Markdown frontmatter
+## Frontmatter
+
+Source slides can include TOML frontmatter delimited by `+++`.
 
 ```markdown
----
-title: "Slide Title"
++++
+title = "Slide Title"
 duration = "5m"
-style = { background_color = "#fff", color = "#333" }
----
++++
 
-Slide content here...
+# Slide content
 ```
+
+For richer examples and failure modes, see the troubleshooting page.

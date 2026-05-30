@@ -1,94 +1,85 @@
 # Presentation Format
 
-The TOML presentation format is the native format for Toboggan.
+Toboggan serializes talks as TOML using the `Talk`, `Slide`, `Content`, and `TerminalConfig` types from `toboggan-core`.
 
-## Full example
+## Canonical shape
 
-````toml
-[presentation]
+```toml
 title = "My Talk"
-author = "Jane Doe"
-description = "An example presentation"
-version = "0.1.0"
+date = "2026-05-30"
+footer = "Optional footer"
+head = "Optional HTML head fragment"
 
 [[slides]]
 kind = "Part"
-title = "Part 1: Introduction"
+
+[slides.title]
+type = "Text"
+text = "Part 1: Introduction"
 
 [[slides]]
-title = "Welcome"
-body = '''
-Welcome to this presentation!
+kind = "Standard"
 
-This is a multi-line text block.
-'''
+[slides.title]
+type = "Text"
+text = "Welcome"
 
-[slides.style]
-background_color = "#2d3436"
-color = "#dfe6e9"
-
-[[slides.notes]]
-body = "Speaker notes go here"
-
-[[slides]]
-title = "Code Example"
-body = '''
-Here is some Rust code:
-
-```rust
-fn hello() {
-    println!("Hello!");
-}
+[slides.body]
+type = "Text"
+text = "Welcome to this presentation!"
 ```
-'''
 
-[[slides]]
-kind = "Part"
-title = "Part 2: Deep Dive"
-
-[[slides]]
-title = "Key Concepts"
-body = '''
-- First concept
-- Second concept
-- Third concept
-'''
-````
-
-## Field reference
-
-### Presentation
+## Talk fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `title` | String | Yes | Presentation title |
-| `author` | String | No | Author name |
-| `description` | String | No | Short description |
+| `date` | Date | Yes | Presentation date (`YYYY-MM-DD`) |
+| `footer` | String | No | Optional global footer |
+| `head` | String | No | Optional HTML inserted into the page head |
+| `slides` | Array | Yes | Ordered slide list |
 
-### Slide
+## Slide fields
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `kind` | String | No | `"Slide"` (default) or `"Part"` |
-| `title` | String | Yes | Slide title |
-| `body` | String | No | Slide body content (Markdown) |
-| `duration` | Duration | No | Auto-advance timer |
+| `kind` | String | No | `Cover`, `Part`, or `Standard` |
+| `title` | `Content` | No | Slide title content |
+| `body` | `Content` | No | Slide body content |
+| `notes` | `Content` | No | Speaker notes |
+| `style` | Style | No | CSS classes or inline style |
+| `terminals` | Array | No | Embedded terminal configurations |
 
-### Style
+## Content variants
+
+`Content` is serialized as a tagged enum:
+
+| Variant | Shape | Use |
+|---------|-------|-----|
+| `Empty` | omitted/default | No content |
+| `Text` | `{ "type": "Text", "text": "..." }` | Plain text or Markdown text |
+| `Html` | `{ "type": "Html", "raw": "...", "alt": "..." }` | Rich HTML with optional accessibility fallback |
+
+## Style fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `background_color` | String | CSS color |
-| `color` | String | Text color |
-| `font_size` | Integer | Font size in pixels |
+| `classes` | Array<String> | CSS classes |
+| `style` | String | Inline CSS |
 
-## Duration format
+## Embedded terminals
 
-Durations can be specified as:
+Slides can embed one or more terminal panes via `TerminalConfig`.
 
-| Format | Example | Result |
-|--------|---------|--------|
-| Seconds | `30s` | 30 seconds |
-| Minutes | `2m` | 2 minutes |
-| Hours | `1h` | 1 hour |
-| Combined | `1m 30s` | 1 minute 30 seconds |
+| Field | Type | Description |
+|-------|------|-------------|
+| `cwd` | String | Working directory |
+| `theme` | `dark` / `light` | Terminal theme |
+| `cmd` | String | Optional command to run |
+
+The markdown parser recognizes terminal blocks like `<!-- term: path/to/cwd -->` and variants with `:light` or `| command`.
+
+## Time values
+
+- Presentation dates use `YYYY-MM-DD`.
+- Durations in other config structures serialize as human-readable strings such as `30s`, `2m`, or `1m 30s`.

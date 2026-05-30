@@ -1,12 +1,10 @@
 # TUI Client
 
-The terminal UI client (`toboggan-tui`) allows you to view and control
-presentations from the terminal, using [Ratatui](https://ratatui.rs/).
+`toboggan-tui` is the terminal client built with `ratatui` and `crossterm`.
 
 ## Running
 
 ```bash
-# Connect to a running server
 toboggan-tui http://localhost:8080
 ```
 
@@ -17,23 +15,12 @@ toboggan-tui http://localhost:8080
 | `→` / `n` | Next slide |
 | `←` / `p` | Previous slide |
 | `q` / `Ctrl+C` | Quit |
-| `g` | Go to slide (type number) |
+| `g` | Go to slide |
 | `r` | Refresh / reconnect |
 | `?` | Toggle help |
 
-## Features
+## What it’s good for
 
-- Real-time slide display with syntax highlighting
-- Speaker notes view (with presenter mode)
-- Connection status indicator
-- Works over SSH — present remotely from any terminal
-
-## Example
-
-```bash
-# On the presentation machine
-toboggan-server talk.toml
-
-# On any machine connected to the same network
-toboggan-tui http://192.168.1.42:8080
-```
+- Presenting from SSH or a local terminal.
+- Controlling a presentation without opening a browser.
+- Reusing the same server protocol as every other client.
