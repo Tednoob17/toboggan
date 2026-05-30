@@ -1,5 +1,11 @@
 # Showcase: Rebuilding Trail of Bits Slides
 
+> **Note**: This page shows existing slides rebuilt in Toboggan as a **demonstration**
+> of what the format looks like for a real talk. The normal workflow is to write your
+> slides directly in Markdown or TOML — there is no need to deconstruct existing PDFs.
+> This example is just here to show how a real-world presentation maps to Toboggan's
+> format and to give you a starting point for your own slides.
+
 This page demonstrates how Toboggan can reproduce real conference presentations from their source code.
 
 ## "How to Fuzz Like a Pro" — DeFi Security Summit 2024
@@ -148,3 +154,11 @@ cargo run -p toboggan-server -- my_talk.toml
 ```
 
 Then open http://localhost:8080 and present.
+
+## Exporting to PDF
+
+Toboggan does not currently export slides to PDF — it is a live presentation system
+designed for real-time, multi-device playback via a WebSocket server. If you need a
+PDF version of your slides, you can use your browser's **Print → Save as PDF** feature
+while viewing the presentation at `http://localhost:8080`, or use a tool like
+[`wkhtmltopdf`](https://wkhtmltopdf.org/) to render the HTML output.
