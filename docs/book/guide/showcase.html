@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-42b47519.js";
+            window.path_to_searchindex_js = "../searchindex-2d709f57.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -189,9 +189,6 @@ This example is just here to show how a real-world presentation maps to Toboggan
 format and to give you a starting point for your own slides.</p>
 </blockquote>
 <p>This page demonstrates how Toboggan can reproduce real conference presentations from their source code.</p>
-<blockquote>
-<p><strong>Live demo</strong>: <a href="http://173.212.252.154:8081">http://173.212.252.154:8081</a> — the slides rebuilt below are running on this server.</p>
-</blockquote>
 <h2 id="how-to-fuzz-like-a-pro--defi-security-summit-2024"><a class="header" href="#how-to-fuzz-like-a-pro--defi-security-summit-2024">“How to Fuzz Like a Pro” — DeFi Security Summit 2024</a></h2>
 <p>This talk by <strong>Nat Chin</strong> and <strong>Josselin Feist</strong> of Trail of Bits introduces Echidna,
 a property-based fuzzer for Ethereum smart contracts. The original PDF is embedded below;
@@ -203,56 +200,20 @@ the Toboggan source code that reproduces it is shown alongside.</p>
   <a href="../assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 
 </object>
-<h3 id="toboggan-source-code-by-excerpt"><a class="header" href="#toboggan-source-code-by-excerpt">Toboggan Source Code (by excerpt)</a></h3>
-<p>Each PDF page is rendered as a high-resolution JPEG image (2160×1215 px at 3x zoom)
-and displayed as a full-width slide. Links and Twitter handles found in the PDF text
-are extracted and overlaid as clickable <code>&lt;a&gt;</code> elements.</p>
-<p>The complete file is at <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>.
-Presentation images are in <code>slides_ex/presentations/How to Fuzz Like a Pro/public/</code>.</p>
-<p>To serve with images:</p>
-<pre><code class="language-bash">toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --port 8081 --host 0.0.0.0
-</code></pre>
-<hr>
-<h4 id="1-cover--pdf-page-1"><a class="header" href="#1-cover--pdf-page-1">1. Cover –&gt; PDF page 1</a></h4>
-<pre><code class="language-toml">[[slides]]
-kind = "Standard"
-
-[slides.title]
-type = "Empty"
-
-[slides.body]
-type = "Html"
-raw = """
-&lt;div style="width:100%;height:100%;position:relative;
-            display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_01.jpg"
-       style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-&lt;/div&gt;
+<h3 id="complete-toml-file"><a class="header" href="#complete-toml-file">Complete TOML file</a></h3>
+<p>The full file is at <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>
+(51 slides, 880 lines). Here is the complete content — this is what your own TOML file
+should look like:</p>
+<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
+date = "2025-05-31"
+head = """
+&lt;style&gt;
+  .toboggan-footer { display: none; }
+&lt;/style&gt;
 """
 
-[slides.notes]
-type = "Empty"
-</code></pre>
-<hr>
-<h4 id="2-speaker-introductions--pdf-pages-2-3"><a class="header" href="#2-speaker-introductions--pdf-pages-2-3">2. Speaker introductions –&gt; PDF pages 2-3</a></h4>
-<pre><code class="language-toml">[[slides]]
-kind = "Standard"
-
-[slides.title]
-type = "Empty"
-
-[slides.body]
-type = "Html"
-raw = """
-&lt;div style="width:100%;height:100%;position:relative;
-            display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_02.jpg"
-       style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-&lt;/div&gt;
-"""
-
+# ── Slide 1 (PDF page 1) ──────────────────────────────────
+# Simple image: every slide follows this exact pattern.
 [[slides]]
 kind = "Standard"
 
@@ -262,18 +223,46 @@ type = "Empty"
 [slides.body]
 type = "Html"
 raw = """
-&lt;div style="width:100%;height:100%;position:relative;
-            display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_03.jpg"
-       style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_01.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
 &lt;/div&gt;
 """
+
+[slides.notes]
+type = "Empty"
+
+# ── Slides 2-13, 15-19, 21-50 (PDF pages 2-13, 15-19, 21-50) ──
+# All identical pattern — just change the page_XX.jpg filename.
+# ...
+
+# ── Slide 14 (PDF page 14) — with clickable link overlay ──
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_14.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+  &lt;a href="https://github.com/crytic/echidna" target="_blank" rel="noopener"
+     title="github.com/crytic/echidna"
+     style="position:absolute;left:14%;top:41.8%;width:30.9%;height:5%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+
+# ── Slide 20 (PDF page 20) — with link overlay ──
+# ...
+
+# ── Slide 51 (PDF page 51) — with 3 link overlays ──
+# ...
 </code></pre>
-<hr>
-<h4 id="3-presentation-body--pdf-pages-4-51"><a class="header" href="#3-presentation-body--pdf-pages-4-51">3. Presentation body –&gt; PDF pages 4-51</a></h4>
-<p>Each PDF page becomes one slide with its full-page image render.
-Pages that contain URLs or Twitter handles get transparent clickable overlays.</p>
-<p>For example, page 14 has a link to <code>github.com/crytic/echidna</code>:</p>
+<p><strong>Simple slide pattern</strong> — 46 slides out of 51:</p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -283,37 +272,44 @@ type = "Empty"
 [slides.body]
 type = "Html"
 raw = """
-&lt;div style="width:100%;height:100%;position:relative;
-            display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_14.jpg"
-       style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-  &lt;a href="https://github.com/crytic/echidna"
-     target="_blank" rel="noopener"
-     title="github.com/crytic/echidna"
-     style="position:absolute;left:14%;top:41.8%;
-            width:30.9%;height:5%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_XX.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
 &lt;/div&gt;
 """
+
+[slides.notes]
+type = "Empty"
 </code></pre>
-<p>The <code>left</code>, <code>top</code>, <code>width</code>, <code>height</code> are percentage-based coordinates calculated
-from the PDF text bounding box (720×405 pt page → CSS percentages).</p>
-<p>Other pages with clickable overlays:</p>
-<ul>
-<li><strong>Page 3</strong>: <code>@0xicingdeath</code> → <code>x.com/0xicingdeath</code></li>
-<li><strong>Page 20</strong>: Exercise link → <code>github.com/crytic/building-secure-contracts/...</code></li>
-<li><strong>Page 51</strong>: Echidna repo, building-secure-contracts, Trail of Bits jobs</li>
-</ul>
-<hr>
-<h4 id="4-global-configuration"><a class="header" href="#4-global-configuration">4. Global configuration</a></h4>
-<p>The TOML head hides the default footer bar, and the title is set to empty
-for a clean full-screen look:</p>
-<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
-date = "2025-05-31"
-head = """
-&lt;style&gt;
-  .toboggan-footer { display: none; }
-&lt;/style&gt;
+<p><strong>Slide with clickable overlay</strong> — 5 slides (pages 3, 14, 20, 51):</p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_14.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+  &lt;a href="https://github.com/crytic/echidna" target="_blank" rel="noopener"
+     title="github.com/crytic/echidna"
+     style="position:absolute;left:14%;top:41.8%;width:30.9%;height:5%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;/div&gt;
 """
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<p>The <code>left</code>/<code>top</code>/<code>width</code>/<code>height</code> are percentage-based coordinates from the
+PDF text bounding box (720×405 pt page → CSS %).</p>
+<h3 id="to-serve"><a class="header" href="#to-serve">To serve</a></h3>
+<pre><code class="language-bash">toboggan-server \
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
+  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
+  --port 8081 --host 0.0.0.0
+
+# Then open http://localhost:8081
 </code></pre>
 <hr>
 <h3 id="how-to-run-it"><a class="header" href="#how-to-run-it">How to Run It</a></h3>
