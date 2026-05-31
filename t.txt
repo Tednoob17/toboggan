@@ -1,0 +1,1 @@
+Toboggan est un système de présentation moderne et multiplateforme écrit en Rust. Écrivez vos slides en Markdown ou TOML, diffusez-les via un serveur WebSocket, et présentez depuis n'importe quel client — navigateur web, terminal, application de bureau ou appareil mobile.
