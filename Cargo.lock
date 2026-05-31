@@ -3578,7 +3578,7 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "toboggan-cli"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "clap",
@@ -3601,7 +3601,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-client"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "derive_more",
  "futures",
@@ -3617,7 +3617,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "derive_more",
  "getrandom 0.3.4",
@@ -3632,7 +3632,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-mobile"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "toboggan-client",
  "toboggan-core",
@@ -3642,7 +3642,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "axum",
@@ -3671,7 +3671,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-stats"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "scraper",
  "toboggan-core",
@@ -3679,7 +3679,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-tui"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anyhow",
  "clap",

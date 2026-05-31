@@ -1,6 +1,6 @@
 [package]
 name = "toboggan-server"
-version = "0.1.1"
+version = "0.1.1-beta.2"
 description = "Axum WebSocket server with REST API and real-time presentation synchronization"
 edition.workspace = true
 rust-version.workspace = true

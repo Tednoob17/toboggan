@@ -1,6 +1,6 @@
 [package]
 name = "toboggan-tui"
-version = "0.1.1"
+version = "0.1.1-beta.2"
 description = "Terminal user interface (TUI) for Toboggan presentations using ratatui"
 edition.workspace = true
 rust-version.workspace = true

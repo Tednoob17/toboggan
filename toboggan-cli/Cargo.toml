@@ -1,6 +1,6 @@
 [package]
 name = "toboggan-cli"
-version = "0.1.1"
+version = "0.1.1-beta.2"
 edition.workspace = true
 description = "Command-line interface for creating and converting Toboggan presentation files"
 keywords = ["presentation", "slides", "markdown", "toml", "cli"]
