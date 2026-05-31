@@ -148,26 +148,7 @@ cargo build -p toboggan-server
 
 Binaries are in `target/release/` (or `target/debug/` for dev builds).
 
-### Troubleshooting wasm-opt
+### Troubleshooting
 
-If `wasm-pack build` fails with:
-```
-memory.copy operations require bulk memory operations [--enable-bulk-memory-opt]
-```
-
-Replace the `wasm-opt` binary with a wrapper that injects the required flag:
-
-```bash
-# Locate the wasm-opt binary (check ~/.cache/.wasm-pack/wasm-opt-*/bin/)
-cd ~/.cache/.wasm-pack/wasm-opt-*/bin
-mv wasm-opt wasm-opt.real
-
-# Create wrapper script
-cat > wasm-opt << 'EOF'
-#!/bin/bash
-exec "$(dirname "$0")/wasm-opt.real" --enable-bulk-memory "$@"
-EOF
-chmod +x wasm-opt
-```
-
-Then re-run `wasm-pack build --target web --release`.
+For common issues (wasm-opt errors, missing dependencies, server placeholder, TUI connection problems),
+see the [Troubleshooting page](guide/cli-troubleshooting.md).

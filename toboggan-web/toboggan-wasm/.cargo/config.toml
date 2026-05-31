@@ -3,4 +3,8 @@ target = "wasm32-unknown-unknown"
 
 [target.wasm32-unknown-unknown]
 runner = "wasm-bindgen-test-runner"
-rustflags = ["--cfg", "getrandom_backend=\"wasm_js\""]
+rustflags = [
+  "--cfg", "getrandom_backend=\"wasm_js\"",
+  # Disable bulk-memory to avoid wasm-opt validation errors
+  "-Ctarget-feature=-bulk-memory",
+]

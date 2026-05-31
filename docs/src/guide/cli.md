@@ -15,7 +15,7 @@ toboggan-cli slides/ -f json -o presentation.json
 toboggan-cli --list-themes
 ```
 
-See [CLI Troubleshooting](guide/cli-troubleshooting.md) for common issues and fixes.
+See [Troubleshooting](cli-troubleshooting.md) for common issues and fixes.
 
 ## Arguments and options
 
