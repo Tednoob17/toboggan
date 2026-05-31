@@ -8,6 +8,8 @@
 
 This page demonstrates how Toboggan can reproduce real conference presentations from their source code.
 
+> **Live demo**: [http://173.212.252.154:8081](http://173.212.252.154:8081) — the slides rebuilt below are running on this server.
+
 ## "How to Fuzz Like a Pro" — DeFi Security Summit 2024
 
 This talk by **Nat Chin** and **Josselin Feist** of Trail of Bits introduces Echidna,
@@ -33,7 +35,8 @@ Presentation images are in `slides_ex/presentations/How to Fuzz Like a Pro/publi
 To serve with images:
 ```bash
 toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
+  --port 8081 --host 0.0.0.0
 ```
 
 ---
@@ -164,9 +167,10 @@ head = """
 # Serve the TOML file with its public image directory
 toboggan-server \
   "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
+  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
+  --port 8081 --host 0.0.0.0
 
-# Then open http://localhost:8080
+# Then open http://localhost:8081
 ```
 
 ### How It Was Made

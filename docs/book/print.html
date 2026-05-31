@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-cccf7fed.js";
+            window.path_to_searchindex_js = "searchindex-42b47519.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -1126,6 +1126,9 @@ This example is just here to show how a real-world presentation maps to Toboggan
 format and to give you a starting point for your own slides.</p>
 </blockquote>
 <p>This page demonstrates how Toboggan can reproduce real conference presentations from their source code.</p>
+<blockquote>
+<p><strong>Live demo</strong>: <a href="http://173.212.252.154:8081">http://173.212.252.154:8081</a> — the slides rebuilt below are running on this server.</p>
+</blockquote>
 <h2 id="how-to-fuzz-like-a-pro--defi-security-summit-2024"><a class="header" href="#how-to-fuzz-like-a-pro--defi-security-summit-2024">“How to Fuzz Like a Pro” — DeFi Security Summit 2024</a></h2>
 <p>This talk by <strong>Nat Chin</strong> and <strong>Josselin Feist</strong> of Trail of Bits introduces Echidna,
 a property-based fuzzer for Ethereum smart contracts. The original PDF is embedded below;
@@ -1145,7 +1148,8 @@ are extracted and overlaid as clickable <code>&lt;a&gt;</code> elements.</p>
 Presentation images are in <code>slides_ex/presentations/How to Fuzz Like a Pro/public/</code>.</p>
 <p>To serve with images:</p>
 <pre><code class="language-bash">toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
+  --port 8081 --host 0.0.0.0
 </code></pre>
 <hr>
 <h4 id="1-cover--pdf-page-1"><a class="header" href="#1-cover--pdf-page-1">1. Cover –&gt; PDF page 1</a></h4>
@@ -1253,9 +1257,10 @@ head = """
 <pre><code class="language-bash"># Serve the TOML file with its public image directory
 toboggan-server \
   "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
+  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
+  --port 8081 --host 0.0.0.0
 
-# Then open http://localhost:8080
+# Then open http://localhost:8081
 </code></pre>
 <h3 id="how-it-was-made"><a class="header" href="#how-it-was-made">How It Was Made</a></h3>
 <ol>
