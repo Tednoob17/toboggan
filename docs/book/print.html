@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-2d709f57.js";
+            window.path_to_searchindex_js = "searchindex-bd3d0ced.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -1118,18 +1118,8 @@ the server sees the same slide in real time. Perfect for:</p>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="showcase-rebuilding-trail-of-bits-slides"><a class="header" href="#showcase-rebuilding-trail-of-bits-slides">Showcase: Rebuilding Trail of Bits Slides</a></h1>
-<blockquote>
-<p><strong>Note</strong>: This page shows existing slides rebuilt in Toboggan as a <strong>demonstration</strong>
-of what the format looks like for a real talk. The normal workflow is to write your
-slides directly in Markdown or TOML — there is no need to deconstruct existing PDFs.
-This example is just here to show how a real-world presentation maps to Toboggan’s
-format and to give you a starting point for your own slides.</p>
-</blockquote>
-<p>This page demonstrates how Toboggan can reproduce real conference presentations from their source code.</p>
+<p>This page shows how Toboggan can reproduce a real PDF presentation as a TOML slide deck.</p>
 <h2 id="how-to-fuzz-like-a-pro--defi-security-summit-2024"><a class="header" href="#how-to-fuzz-like-a-pro--defi-security-summit-2024">“How to Fuzz Like a Pro” — DeFi Security Summit 2024</a></h2>
-<p>This talk by <strong>Nat Chin</strong> and <strong>Josselin Feist</strong> of Trail of Bits introduces Echidna,
-a property-based fuzzer for Ethereum smart contracts. The original PDF is embedded below;
-the Toboggan source code that reproduces it is shown alongside.</p>
 <h3 id="original-pdf"><a class="header" href="#original-pdf">Original PDF</a></h3>
 <object data="../assets/how-to-fuzz-like-a-pro.pdf" type="application/pdf" width="100%" height="600px">
   
@@ -1137,10 +1127,10 @@ the Toboggan source code that reproduces it is shown alongside.</p>
   <a href="assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 
 </object>
-<h3 id="complete-toml-file"><a class="header" href="#complete-toml-file">Complete TOML file</a></h3>
-<p>The full file is at <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>
-(51 slides, 880 lines). Here is the complete content — this is what your own TOML file
-should look like:</p>
+<h3 id="toml-code"><a class="header" href="#toml-code">TOML code</a></h3>
+<p>The file <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>
+converts each PDF page into a slide. 46 slides are plain page images, 5 slides have
+clickable URL overlays. The full file (880 lines) is shown below:</p>
 <pre><code class="language-toml">title = "How to Fuzz Like a Pro"
 date = "2025-05-31"
 head = """
@@ -1149,8 +1139,7 @@ head = """
 &lt;/style&gt;
 """
 
-# ── Slide 1 (PDF page 1) ──────────────────────────────────
-# Simple image: every slide follows this exact pattern.
+# ── Slide 1 ──
 [[slides]]
 kind = "Standard"
 
@@ -1168,11 +1157,10 @@ raw = """
 [slides.notes]
 type = "Empty"
 
-# ── Slides 2-13, 15-19, 21-50 (PDF pages 2-13, 15-19, 21-50) ──
-# All identical pattern — just change the page_XX.jpg filename.
+# ── Slides 2-13, 15-19, 21-50 (same pattern) ──
 # ...
 
-# ── Slide 14 (PDF page 14) — with clickable link overlay ──
+# ── Slide 14 — with clickable link ──
 [[slides]]
 kind = "Standard"
 
@@ -1192,178 +1180,13 @@ raw = """
 
 [slides.notes]
 type = "Empty"
-
-# ── Slide 20 (PDF page 20) — with link overlay ──
-# ...
-
-# ── Slide 51 (PDF page 51) — with 3 link overlays ──
-# ...
 </code></pre>
-<p><strong>Simple slide pattern</strong> — 46 slides out of 51:</p>
-<pre><code class="language-toml">[[slides]]
-kind = "Standard"
-
-[slides.title]
-type = "Empty"
-
-[slides.body]
-type = "Html"
-raw = """
-&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_XX.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-&lt;/div&gt;
-"""
-
-[slides.notes]
-type = "Empty"
-</code></pre>
-<p><strong>Slide with clickable overlay</strong> — 5 slides (pages 3, 14, 20, 51):</p>
-<pre><code class="language-toml">[[slides]]
-kind = "Standard"
-
-[slides.title]
-type = "Empty"
-
-[slides.body]
-type = "Html"
-raw = """
-&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
-  &lt;img src="public/page_14.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-  &lt;a href="https://github.com/crytic/echidna" target="_blank" rel="noopener"
-     title="github.com/crytic/echidna"
-     style="position:absolute;left:14%;top:41.8%;width:30.9%;height:5%;cursor:pointer;"&gt;&lt;/a&gt;
-&lt;/div&gt;
-"""
-
-[slides.notes]
-type = "Empty"
-</code></pre>
-<p>The <code>left</code>/<code>top</code>/<code>width</code>/<code>height</code> are percentage-based coordinates from the
-PDF text bounding box (720×405 pt page → CSS %).</p>
 <h3 id="to-serve"><a class="header" href="#to-serve">To serve</a></h3>
 <pre><code class="language-bash">toboggan-server \
   "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
   --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
   --port 8081 --host 0.0.0.0
-
-# Then open http://localhost:8081
 </code></pre>
-<hr>
-<h3 id="how-to-run-it"><a class="header" href="#how-to-run-it">How to Run It</a></h3>
-<pre><code class="language-bash"># Serve the TOML file with its public image directory
-toboggan-server \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
-  --port 8081 --host 0.0.0.0
-
-# Then open http://localhost:8081
-</code></pre>
-<h3 id="how-it-was-made"><a class="header" href="#how-it-was-made">How It Was Made</a></h3>
-<ol>
-<li>The original PDF slides were collected from the
-<a href="https://github.com/trailofbits/publications">Trail of Bits publications repository</a>.</li>
-<li>Each PDF page was rendered at 3x zoom (2160×1215 px) using PyMuPDF,
-saved as JPEG quality 95.</li>
-<li>URLs and Twitter handles were detected from PDF text spans and converted
-to clickable overlays with percentage-based positioning.</li>
-<li>The result is a <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>
-file with 51 slides, one per PDF page.</li>
-</ol>
-<h3 id="image-generation-script"><a class="header" href="#image-generation-script">Image generation script</a></h3>
-<pre><code class="language-python">import fitz
-doc = fitz.open("slides.pdf")
-zoom = 3.0
-mat = fitz.Matrix(zoom, zoom)
-for i in range(len(doc)):
-    pix = doc[i].get_pixmap(matrix=mat)
-    pix.save(f"public/page_{i+1:02d}.jpg", jpg_quality=95)
-</code></pre>
-<h3 id="files"><a class="header" href="#files">Files</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>File</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr><td><code>how-to-fuzz-like-a-pro.toml</code></td><td>Presentation definition (51 slides)</td></tr>
-<tr><td><code>public/page_01.jpg</code> … <code>public/page_51.jpg</code></td><td>Full-page slide renders at 2160×1215 px</td></tr>
-<tr><td><code>docs/src/assets/how-to-fuzz-like-a-pro.pdf</code></td><td>Original PDF source</td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="building-secure-smart-contracts--trail-of-bits-training"><a class="header" href="#building-secure-smart-contracts--trail-of-bits-training">“Building Secure Smart Contracts” — Trail of Bits Training</a></h2>
-<p>The <code>slides_ex/</code> directory also includes a multi-part presentation on smart contract
-security, reconstructed from Trail of Bits’ open-source training material at
-<a href="https://secure-contracts.com/">secure-contracts.com</a>.</p>
-<p>Unlike the pre-compiled TOML above, this one starts from <strong>Markdown source files</strong>
-in a folder structure:</p>
-<pre><code class="language-text">slides_ex/presentations/Building Secure Smart Contracts/
-├── _cover.md
-├── 01-motivation/
-│   ├── _part.md
-│   ├── 01-the-landscape.md
-│   └── 02-automation-pyramid.md
-├── 02-tools/
-│   ├── _part.md
-│   ├── 01-slither.md
-│   └── 02-echidna.md
-├── 03-static-analysis/
-│   ├── _part.md
-│   ├── 01-detecting-reentrancy.md
-│   └── 02-slither-python-api.md
-├── 04-fuzzing/
-│   ├── _part.md
-│   ├── 01-writing-invariants.md
-│   └── 02-configuration.md
-└── 05-conclusion/
-    ├── _part.md
-    ├── 01-takeaways.md
-    └── 02-resources.md
-</code></pre>
-<p>Convert and serve it:</p>
-<pre><code class="language-bash">toboggan-cli "slides_ex/presentations/Building Secure Smart Contracts/" -o building_secure.toml
-toboggan-server building_secure.toml
-</code></pre>
-<h3 id="key-features-demonstrated"><a class="header" href="#key-features-demonstrated">Key Features Demonstrated</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Feature</th><th>Usage</th></tr>
-</thead>
-<tbody>
-<tr><td><strong>Cover slides</strong></td><td><code>_cover.md</code> at the folder root</td></tr>
-<tr><td><strong>Part dividers</strong></td><td><code>_part.md</code> files in subdirectories</td></tr>
-<tr><td><strong>Slide ordering</strong></td><td>Numerical prefixes (<code>01-</code>, <code>02-</code>) control order</td></tr>
-<tr><td><strong>Pause points</strong></td><td><code>&lt;!-- pause --&gt;</code> creates step-by-step reveals</td></tr>
-<tr><td><strong>Speaker notes</strong></td><td><code>&lt;!-- notes --&gt;</code> for presenter-only content</td></tr>
-<tr><td><strong>Code blocks</strong></td><td>Fenced code with language tags for syntax highlighting</td></tr>
-<tr><td><strong>Frontmatter</strong></td><td><code>+++</code> delimited TOML for per-slide metadata</td></tr>
-<tr><td><strong>Multi-format output</strong></td><td>Convert to <code>toml</code>, <code>json</code>, <code>yaml</code>, or <code>html</code></td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="try-it-yourself"><a class="header" href="#try-it-yourself">Try It Yourself</a></h2>
-<p>The full source for both examples is in the <code>slides_ex/</code> directory of the repository.
-Clone the repo and experiment:</p>
-<pre><code class="language-bash">git clone https://github.com/Tednoob17/toboggan
-cd toboggan
-
-# Try the pre-built talk
-cargo run -p toboggan-server -- \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
-
-# Or build from markdown sources
-cargo run -p toboggan-cli -- "slides_ex/presentations/Building Secure Smart Contracts/" -o my_talk.toml
-cargo run -p toboggan-server -- my_talk.toml
-</code></pre>
-<p>Then open http://localhost:8080 and present.</p>
-<h2 id="exporting-to-pdf"><a class="header" href="#exporting-to-pdf">Exporting to PDF</a></h2>
-<p>Toboggan does not currently export slides to PDF — it is a live presentation system
-designed for real-time, multi-device playback via a WebSocket server. If you need a
-PDF version of your slides, you can use your browser’s <strong>Print –&gt; Save as PDF</strong> feature
-while viewing the presentation at <code>http://localhost:8080</code>, or use a tool like
-<a href="https://wkhtmltopdf.org/"><code>wkhtmltopdf</code></a> to render the HTML output.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h1>
 <p>Toboggan découple l’ordinateur qui fait tourner la présentation de l’appareil qui la contrôle. Résultat : des scénarios impossibles avec un setup classique deviennent triviaux.</p>
