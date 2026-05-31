@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-07c45092.js";
+            window.path_to_searchindex_js = "../searchindex-31d2a0e0.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -181,19 +181,39 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="showcase-rebuilding-trail-of-bits-slides"><a class="header" href="#showcase-rebuilding-trail-of-bits-slides">Showcase: Rebuilding Trail of Bits Slides</a></h1>
-<p>This page shows how Toboggan can reproduce a real PDF presentation as a TOML slide deck.</p>
-<h2 id="how-to-fuzz-like-a-pro--defi-security-summit-2024"><a class="header" href="#how-to-fuzz-like-a-pro--defi-security-summit-2024">“How to Fuzz Like a Pro” — DeFi Security Summit 2024</a></h2>
-<h3 id="original-pdf"><a class="header" href="#original-pdf">Original PDF</a></h3>
+<p>This page documents how the PDF presentation <strong>“How to Fuzz Like a Pro”</strong>
+was rebuilt as a Toboggan TOML slide deck. Each of the 51 PDF pages is
+rendered as a high-resolution JPEG image and displayed as one slide.</p>
+<h2 id="original-pdf"><a class="header" href="#original-pdf">Original PDF</a></h2>
 <object data="../assets/how-to-fuzz-like-a-pro.pdf" type="application/pdf" width="100%" height="600px">
   
 <p>Your browser does not support embedded PDFs.
   <a href="../assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 
 </object>
-<h3 id="toml-code-slide-by-slide"><a class="header" href="#toml-code-slide-by-slide">TOML code slide by slide</a></h3>
-<p>The full file is <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>.
-Each PDF page becomes one slide. Images are in <code>public/</code>.</p>
-<h4 id="slide-1--pdf-page-1-cover"><a class="header" href="#slide-1--pdf-page-1-cover">Slide 1 → PDF page 1 (Cover)</a></h4>
+<h2 id="global-configuration"><a class="header" href="#global-configuration">Global configuration</a></h2>
+<p>At the top of the TOML file, the presentation title, date, and a custom
+<code>&lt;head&gt;</code> injection hide the Toboggan footer bar:</p>
+<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
+date = "2025-05-31"
+head = """
+&lt;style&gt;
+  .toboggan-footer { display: none; }
+&lt;/style&gt;
+"""
+</code></pre>
+<p>Each PDF page is rendered at 3x zoom (2160×1215 px) using PyMuPDF,
+saved as JPEG quality 95. Links and Twitter handles found in the PDF
+text are overlaid as clickable <code>&lt;a&gt;</code> elements with percentage-based
+positioning. The complete TOML file (880 lines) is at
+<code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>.
+Images are in <code>slides_ex/presentations/How to Fuzz Like a Pro/public/</code>.</p>
+<h2 id="slide-1--pdf-page-1"><a class="header" href="#slide-1--pdf-page-1">Slide 1 — PDF page 1</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>1
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -211,7 +231,14 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h4 id="slide-2--pdf-page-2-speaker-nat-chin"><a class="header" href="#slide-2--pdf-page-2-speaker-nat-chin">Slide 2 → PDF page 2 (Speaker: Nat Chin)</a></h4>
+<h2 id="slide-2--pdf-page-2"><a class="header" href="#slide-2--pdf-page-2">Slide 2 — PDF page 2</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>2
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Building secure contracts:
+How to fuzz like a pro
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -229,7 +256,18 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h4 id="slide-3--pdf-page-3-speaker-josselin-feist-with-0xicingdeath-link"><a class="header" href="#slide-3--pdf-page-3-speaker-josselin-feist-with-0xicingdeath-link">Slide 3 → PDF page 3 (Speaker: Josselin Feist, with @0xicingdeath link)</a></h4>
+<h2 id="slide-3--pdf-page-3"><a class="header" href="#slide-3--pdf-page-3">Slide 3 — PDF page 3</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>3
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Who am I?
+•
+Nat Chin (@0xicingdeath)
+Trail of Bits: trailofbits.com
+◦
+We help developers to build safer software
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -250,9 +288,295 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h4 id="slides-4-13--pdf-pages-4-13-presentation-body--simple-images"><a class="header" href="#slides-4-13--pdf-pages-4-13-presentation-body--simple-images">Slides 4-13 → PDF pages 4-13 (Presentation body — simple images)</a></h4>
-<p>All follow the same pattern as slide 1, just with <code>page_04.jpg</code> through <code>page_13.jpg</code>.</p>
-<h4 id="slide-14--pdf-page-14-echidna-overview-with-link"><a class="header" href="#slide-14--pdf-page-14-echidna-overview-with-link">Slide 14 → PDF page 14 (Echidna overview, with link)</a></h4>
+<blockquote>
+<p>This slide has a <strong>clickable overlay</strong> — the URL is extracted from the PDF
+text and positioned as a transparent <code>&lt;a&gt;</code> element on top of the image.</p>
+</blockquote>
+<h2 id="slide-4--pdf-page-4"><a class="header" href="#slide-4--pdf-page-4">Slide 4 — PDF page 4</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>4
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Agenda
+•
+How to ﬁnd bugs?
+What is property based testing?
+How to deﬁne good invariants?
+Comparison with similar tools
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_04.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-5--pdf-page-5"><a class="header" href="#slide-5--pdf-page-5">Slide 5 — PDF page 5</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>5
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+How to Find Bugs?
+/// @notice Allow users to buy token. 1 ether = 10 tokens
+/// @param tokens The numbers of token to buy
+/// @dev Users can send more ether than token to be bought, to give gifts to the
+team.
+function buy...
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_05.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-6--pdf-page-6"><a class="header" href="#slide-6--pdf-page-6">Slide 6 — PDF page 6</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>6
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+How to Find Bugs?
+•
+Main techniques
+◦
+Unit tests
+Manual analysis
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_06.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-7--pdf-page-7"><a class="header" href="#slide-7--pdf-page-7">Slide 7 — PDF page 7</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>7
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Full automated - Example
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_07.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-8--pdf-page-8"><a class="header" href="#slide-8--pdf-page-8">Slide 8 — PDF page 8</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>8
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+How to Find Bugs?
+•
+Semi automated analysis
+◦
+Beneﬁts
+▫
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_08.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-9--pdf-page-9"><a class="header" href="#slide-9--pdf-page-9">Slide 9 — PDF page 9</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>9
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+What is property based testing?
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_09.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-10--pdf-page-10"><a class="header" href="#slide-10--pdf-page-10">Slide 10 — PDF page 10</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>10
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Fuzzing
+•
+Stress the program with
+random inputs*
+◦
+Most basic fuzzer: randomly
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_10.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-11--pdf-page-11"><a class="header" href="#slide-11--pdf-page-11">Slide 11 — PDF page 11</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>11
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Property based testing
+•
+Traditional fuzzer usually for crashes
+◦
+Smart contracts don’t (really) have crashes
+User deﬁnes invariants
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_11.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-12--pdf-page-12"><a class="header" href="#slide-12--pdf-page-12">Slide 12 — PDF page 12</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>12
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Invariant
+•
+Something that must
+always be true
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_12.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-13--pdf-page-13"><a class="header" href="#slide-13--pdf-page-13">Slide 13 — PDF page 13</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>13
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_13.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-14--pdf-page-14"><a class="header" href="#slide-14--pdf-page-14">Slide 14 — PDF page 14</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>14
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna
+•
+Smart contract fuzzer
+Open source:
+github.com/crytic/echidna
+Heavily used in audits &amp; mature
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -273,8 +597,159 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h4 id="slides-15-19--pdf-pages-15-19-presentation-body--simple-images"><a class="header" href="#slides-15-19--pdf-pages-15-19-presentation-body--simple-images">Slides 15-19 → PDF pages 15-19 (Presentation body — simple images)</a></h4>
-<h4 id="slide-20--pdf-page-20-exercise-link"><a class="header" href="#slide-20--pdf-page-20-exercise-link">Slide 20 → PDF page 20 (Exercise link)</a></h4>
+<blockquote>
+<p>This slide has a <strong>clickable overlay</strong> — the URL is extracted from the PDF
+text and positioned as a transparent <code>&lt;a&gt;</code> element on top of the image.</p>
+</blockquote>
+<h2 id="slide-15--pdf-page-15"><a class="header" href="#slide-15--pdf-page-15">Slide 15 — PDF page 15</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>15
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Invariant - Token’s total supply
+User balance never exceeds total supply
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_15.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-16--pdf-page-16"><a class="header" href="#slide-16--pdf-page-16">Slide 16 — PDF page 16</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>16
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Workﬂow
+•
+Write invariant as Solidity code
+“User balance never exceeds total supply”
+function echidna_balance_of_total_supply() public
+returns(bool){
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_16.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-17--pdf-page-17"><a class="header" href="#slide-17--pdf-page-17">Slide 17 — PDF page 17</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>17
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Workﬂow
+contract Token {
+uint256 totalSupply;
+mapping (address =&gt; uint256) balances;
+function transfer(address to, uint256
+amount) {
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_17.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-18--pdf-page-18"><a class="header" href="#slide-18--pdf-page-18">Slide 18 — PDF page 18</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>18
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Demo
+pragma solidity 0.7.0;
+contract Token{
+mapping(address =&gt; uint) public balances;
+function transfer(address to, uint value) public{
+balances[msg.sender] -= value;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_18.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-19--pdf-page-19"><a class="header" href="#slide-19--pdf-page-19">Slide 19 — PDF page 19</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>19
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Demo
+pragma solidity 0.7.0;
+contract TestToken is Token {
+address echidna_caller = msg.sender;
+constructor() public {
+balances[echidna_caller] = 10000;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_19.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-20--pdf-page-20"><a class="header" href="#slide-20--pdf-page-20">Slide 20 — PDF page 20</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>20
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Demo
+https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -286,8 +761,7 @@ type = "Html"
 raw = """
 &lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
   &lt;img src="public/page_20.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
-  &lt;a href="https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md"
-     target="_blank" rel="noopener"
+  &lt;a href="https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md" target="_blank" rel="noopener"
      style="position:absolute;left:9%;top:78%;width:77.2%;height:3.1%;cursor:pointer;"&gt;&lt;/a&gt;
 &lt;/div&gt;
 """
@@ -295,8 +769,861 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h4 id="slides-21-50--pdf-pages-21-50-presentation-body--simple-images"><a class="header" href="#slides-21-50--pdf-pages-21-50-presentation-body--simple-images">Slides 21-50 → PDF pages 21-50 (Presentation body — simple images)</a></h4>
-<h4 id="slide-51--pdf-page-51-conclusion-3-links"><a class="header" href="#slide-51--pdf-page-51-conclusion-3-links">Slide 51 → PDF page 51 (Conclusion, 3 links)</a></h4>
+<blockquote>
+<p>This slide has a <strong>clickable overlay</strong> — the URL is extracted from the PDF
+text and positioned as a transparent <code>&lt;a&gt;</code> element on top of the image.</p>
+</blockquote>
+<h2 id="slide-21--pdf-page-21"><a class="header" href="#slide-21--pdf-page-21">Slide 21 — PDF page 21</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>21
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna - Workﬂow
+pragma solidity 0.7.0;
+contract Token {   //address(0x0)       1
+function transfer(address to, uint value)
+public{
+balances[msg.sender] -= value;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_21.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-22--pdf-page-22"><a class="header" href="#slide-22--pdf-page-22">Slide 22 — PDF page 22</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>22
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+How to deﬁne good invariants
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_22.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-23--pdf-page-23"><a class="header" href="#slide-23--pdf-page-23">Slide 23 — PDF page 23</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>23
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Deﬁning good invariants
+•
+Start small, and iterate
+Steps
+1.
+Deﬁne invariants in English
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_23.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-24--pdf-page-24"><a class="header" href="#slide-24--pdf-page-24">Slide 24 — PDF page 24</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>24
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Identify invariants
+•
+Sit down and think about what the contract is supposed to do
+Write the invariant in plain English
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_24.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-25--pdf-page-25"><a class="header" href="#slide-25--pdf-page-25">Slide 25 — PDF page 25</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>25
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Identify invariants: Maths
+•
+Math library
+◦
+Commutative property
+▫
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_25.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-26--pdf-page-26"><a class="header" href="#slide-26--pdf-page-26">Slide 26 — PDF page 26</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>26
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Identify invariants: tokens
+•
+ERC20.total_supply
+◦
+No user should have a balance &gt; total_supply
+ERC20.transfer:
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_26.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-27--pdf-page-27"><a class="header" href="#slide-27--pdf-page-27">Slide 27 — PDF page 27</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>27
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Identify invariants: tokens
+•
+ERC20.total_supply
+◦
+No user should have a balance &gt; total_supply
+ERC20.transfer:
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_27.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-28--pdf-page-28"><a class="header" href="#slide-28--pdf-page-28">Slide 28 — PDF page 28</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>28
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Write invariants in Solidity
+•
+Identify the target of the invariant
+◦
+Function-level invariant
+▫
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_28.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-29--pdf-page-29"><a class="header" href="#slide-29--pdf-page-29">Slide 29 — PDF page 29</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>29
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Function-level invariant
+•
+Inherit the target
+Create function and call the targeted function
+Use assert to check the property
+contract TestMath is Math{
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_29.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-30--pdf-page-30"><a class="header" href="#slide-30--pdf-page-30">Slide 30 — PDF page 30</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>30
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+•
+Require initialization
+◦
+Simple initialization: constructor or inheritance
+Complex initialization: leverage your unit test/deployment scripts
+etheno
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_30.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-31--pdf-page-31"><a class="header" href="#slide-31--pdf-page-31">Slide 31 — PDF page 31</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>31
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+System level invariant
+contract TestToken is Token {
+address echidna_caller =
+0x00a329C0648769a73afAC7F9381e08fb43DBEA70;
+constructor() public{
+balances[echidna_caller] = 10000;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_31.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-32--pdf-page-32"><a class="header" href="#slide-32--pdf-page-32">Slide 32 — PDF page 32</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>32
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Where to focus?
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_32.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-33--pdf-page-33"><a class="header" href="#slide-33--pdf-page-33">Slide 33 — PDF page 33</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>33
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Where to focus?
+•
+In practice: you don’t know where the bugs are
+Code coverage vs behavior coverage
+◦
+Cover as many functions as possible or;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_33.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-34--pdf-page-34"><a class="header" href="#slide-34--pdf-page-34">Slide 34 — PDF page 34</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>34
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+•
+Try different strategies
+◦
+Behavior coverage ﬁrst
+▫
+Focus on 1 or 2 components
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_34.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-35--pdf-page-35"><a class="header" href="#slide-35--pdf-page-35">Slide 35 — PDF page 35</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>35
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+•
+Start simple, then think about composition, related behaviors,
+etc…
+◦
+Can transfer and transferFrom be equivalent?
+▫
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_35.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-36--pdf-page-36"><a class="header" href="#slide-36--pdf-page-36">Slide 36 — PDF page 36</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>36
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+•
+Start simple, then think about composition, related behaviors,
+etc…
+◦
+Can transfer and transferFrom be equivalent?
+▫
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_36.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-37--pdf-page-37"><a class="header" href="#slide-37--pdf-page-37">Slide 37 — PDF page 37</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>37
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Where to focus?
+•
+Building your own experience will make you more efficient over
+time
+Learn on how to think about invariants is a key component to
+write better code
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_37.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-38--pdf-page-38"><a class="header" href="#slide-38--pdf-page-38">Slide 38 — PDF page 38</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>38
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_38.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-39--pdf-page-39"><a class="header" href="#slide-39--pdf-page-39">Slide 39 — PDF page 39</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>39
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+/// @notice Allow users to buy token. 1 ether = 10 tokens
+/// @param tokens The numbers of token to buy
+/// @dev Users can send more ether than token to be bought, to give gifts to the
+team.
+function buy(uint tokens...
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_39.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-40--pdf-page-40"><a class="header" href="#slide-40--pdf-page-40">Slide 40 — PDF page 40</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>40
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+•
+buy is stateful
+_valid_buy is stateless
+◦
+Start with it
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_40.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-41--pdf-page-41"><a class="header" href="#slide-41--pdf-page-41">Slide 41 — PDF page 41</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>41
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+•
+What invariants?
+function _valid_buy(uint desired_tokens, uint wei_sent) internal view{
+uint required_wei_sent = (desired_tokens / 10) * decimals;
+require(wei_sent &gt;= required_wei_sent);
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_41.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-42--pdf-page-42"><a class="header" href="#slide-42--pdf-page-42">Slide 42 — PDF page 42</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>42
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+•
+What invariants?
+◦
+If wei_sent is zero, desired_tokens must be zero
+function _valid_buy(uint desired_tokens, uint wei_sent) internal view{
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_42.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-43--pdf-page-43"><a class="header" href="#slide-43--pdf-page-43">Slide 43 — PDF page 43</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>43
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+function assert_no_free_token(uint desired_amount) public {
+require(desired_amount&gt;0);
+_valid_buy(desired_amount, 0);
+assert(false); // this should never be reached
+}
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_43.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-44--pdf-page-44"><a class="header" href="#slide-44--pdf-page-44">Slide 44 — PDF page 44</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>44
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+&lt;Demo&gt;
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_44.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-45--pdf-page-45"><a class="header" href="#slide-45--pdf-page-45">Slide 45 — PDF page 45</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>45
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Demo
+// 1
+function assert_no_free_token(uint desired_amount) public {
+require(desired_amount&gt;0);
+_valid_buy(desired_amount, 0);
+assert(false); // this should never be reached
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_45.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-46--pdf-page-46"><a class="header" href="#slide-46--pdf-page-46">Slide 46 — PDF page 46</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>46
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Comparison with similar tools
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_46.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-47--pdf-page-47"><a class="header" href="#slide-47--pdf-page-47">Slide 47 — PDF page 47</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>47
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Other fuzzers
+•
+Inbuilt in dapp, brownie, foundry, ..
+Might be easier for simple test, however
+◦
+Less powerful (e.g. not stateful in foundry)
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_47.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-48--pdf-page-48"><a class="header" href="#slide-48--pdf-page-48">Slide 48 — PDF page 48</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>48
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Formal methods based approach
+•
+Manticore, KEVM, Certora, ..
+Provide proofs, however
+◦
+More diﬃcult to use
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_48.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-49--pdf-page-49"><a class="header" href="#slide-49--pdf-page-49">Slide 49 — PDF page 49</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>49
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Echidna’s advantages
+•
+Echidna has unique additional advanced features
+◦
+Can target high gas consumption functions
+Diﬀerential fuzzing
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_49.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-50--pdf-page-50"><a class="header" href="#slide-50--pdf-page-50">Slide 50 — PDF page 50</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>50
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Conclusion
+</code></pre>
+<p><strong>TOML code:</strong></p>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_50.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h2 id="slide-51--pdf-page-51"><a class="header" href="#slide-51--pdf-page-51">Slide 51 — PDF page 51</a></h2>
+<p><strong>Content:</strong></p>
+<pre><code>51
+DeFi Security Summit     |     Building Secure Contracts: Fuzzing like a pro
+Conclusion
+•
+https://github.com/crytic/echidna
+To learn more: github.com/crytic/building-secure-contracts
+Start by writing invariants in English, then write Solidity properties
+◦
+</code></pre>
+<p><strong>TOML code:</strong></p>
 <pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
@@ -320,16 +1647,11 @@ raw = """
 [slides.notes]
 type = "Empty"
 </code></pre>
-<h3 id="global-config-top-of-the-file"><a class="header" href="#global-config-top-of-the-file">Global config (top of the file)</a></h3>
-<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
-date = "2025-05-31"
-head = """
-&lt;style&gt;
-  .toboggan-footer { display: none; }
-&lt;/style&gt;
-"""
-</code></pre>
-<h3 id="to-serve"><a class="header" href="#to-serve">To serve</a></h3>
+<blockquote>
+<p>This slide has a <strong>clickable overlay</strong> — the URL is extracted from the PDF
+text and positioned as a transparent <code>&lt;a&gt;</code> element on top of the image.</p>
+</blockquote>
+<h2 id="how-to-serve"><a class="header" href="#how-to-serve">How to serve</a></h2>
 <pre><code class="language-bash">toboggan-server \
   "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
   --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
