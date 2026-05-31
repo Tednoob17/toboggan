@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-bd3d0ced.js";
+            window.path_to_searchindex_js = "searchindex-07c45092.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -1127,20 +1127,11 @@ the server sees the same slide in real time. Perfect for:</p>
   <a href="assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 
 </object>
-<h3 id="toml-code"><a class="header" href="#toml-code">TOML code</a></h3>
-<p>The file <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>
-converts each PDF page into a slide. 46 slides are plain page images, 5 slides have
-clickable URL overlays. The full file (880 lines) is shown below:</p>
-<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
-date = "2025-05-31"
-head = """
-&lt;style&gt;
-  .toboggan-footer { display: none; }
-&lt;/style&gt;
-"""
-
-# ── Slide 1 ──
-[[slides]]
+<h3 id="toml-code-slide-by-slide"><a class="header" href="#toml-code-slide-by-slide">TOML code slide by slide</a></h3>
+<p>The full file is <code>slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml</code>.
+Each PDF page becomes one slide. Images are in <code>public/</code>.</p>
+<h4 id="slide-1--pdf-page-1-cover"><a class="header" href="#slide-1--pdf-page-1-cover">Slide 1 → PDF page 1 (Cover)</a></h4>
+<pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
 [slides.title]
@@ -1156,12 +1147,50 @@ raw = """
 
 [slides.notes]
 type = "Empty"
+</code></pre>
+<h4 id="slide-2--pdf-page-2-speaker-nat-chin"><a class="header" href="#slide-2--pdf-page-2-speaker-nat-chin">Slide 2 → PDF page 2 (Speaker: Nat Chin)</a></h4>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
 
-# ── Slides 2-13, 15-19, 21-50 (same pattern) ──
-# ...
+[slides.title]
+type = "Empty"
 
-# ── Slide 14 — with clickable link ──
-[[slides]]
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_02.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h4 id="slide-3--pdf-page-3-speaker-josselin-feist-with-0xicingdeath-link"><a class="header" href="#slide-3--pdf-page-3-speaker-josselin-feist-with-0xicingdeath-link">Slide 3 → PDF page 3 (Speaker: Josselin Feist, with @0xicingdeath link)</a></h4>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_03.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+  &lt;a href="https://x.com/0xicingdeath" target="_blank" rel="noopener"
+     title="x.com/0xicingdeath"
+     style="position:absolute;left:25.9%;top:29.9%;width:18.1%;height:5.3%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h4 id="slides-4-13--pdf-pages-4-13-presentation-body--simple-images"><a class="header" href="#slides-4-13--pdf-pages-4-13-presentation-body--simple-images">Slides 4-13 → PDF pages 4-13 (Presentation body — simple images)</a></h4>
+<p>All follow the same pattern as slide 1, just with <code>page_04.jpg</code> through <code>page_13.jpg</code>.</p>
+<h4 id="slide-14--pdf-page-14-echidna-overview-with-link"><a class="header" href="#slide-14--pdf-page-14-echidna-overview-with-link">Slide 14 → PDF page 14 (Echidna overview, with link)</a></h4>
+<pre><code class="language-toml">[[slides]]
 kind = "Standard"
 
 [slides.title]
@@ -1180,6 +1209,62 @@ raw = """
 
 [slides.notes]
 type = "Empty"
+</code></pre>
+<h4 id="slides-15-19--pdf-pages-15-19-presentation-body--simple-images"><a class="header" href="#slides-15-19--pdf-pages-15-19-presentation-body--simple-images">Slides 15-19 → PDF pages 15-19 (Presentation body — simple images)</a></h4>
+<h4 id="slide-20--pdf-page-20-exercise-link"><a class="header" href="#slide-20--pdf-page-20-exercise-link">Slide 20 → PDF page 20 (Exercise link)</a></h4>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_20.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+  &lt;a href="https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md"
+     target="_blank" rel="noopener"
+     style="position:absolute;left:9%;top:78%;width:77.2%;height:3.1%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h4 id="slides-21-50--pdf-pages-21-50-presentation-body--simple-images"><a class="header" href="#slides-21-50--pdf-pages-21-50-presentation-body--simple-images">Slides 21-50 → PDF pages 21-50 (Presentation body — simple images)</a></h4>
+<h4 id="slide-51--pdf-page-51-conclusion-3-links"><a class="header" href="#slide-51--pdf-page-51-conclusion-3-links">Slide 51 → PDF page 51 (Conclusion, 3 links)</a></h4>
+<pre><code class="language-toml">[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+&lt;div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;"&gt;
+  &lt;img src="public/page_51.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;"&gt;
+  &lt;a href="https://github.com/crytic/echidna" target="_blank" rel="noopener"
+     style="position:absolute;left:14%;top:29.9%;width:37.5%;height:4.7%;cursor:pointer;"&gt;&lt;/a&gt;
+  &lt;a href="https://github.com/crytic/building-secure-contracts" target="_blank" rel="noopener"
+     style="position:absolute;left:28.9%;top:34.9%;width:47.1%;height:4.5%;cursor:pointer;"&gt;&lt;/a&gt;
+  &lt;a href="https://jobs.lever.co/trailofbits" target="_blank" rel="noopener"
+     style="position:absolute;left:22.8%;top:68%;width:31.8%;height:4.5%;cursor:pointer;"&gt;&lt;/a&gt;
+&lt;/div&gt;
+"""
+
+[slides.notes]
+type = "Empty"
+</code></pre>
+<h3 id="global-config-top-of-the-file"><a class="header" href="#global-config-top-of-the-file">Global config (top of the file)</a></h3>
+<pre><code class="language-toml">title = "How to Fuzz Like a Pro"
+date = "2025-05-31"
+head = """
+&lt;style&gt;
+  .toboggan-footer { display: none; }
+&lt;/style&gt;
+"""
 </code></pre>
 <h3 id="to-serve"><a class="header" href="#to-serve">To serve</a></h3>
 <pre><code class="language-bash">toboggan-server \
