@@ -105,6 +105,19 @@ journalctl -u toboggan.service -f
 
 ### Install from source
 
+**Step 1: Install Rust**
+
+If you don't have Rust installed yet:
+
+```bash
+# Download and install Rust (choose default options when prompted)
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Restart your terminal or run:
+source "$HOME/.cargo/env"
+```
+
+**Step 2: Build Toboggan**
+
 ```bash
 # Clone the repository
 git clone https://github.com/Tednoob17/toboggan
@@ -113,11 +126,11 @@ cd toboggan
 # Build the main workspace (CLI + server + TUI)
 cargo build --release
 
-# For the desktop app (requires more RAM):
+# For the desktop app (requires more RAM and GPU drivers):
 cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 
 # Run the server with an example presentation
-cargo run -p toboggan-server -- path/to/your-talk.toml
+cargo run -p toboggan-server -- "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
 ```
 
 ### Try the example presentations

@@ -29,12 +29,15 @@ and all API endpoints still function). To build the full UI:
 
 ### Build steps
 
+> **Tip**: The `--release` flag makes the WASM build slower (3-5 minutes)
+> but produces smaller, faster files. For quick testing, you can use `--dev` instead.
+
 ```bash
 # Step 1: Build the WASM crate (Rust → WebAssembly)
 cd toboggan-web/toboggan-wasm
 wasm-pack build --target web --release
 
-# Step 2: Build the TypeScript frontend
+# Step 2: Build the TypeScript frontend (fast, ~1 minute)
 cd ..
 npm install         # first time only
 npm run build       # = tsc && vite build

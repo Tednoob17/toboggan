@@ -73,22 +73,25 @@ memory.copy operations require bulk memory operations [--enable-bulk-memory-opt]
 **Cause**: The Rust compiler generates WASM with bulk memory instructions (`memory.copy`, `memory.fill`),
 but the `wasm-opt` tool (from binaryen) requires `--enable-bulk-memory` to process them.
 
-**Fix**: Replace the `wasm-opt` binary with a wrapper script:
+**Fix**: Replace the `wasm-opt` binary with a wrapper script that enables the needed WASM features:
 
 ```bash
-# Locate the wasm-opt binary
+# Locate the wasm-opt binary (the * wildcard will match the version folder)
 cd ~/.cache/.wasm-pack/wasm-opt-*/bin/
 mv wasm-opt wasm-opt.real
 
-# Create a wrapper that injects the required flag
+# Create a wrapper that injects the required flags
 cat > wasm-opt << 'EOF'
 #!/bin/bash
-exec "$(dirname "$0")/wasm-opt.real" --enable-bulk-memory "$@"
+exec "$(dirname "$0")/wasm-opt.real" --enable-bulk-memory-opt --enable-nontrapping-float-to-int "$@"
 EOF
 chmod +x wasm-opt
 ```
 
-Then re-run `wasm-pack build --target web --release`.
+Then re-run:
+```bash
+wasm-pack build --target web --release
+```
 
 ### wasm-pack not found
 

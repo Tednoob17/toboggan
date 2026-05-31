@@ -123,6 +123,12 @@ npm --version
 
 ### 4. Build everything
 
+> **What does `--release` mean?** Rust has two build profiles:
+> - **Debug** (`cargo build`): compiles fast, runs slow — good for development
+> - **Release** (`cargo build --release`): compiles slow (minutes), runs fast — good for final use
+>
+> We use `--release` below for the final binaries. For quick testing, you can omit it.
+
 ```bash
 # Clone
 git clone https://github.com/Tednoob17/toboggan
@@ -143,10 +149,20 @@ npm run build
 cd ..
 
 # Rebuild server with web UI embedded (required after web frontend build)
-cargo build -p toboggan-server
+cargo build --release -p toboggan-server
 ```
 
-Binaries are in `target/release/` (or `target/debug/` for dev builds).
+> **Tip**: Add `--release` for optimized builds. Without it, you get debug builds
+> (faster to compile but slower to run). Binaries are in `target/release/`
+> (with `--release`) or `target/debug/` (without).
+
+### Or use the build script
+
+```bash
+./scripts/build-web.sh
+```
+
+This automates all the steps above and checks that prerequisites are installed.
 
 ### Troubleshooting
 

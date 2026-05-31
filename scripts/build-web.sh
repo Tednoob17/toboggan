@@ -57,7 +57,7 @@ fi
 npm run build
 echo "  ✓ Frontend built"
 
-# Step 4: Rebuild server
+# Step 4: Rebuild server (debug profile = fast compile, fine for testing)
 echo ""
 echo "--- Step 3/3: Rebuilding server ---"
 cd "$PROJECT_DIR"
@@ -69,3 +69,7 @@ echo "=== Done! ==="
 echo "Run the server:"
 echo "  ./target/debug/toboggan-server --host 0.0.0.0 --port 8080 path/to/talk.toml"
 echo "Then open: http://localhost:8080"
+echo ""
+echo "For an optimized (release) build, add --release to Step 3 and Step 4."
+echo "  wasm-pack build --target web --release"
+echo "  cargo build --release -p toboggan-server"
