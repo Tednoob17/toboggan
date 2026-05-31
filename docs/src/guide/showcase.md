@@ -21,19 +21,18 @@ the Toboggan source code that reproduces it is on the right.
   <a href="../assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 </object>
 
-### Toboggan Source Code
+### Toboggan Source Code (par extraits)
 
-The talk was reconstructed as a Toboggan TOML file (520 lines) from the original slide content.
-The PDF has 51 pages because some slides contain multiple **steps** (progressive reveals),
-and each step becomes a separate page in the PDF. In Toboggan, steps are marked with
-`<!-- pause -->` or `<div class="step step-N">` inside a single `[[slides]]` entry.
+Le fichier TOML fait 520 lignes pour 12 slides, qui produisent 51 pages PDF.
+Le ratio 12→51 vient des **steps** (reveals progressifs) et des séparateurs `Part`.
+Chaque extrait ci-dessous correspond à une ou plusieurs pages du PDF.
+Le fichier complet est dans `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`.
 
-Here is the **complete file** — every slide, every step, every note:
+---
+
+#### 1. Page de garde → PDF page 1
 
 ```toml
-title = "How to Fuzz Like a Pro"
-date = "2024-06-12"
-
 [[slides]]
 kind = "Cover"
 
@@ -61,7 +60,13 @@ alt = """
 **Nat Chin** & **Josselin Feist**
 DeFi Security Summit — 2024
 """
+```
 
+---
+
+#### 2. Introduction des speakers → PDF pages 2-3
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -88,13 +93,10 @@ raw = """
 alt = """
 ## Nat Chin
 - Security Engineer at Trail of Bits
-- Focus: smart contract auditing, fuzzing infrastructure
-- Creator of Echidna's corpus collection features
-
+...
 ## Josselin Feist
 - Principal Security Engineer at Trail of Bits
-- Creator of Slither, Echidna maintainer
-- 10+ years in program analysis and security
+...
 """
 
 [[slides]]
@@ -103,7 +105,13 @@ kind = "Part"
 [slides.title]
 type = "Text"
 text = "Why Fuzzing Matters"
+```
 
+---
+
+#### 3. The Problem (2 steps) → PDF pages 4-5
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -131,18 +139,15 @@ raw = """
 </ul>
 </div>
 """
-alt = """
-## The Problem
-- $3.8B lost in DeFi hacks in 2023 alone
-- Traditional testing misses edge cases
-- Manual review is slow and expensive
+```
 
-## Fuzzing finds what humans miss
-- Automated input generation explores edge cases
-- Property-based testing validates invariants
-- Continuous fuzzing catches regressions
-"""
+> Les deux `<div class="step step-N">` produisent deux pages PDF distinctes.
 
+---
+
+#### 4. What is Echidna? (2 steps) → PDF pages 6-7
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -171,28 +176,26 @@ raw = """
 </ul>
 </div>
 """
-alt = """
-## Echidna: The Haskell smart contract fuzzer
-- Open-source fuzzer for Ethereum smart contracts
-- Supports Solidity and Vyper
-- Property-based: you write invariants, Echidna breaks them
-- Found 300+ real-world vulnerabilities
+```
 
-### Key capabilities
-- Sequence-level fuzzing (multi-transaction)
-- Filtered fuzzing (selective function calls)
-- Assertion testing
-- Gas-aware test generation
-- Corpus collection and replay
-"""
+---
 
+#### 5. Section "Writing Invariants" → PDF page 8 (séparateur)
+
+```toml
 [[slides]]
 kind = "Part"
 
 [slides.title]
 type = "Text"
 text = "Writing Invariants"
+```
 
+---
+
+#### 6. What Are Invariants? (2 steps) → PDF pages 9-10
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -204,50 +207,29 @@ text = "What Are Invariants?"
 type = "Html"
 raw = """
 <h2>Properties that must always hold true</h2>
-<p>An invariant is a condition that should never be violated, regardless of the sequence of operations.</p>
+<p>An invariant is a condition that should never be violated...</p>
 <div class="step step-1">
 <h3>Example invariants</h3>
 <table>
 <thead>
-<tr>
-<th>Property</th>
-<th>Invariant</th>
-</tr>
+<tr><th>Property</th><th>Invariant</th></tr>
 </thead>
 <tbody>
-<tr>
-<td>Total supply</td>
-<td>sum(balances) == totalSupply</td>
-</tr>
-<tr>
-<td>Access control</td>
-<td>only owner can mint</td>
-</tr>
-<tr>
-<td>Liquidity</td>
-<td>pool never empties below threshold</td>
-</tr>
-<tr>
-<td>Interest rates</td>
-<td>rate stays within [0, MAX_RATE]</td>
-</tr>
+<tr><td>Total supply</td><td>sum(balances) == totalSupply</td></tr>
+<tr><td>Access control</td><td>only owner can mint</td></tr>
+<tr><td>Liquidity</td><td>pool never empties below threshold</td></tr>
+<tr><td>Interest rates</td><td>rate stays within [0, MAX_RATE]</td></tr>
 </tbody>
 </table>
 </div>
 """
-alt = """
-## Properties that must always hold true
-An invariant is a condition that should never be violated, regardless of the sequence of operations.
+```
 
-### Example invariants
-| Property | Invariant |
-|---|---|
-| Total supply | sum(balances) == totalSupply |
-| Access control | only owner can mint |
-| Liquidity | pool never empties below threshold |
-| Interest rates | rate stays within [0, MAX_RATE] |
-"""
+---
 
+#### 7. Writing Echidna Properties (2 steps) → PDF pages 11-12
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -260,48 +242,25 @@ type = "Html"
 raw = """
 <h2>Two ways to write properties</h2>
 <h3>1. Boolean functions <code>echidna_*</code></h3>
-<pre><code class="language-solidity">// Invariant: totalSupply never exceeds MAX_SUPPLY
-function echidna_total_supply_never_exceeds_max() public view returns (bool) {
+<pre><code class="language-solidity">function echidna_total_supply_never_exceeds_max() ...
     return totalSupply() <= MAX_SUPPLY;
-}
-</code></pre>
+}</code></pre>
 <div class="step step-1">
 <h3>2. Assertions via <code>assert()</code></h3>
 <pre><code class="language-solidity">function deposit(uint256 amount) public {
-    uint256 oldBalance = balanceOf(msg.sender);
-    uint256 oldTotal = totalSupply();
-
-    _mint(msg.sender, amount);
-
-    // Echidna will test this assertion
+    ...
     assert(balanceOf(msg.sender) == oldBalance + amount);
     assert(totalSupply() == oldTotal + amount);
-}
-</code></pre>
+}</code></pre>
 </div>
 """
-alt = """
-## Writing Echidna Properties
-
-### 1. Boolean functions `echidna_*`
-```solidity
-function echidna_total_supply_never_exceeds_max() public view returns (bool) {
-    return totalSupply() <= MAX_SUPPLY;
-}
 ```
 
-### 2. Assertions via `assert()`
-```solidity
-function deposit(uint256 amount) public {
-    uint256 oldBalance = balanceOf(msg.sender);
-    uint256 oldTotal = totalSupply();
-    _mint(msg.sender, amount);
-    assert(balanceOf(msg.sender) == oldBalance + amount);
-    assert(totalSupply() == oldTotal + amount);
-}
-```
-"""
+---
 
+#### 8. Advanced: Filtered Fuzzing (2 steps) → PDF pages 13-14
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -313,7 +272,6 @@ text = "Advanced: Filtered Fuzzing"
 type = "Html"
 raw = """
 <h2>Control which functions Echidna calls</h2>
-<p>Use configuration to focus on the most attack-relevant paths:</p>
 <pre><code class="language-yaml"># echidna.yaml
 testMode: assertion
 testLimit: 100000
@@ -325,45 +283,32 @@ filterFunctions:
   - "deposit(uint256)"
   - "withdraw(uint256)"
   - "borrow(uint256)"
-  - "liquidate(address)"
-</code></pre>
+  - "liquidate(address)"</code></pre>
 <div class="step step-1">
 <h3>Corpus collection</h3>
 <pre><code class="language-bash">echidna-test . --config echidna.yaml --corpus-dir corpus/
-echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42
-</code></pre>
+echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42</code></pre>
 </div>
 """
-alt = """
-## Control which functions Echidna calls
-```yaml
-# echidna.yaml
-testMode: assertion
-testLimit: 100000
-seqLen: 100
-shrinkLimit: 5000
-filterBlacklist: true
-filterFunctions:
-  - "deposit(uint256)"
-  - "withdraw(uint256)"
-  - "borrow(uint256)"
-  - "liquidate(address)"
 ```
 
-### Corpus collection
-```bash
-echidna-test . --config echidna.yaml --corpus-dir corpus/
-echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42
-```
-"""
+---
 
+#### 9. Section "Real-World Findings" → PDF page 15 (séparateur)
+
+```toml
 [[slides]]
 kind = "Part"
-
 [slides.title]
 type = "Text"
 text = "Real-World Findings"
+```
 
+---
+
+#### 10. Case Study: Lending Protocol (2 steps) → PDF pages 16-17
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -376,47 +321,30 @@ type = "Html"
 raw = """
 <div class="step step-0">
 <h2>Invariant: Liquidation never reverts</h2>
-<pre><code class="language-solidity">function echidna_liquidate_always_succeeds() public view returns (bool) {
-    // Once a position is underwater, liquidation must succeed
+<pre><code class="language-solidity">function echidna_liquidate_always_succeeds() ... {
     for (uint i = 0; i < positions.length; i++) {
-        if (isUnderwater(positions[i])) {
-            // This should never revert
-            return false;
-        }
+        if (isUnderwater(positions[i])) return false;
     }
     return true;
-}
-</code></pre>
+}</code></pre>
 </div>
 <div class="step step-1">
 <h3>What Echidna found</h3>
 <ul>
-<li>Rounding in the interest calculation allowed a tiny borrow that
-could never be liquidated</li>
+<li>Rounding in interest calculation allowed a tiny borrow
+that could never be liquidated</li>
 <li>Cost: $2.1M at risk — found before deployment</li>
 <li>Fix: minimum borrow amount + improved rounding</li>
 </ul>
 </div>
 """
-alt = """
-## Invariant: Liquidation never reverts
-```solidity
-function echidna_liquidate_always_succeeds() public view returns (bool) {
-    for (uint i = 0; i < positions.length; i++) {
-        if (isUnderwater(positions[i])) {
-            return false;
-        }
-    }
-    return true;
-}
 ```
 
-### What Echidna found
-- Rounding in interest calculation allowed a tiny borrow that could never be liquidated
-- Cost: $2.1M at risk — found before deployment
-- Fix: minimum borrow amount + improved rounding
-"""
+---
 
+#### 11. Best Practices (3 steps) → PDF pages 18-20
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -431,7 +359,7 @@ raw = """
 <div class="step step-0">
 <h3>Start simple</h3>
 <ul>
-<li>Begin with assertion testing — the lowest friction</li>
+<li>Begin with assertion testing...</li>
 <li>Add one echidna_* property at a time</li>
 <li>Run with <code>--testLimit 50000</code> for quick feedback</li>
 </ul>
@@ -455,30 +383,17 @@ raw = """
 </ul>
 </div>
 """
-alt = """
-## How to Fuzz Effectively
+```
 
-### Start simple
-- Begin with assertion testing — the lowest friction
-- Add one echidna_* property at a time
-- Run with `--testLimit 50000` for quick feedback
+> 3 steps → 3 pages PDF pour cette slide.
 
-### Scale up
-- Use filtered fuzzing to target specific functions
-- Run longer: `--testLimit 10000000` for deep bugs
-- Collect and reuse corpus between runs
-- Integrate into CI/CD for continuous fuzzing
+---
 
-### Common pitfalls
-- Writing properties that are always true (tautologies)
-- Forgetting to use view/pure functions correctly
-- Not filtering out non-relevant functions
-- Ignoring gas limits in the fuzzer
-"""
+#### 12. Conclusion & remerciements → PDF pages 21-51
 
+```toml
 [[slides]]
 kind = "Part"
-
 [slides.title]
 type = "Text"
 text = "Conclusion"
@@ -508,17 +423,6 @@ raw = """
 </ul>
 </div>
 """
-alt = """
-## Fuzzing is a superpower
-- Property-based testing catches what unit tests miss
-- Echidna makes it easy to write and run invariants
-- Start with assertions, graduate to custom properties
-
-### Resources
-- Echidna: https://github.com/crytic/echidna
-- Building Secure Contracts: https://github.com/crytic/building-secure-contracts
-- Slither: https://github.com/crytic/slither
-"""
 
 [[slides]]
 kind = "Standard"
@@ -534,18 +438,9 @@ text = "Thank You"
 type = "Html"
 raw = """
 <h1>Thank You!</h1>
-<blockquote>
-<p>Questions? Come find us!</p>
-</blockquote>
+<blockquote><p>Questions? Come find us!</p></blockquote>
 <p>Nat Chin &amp; Josselin Feist</p>
 <p><em>Trail of Bits — Security Research</em></p>
-"""
-alt = """
-# Thank You!
-> Questions? Come find us!
-
-Nat Chin & Josselin Feist
-*Trail of Bits — Security Research*
 """
 
 [slides.notes]
@@ -553,10 +448,27 @@ type = "Text"
 text = "Remind the audience about Echidna's GitHub repo. Encourage them to try fuzzing their own contracts. Mention the Trail of Bits audit services."
 ```
 
-Chaque slide `[[slides]]` correspond à une ou plusieurs pages du PDF. Par exemple, la slide
-"Best Practices" a 3 étapes (`step-0`, `step-1`, `step-2`) qui deviennent 3 pages dans le PDF.
-Les slides de type `Part` sont des séparateurs de section. La slide "Thank You" a des
-**speaker notes** (invisibles pour le public) via `[slides.notes]`.
+> La slide "Key Takeaways" a 2 steps (takeaways + resources) → 2 pages.  
+> La slide "Thank You" a des **speaker notes** (`[slides.notes]`) invisibles pour le public.
+
+**Récapitulatif du mapping slides → pages PDF :**
+
+| Slides TOML | Steps | Pages PDF |
+|---|---|---|
+| Cover | 0 step | 1 |
+| Who Are We? + Part | 0 step | 2-3 |
+| The Problem | 2 steps | 4-5 |
+| What is Echidna? | 2 steps | 6-7 |
+| Part "Writing Invariants" | 0 step | 8 |
+| What Are Invariants? | 2 steps | 9-10 |
+| Writing Echidna Properties | 2 steps | 11-12 |
+| Advanced: Filtered Fuzzing | 2 steps | 13-14 |
+| Part "Real-World Findings" | 0 step | 15 |
+| Case Study | 2 steps | 16-17 |
+| Best Practices | 3 steps | 18-20 |
+| Conclusion + Takeaways + Thank You | 3 steps | 21-51¹ |
+
+> ¹ Les pages 21-51 du PDF original contiennent des slides additionnelles (détails d'implémentation, remerciements, QA) qui n'ont pas été reproduites dans cet exemple.
 
 ### How to Run It
 
