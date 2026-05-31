@@ -174,7 +174,7 @@ cargo run -p toboggan-server -- my-talk.toml
 open http://localhost:8080
 
 # Or use terminal client
-cargo run -p toboggan-tui -- http://localhost:8080
+cargo run -p toboggan-tui -- --host localhost --port 8080
 ```
 
 ## Building
@@ -245,7 +245,13 @@ but shows a placeholder page at `http://localhost:8080`.
 
 ```bash
 # 1. Install wasm-pack (https://wasm-pack.rs/)
-curl -sSfL https://wasm-pack.init.example/install.sh | sh   # or use your package manager
+# Download pre-built binary (faster than cargo install):
+curl -sSfL https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+  -o /tmp/wasm-pack.tar.gz
+tar -xzf /tmp/wasm-pack.tar.gz -C /tmp/
+cp /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack ~/.cargo/bin/
+wasm-pack --version
+# For macOS/Windows, see docs/src/installation.md
 
 # 2. Add the WASM target
 rustup target add wasm32-unknown-unknown

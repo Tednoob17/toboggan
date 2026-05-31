@@ -6,7 +6,9 @@ rust-version = "1.88"
 license = "MIT OR Apache-2.0"
 authors = ["Igor Laborie <ilaborie@gmail.com>"]
 description = "WebAssembly client for Toboggan presentation system"
-repository = "https://github.com/ilaborie/toboggan"
+repository = "https://github.com/Tednoob17/toboggan"
+[package.metadata.wasm-pack]
+wasm-opt = false
 
 [lib]
 crate-type = ["cdylib", "rlib"]

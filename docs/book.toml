@@ -3,3 +3,7 @@ authors = ["Tednoob17"]
 language = "en"
 src = "src"
 title = "Toboggan"
+
+[output.html]
+git-repository-url = "https://github.com/Tednoob17/toboggan"
+edit-url-template = "https://github.com/Tednoob17/toboggan/edit/main/docs/src/{path}"

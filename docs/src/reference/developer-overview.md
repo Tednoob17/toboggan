@@ -54,18 +54,34 @@ This document summarizes Toboggan's architecture, main crates, core types, runti
 
 ## Build & run (developer quick commands)
 
+### Backend (Rust only)
+
 ```bash
-# Build main workspace (fast)
-cargo build --release
+# Build main workspace (CLI + server + TUI)
+cargo build
 
 # Build server and run with example presentation
-cargo run -p toboggan-server -- examples/riir-flat-output.toml
+cargo run -p toboggan-server -- slides_ex/riir-flat-output.toml
 
 # Convert a folder to a talk
-cargo run -p toboggan-cli -- examples/riir-flat.md -o /tmp/my-talk.toml
+cargo run -p toboggan-cli -- --input slides_ex/riir-flat.md -o /tmp/my-talk.toml
 
 # Run terminal client
-cargo run -p toboggan-tui
+cargo run -p toboggan-tui -- --host localhost --port 8080
+```
+
+### Web frontend (adds WASM + TypeScript)
+
+```bash
+cd toboggan-web/toboggan-wasm
+wasm-pack build --target web --release
+
+cd ..
+npm install
+npm run build
+
+cd ..
+cargo build -p toboggan-server   # re-embed with updated dist
 ```
 
 ## Tests, formatting and linting

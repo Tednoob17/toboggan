@@ -64,18 +64,110 @@ sudo apt-get install -f
 
 ## Build from source
 
-Requires [Rust](https://rustup.rs) (stable).
+### Prerequisites
+
+| Component | Requires | Notes |
+|-----------|----------|-------|
+| CLI + server + TUI | [Rust](https://rustup.rs) (stable) | Main workspace |
+| Desktop app | Rust + GPU drivers | Separate workspace |
+| Web frontend | Rust + Node.js + wasm-pack + WASM target | Optional, server works without it |
+
+### 1. Install Rust
+
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+rustup target add wasm32-unknown-unknown
+```
+
+### 2. Install wasm-pack
+
+> Do not use `cargo install wasm-pack` (very slow). Use the pre-built binary instead.
+
+**Linux (x86_64):**
+```bash
+curl -sSfL https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+  -o /tmp/wasm-pack.tar.gz
+tar -xzf /tmp/wasm-pack.tar.gz -C /tmp/
+cp /tmp/wasm-pack-v0.15.0-x86_64-unknown-linux-musl/wasm-pack ~/.cargo/bin/
+wasm-pack --version
+```
+
+**macOS (Intel):**
+```bash
+curl -sSfL https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-apple-darwin.tar.gz \
+  -o /tmp/wasm-pack.tar.gz
+tar -xzf /tmp/wasm-pack.tar.gz -C /tmp/
+cp /tmp/wasm-pack-v0.15.0-x86_64-apple-darwin/wasm-pack ~/.cargo/bin/
+wasm-pack --version
+```
+
+**macOS (Apple Silicon):**
+```bash
+curl -sSfL https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-aarch64-apple-darwin.tar.gz \
+  -o /tmp/wasm-pack.tar.gz
+tar -xzf /tmp/wasm-pack.tar.gz -C /tmp/
+cp /tmp/wasm-pack-v0.15.0-aarch64-apple-darwin/wasm-pack ~/.cargo/bin/
+wasm-pack --version
+```
+
+**Windows:** Download the `.exe` from the [releases page](https://github.com/rustwasm/wasm-pack/releases/tag/v0.15.0) and add it to your PATH.
+
+### 3. Install Node.js
+
+Required for building the web frontend. Install via [nvm](https://github.com/nvm-sh/nvm) or from your package manager:
+
+```bash
+node --version  # needs 18+
+npm --version
+```
+
+### 4. Build everything
 
 ```bash
 # Clone
 git clone https://github.com/Tednoob17/toboggan
 cd toboggan
 
-# Build main workspace (CLI + server + TUI)
+# Build CLI + server + TUI (main workspace)
 cargo build --release
 
 # Build desktop app (separate workspace)
 cargo build --release --manifest-path toboggan-desktop/Cargo.toml
+
+# Build web frontend (optional — server works without it)
+cd toboggan-web/toboggan-wasm
+wasm-pack build --target web --release
+cd ..
+npm install
+npm run build
+cd ..
+
+# Rebuild server with web UI embedded (required after web frontend build)
+cargo build -p toboggan-server
 ```
 
-Binaries are in `target/release/`.
+Binaries are in `target/release/` (or `target/debug/` for dev builds).
+
+### Troubleshooting wasm-opt
+
+If `wasm-pack build` fails with:
+```
+memory.copy operations require bulk memory operations [--enable-bulk-memory-opt]
+```
+
+Replace the `wasm-opt` binary with a wrapper that injects the required flag:
+
+```bash
+# Locate the wasm-opt binary (check ~/.cache/.wasm-pack/wasm-opt-*/bin/)
+cd ~/.cache/.wasm-pack/wasm-opt-*/bin
+mv wasm-opt wasm-opt.real
+
+# Create wrapper script
+cat > wasm-opt << 'EOF'
+#!/bin/bash
+exec "$(dirname "$0")/wasm-opt.real" --enable-bulk-memory "$@"
+EOF
+chmod +x wasm-opt
+```
+
+Then re-run `wasm-pack build --target web --release`.

@@ -26,7 +26,8 @@ Once the server is running, open any client and point it at the server URL:
 | **Mobile/Desktop** | Configure the server URL in the app |
 
 > **Web UI note**: The browser frontend requires building `toboggan-web`
-> (Node.js + wasm-pack). Without it, the server shows a placeholder page.
+> (Node.js + wasm-pack). See [Web Client build instructions](web.md#building-the-web-frontend).
+> Without the frontend, the server shows a placeholder page.
 > All API endpoints (`/api/talk`, `/api/ws`) work regardless.
 
 ## HTTP and WebSocket endpoints
