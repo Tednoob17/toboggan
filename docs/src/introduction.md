@@ -25,12 +25,16 @@ dynamic, and under your control.
 ## Quick start
 
 ```bash
-# 1. Start the server with a presentation
+# 1. Start the server with a presentation (TOML file or markdown folder)
 toboggan-server examples/demo.toml
+toboggan-server ./my-slides/              # directory of markdown files
 
 # 2. Open the web UI
 #    → http://localhost:8080
 
 # 3. Control from the terminal
 toboggan-tui http://localhost:8080
+
+# Convert a markdown folder to a TOML talk file
+toboggan-cli ./my-slides/ -o my-talk.toml
 ```

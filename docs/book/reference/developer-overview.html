@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -245,7 +245,7 @@ cargo build
 cargo run -p toboggan-server -- slides_ex/riir-flat-output.toml
 
 # Convert a folder to a talk
-cargo run -p toboggan-cli -- --input slides_ex/riir-flat.md -o /tmp/my-talk.toml
+cargo run -p toboggan-cli -- slides_ex/riir-flat.md -o /tmp/my-talk.toml
 
 # Run terminal client
 cargo run -p toboggan-tui -- --host localhost --port 8080

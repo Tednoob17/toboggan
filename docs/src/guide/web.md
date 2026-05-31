@@ -54,8 +54,9 @@ The server will detect `toboggan-web/dist/` at compile time and embed it via `ru
 For development, you can run the Vite dev server alongside the Rust server:
 
 ```bash
-# Terminal 1: start the Rust server
+# Terminal 1: start the Rust server (TOML file or markdown folder)
 cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 my-talk.toml
+cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 ./slides/
 
 # Terminal 2: start the Vite dev server (auto-reloads on changes)
 cd toboggan-web

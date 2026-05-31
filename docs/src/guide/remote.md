@@ -75,8 +75,9 @@ ngrok http 8080
 **Option C — Deploy to a VPS**
 
 ```bash
-# On your VPS with a public IP
+# On your VPS with a public IP (TOML file or markdown folder)
 toboggan-server --host 0.0.0.0 --port 8080 talk.toml
+toboggan-server --host 0.0.0.0 --port 8080 ./slides/
 ```
 
 Then access from anywhere: `http://your-vps-ip:8080`

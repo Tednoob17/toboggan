@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -236,6 +236,16 @@ Slide content here...
 toboggan-cli "path/to/slides/" -o /tmp/toboggan-output/presentation.toml
 </code></pre>
 <h2 id="server"><a class="header" href="#server">Server</a></h2>
+<h3 id="direct-markdown-folder-support"><a class="header" href="#direct-markdown-folder-support">Direct markdown folder support</a></h3>
+<p>Starting with v0.1.1-beta.2, <code>toboggan-server</code> accepts a <strong>directory of Markdown files</strong>
+directly — no TOML conversion needed:</p>
+<pre><code class="language-bash">toboggan-server ./my-slides/
+
+# With static assets
+toboggan-server ./my-slides/ --public-dir ./my-slides/assets
+</code></pre>
+<p>The server detects a directory input and parses it the same way <code>toboggan-cli</code> does.
+See <a href="creating-presentations.html#markdown-folder-as-input">Creating Presentations</a> for the folder layout.</p>
 <h3 id="server-not-accessible-from-other-devices"><a class="header" href="#server-not-accessible-from-other-devices">Server not accessible from other devices</a></h3>
 <p><strong>Symptom</strong>: The server starts but other devices on the network can’t connect (connection refused or timeout).</p>
 <p><strong>Cause</strong>: By default, <code>toboggan-server</code> binds to <code>127.0.0.1</code> (localhost only). This is not reachable from other machines.</p>

@@ -63,6 +63,21 @@ toboggan-cli "path/to/slides/" -o /tmp/toboggan-output/presentation.toml
 
 ## Server
 
+### Direct markdown folder support
+
+Starting with v0.1.1-beta.2, `toboggan-server` accepts a **directory of Markdown files**
+directly — no TOML conversion needed:
+
+```bash
+toboggan-server ./my-slides/
+
+# With static assets
+toboggan-server ./my-slides/ --public-dir ./my-slides/assets
+```
+
+The server detects a directory input and parses it the same way `toboggan-cli` does.
+See [Creating Presentations](creating-presentations.md#markdown-folder-as-input) for the folder layout.
+
 ### Server not accessible from other devices
 
 **Symptom**: The server starts but other devices on the network can't connect (connection refused or timeout).

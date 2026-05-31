@@ -2,6 +2,10 @@
 
 Toboggan serializes talks as TOML using the `Talk`, `Slide`, `Content`, and `TerminalConfig` types from `toboggan-core`.
 
+> You can also pass a **directory of Markdown files** directly to `toboggan-server` — the
+> same parser from `toboggan-cli` converts them on startup. See
+> [Creating Presentations](../guide/creating-presentations.md#markdown-folder-as-input).
+
 ## Canonical shape
 
 ```toml

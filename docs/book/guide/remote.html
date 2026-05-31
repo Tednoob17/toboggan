@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -231,8 +231,9 @@ http://your-server.com:8080
 # Then share the ngrok URL with anyone
 </code></pre>
 <p><strong>Option C — Deploy to a VPS</strong></p>
-<pre><code class="language-bash"># On your VPS with a public IP
+<pre><code class="language-bash"># On your VPS with a public IP (TOML file or markdown folder)
 toboggan-server --host 0.0.0.0 --port 8080 talk.toml
+toboggan-server --host 0.0.0.0 --port 8080 ./slides/
 </code></pre>
 <p>Then access from anywhere: <code>http://your-vps-ip:8080</code></p>
 <h2 id="multiple-viewers"><a class="header" href="#multiple-viewers">Multiple viewers</a></h2>

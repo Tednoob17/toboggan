@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -222,8 +222,9 @@ cargo build -p toboggan-server
 <p>The server will detect <code>toboggan-web/dist/</code> at compile time and embed it via <code>rust-embed</code>.</p>
 <h3 id="dev-mode-hot-reload"><a class="header" href="#dev-mode-hot-reload">Dev mode (hot reload)</a></h3>
 <p>For development, you can run the Vite dev server alongside the Rust server:</p>
-<pre><code class="language-bash"># Terminal 1: start the Rust server
+<pre><code class="language-bash"># Terminal 1: start the Rust server (TOML file or markdown folder)
 cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 my-talk.toml
+cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 ./slides/
 
 # Terminal 2: start the Vite dev server (auto-reloads on changes)
 cd toboggan-web

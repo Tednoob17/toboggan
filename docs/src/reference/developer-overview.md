@@ -64,7 +64,7 @@ cargo build
 cargo run -p toboggan-server -- slides_ex/riir-flat-output.toml
 
 # Convert a folder to a talk
-cargo run -p toboggan-cli -- --input slides_ex/riir-flat.md -o /tmp/my-talk.toml
+cargo run -p toboggan-cli -- slides_ex/riir-flat.md -o /tmp/my-talk.toml
 
 # Run terminal client
 cargo run -p toboggan-tui -- --host localhost --port 8080

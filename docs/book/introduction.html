@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -200,14 +200,18 @@ dynamic, and under your control.</p>
 <li><strong>Zero external dependencies</strong> — Just a single binary per component</li>
 </ul>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick start</a></h2>
-<pre><code class="language-bash"># 1. Start the server with a presentation
+<pre><code class="language-bash"># 1. Start the server with a presentation (TOML file or markdown folder)
 toboggan-server examples/demo.toml
+toboggan-server ./my-slides/              # directory of markdown files
 
 # 2. Open the web UI
 #    → http://localhost:8080
 
 # 3. Control from the terminal
 toboggan-tui http://localhost:8080
+
+# Convert a markdown folder to a TOML talk file
+toboggan-cli ./my-slides/ -o my-talk.toml
 </code></pre>
 
                     </main>

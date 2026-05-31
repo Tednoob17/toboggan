@@ -23,8 +23,9 @@ Toboggan is a Rust workspace built around a shared core model, a stateful server
 ```mermaid
 flowchart LR
 	author[Author / source folder] --> cli[toboggan-cli]
+	author --> server[toboggan-server]
 	cli --> talk[(TOML talk file)]
-	talk --> server[toboggan-server]
+	talk --> server
 	server --> core[toboggan-core]
 	server --> stats[toboggan-stats]
 	server --> clientlib[toboggan-client]

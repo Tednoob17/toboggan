@@ -27,7 +27,7 @@ Converts a folder of Markdown/HTML sources into a serialized talk.
 
 Hosts the talk and coordinates connected clients.
 
-- Entry point: `cargo run -p toboggan-server -- <talk.toml>`
+- Entry point: `cargo run -p toboggan-server -- <talk.toml>` or `cargo run -p toboggan-server -- <slides-dir/>`
 - Validates host/port, WebSocket heartbeat, cleanup timers, and optional public assets.
 - Keeps presentation state in a shared `TobogganState` facade.
 - Accepts `Register` before handling other commands and broadcasts notifications to all clients.

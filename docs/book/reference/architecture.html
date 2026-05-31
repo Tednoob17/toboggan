@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -205,8 +205,9 @@
 <h2 id="how-the-pieces-fit-together"><a class="header" href="#how-the-pieces-fit-together">How the pieces fit together</a></h2>
 <pre><code class="language-mermaid">flowchart LR
 	author[Author / source folder] --&gt; cli[toboggan-cli]
+	author --&gt; server[toboggan-server]
 	cli --&gt; talk[(TOML talk file)]
-	talk --&gt; server[toboggan-server]
+	talk --&gt; server
 	server --&gt; core[toboggan-core]
 	server --&gt; stats[toboggan-stats]
 	server --&gt; clientlib[toboggan-client]

@@ -15,7 +15,7 @@ toboggan-desktop
 
 ## Workflow
 
-1. Start the server: `toboggan-server my-talk.toml`
+1. Start the server: `toboggan-server my-talk.toml` or `toboggan-server ./slides/`
 2. Launch the desktop: `toboggan-desktop`
 3. The desktop connects to the server automatically
 4. Use the desktop to navigate slides

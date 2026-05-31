@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "../searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -204,7 +204,7 @@
 <h2 id="toboggan-server"><a class="header" href="#toboggan-server"><code>toboggan-server</code></a></h2>
 <p>Hosts the talk and coordinates connected clients.</p>
 <ul>
-<li>Entry point: <code>cargo run -p toboggan-server -- &lt;talk.toml&gt;</code></li>
+<li>Entry point: <code>cargo run -p toboggan-server -- &lt;talk.toml&gt;</code> or <code>cargo run -p toboggan-server -- &lt;slides-dir/&gt;</code></li>
 <li>Validates host/port, WebSocket heartbeat, cleanup timers, and optional public assets.</li>
 <li>Keeps presentation state in a shared <code>TobogganState</code> facade.</li>
 <li>Accepts <code>Register</code> before handling other commands and broadcasts notifications to all clients.</li>

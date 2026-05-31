@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8bd79c35.js";
+            window.path_to_searchindex_js = "searchindex-b066f547.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -198,14 +198,18 @@ dynamic, and under your control.</p>
 <li><strong>Zero external dependencies</strong> — Just a single binary per component</li>
 </ul>
 <h2 id="quick-start"><a class="header" href="#quick-start">Quick start</a></h2>
-<pre><code class="language-bash"># 1. Start the server with a presentation
+<pre><code class="language-bash"># 1. Start the server with a presentation (TOML file or markdown folder)
 toboggan-server examples/demo.toml
+toboggan-server ./my-slides/              # directory of markdown files
 
 # 2. Open the web UI
 #    → http://localhost:8080
 
 # 3. Control from the terminal
 toboggan-tui http://localhost:8080
+
+# Convert a markdown folder to a TOML talk file
+toboggan-cli ./my-slides/ -o my-talk.toml
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
@@ -753,6 +757,16 @@ Slide content here...
 toboggan-cli "path/to/slides/" -o /tmp/toboggan-output/presentation.toml
 </code></pre>
 <h2 id="server"><a class="header" href="#server">Server</a></h2>
+<h3 id="direct-markdown-folder-support"><a class="header" href="#direct-markdown-folder-support">Direct markdown folder support</a></h3>
+<p>Starting with v0.1.1-beta.2, <code>toboggan-server</code> accepts a <strong>directory of Markdown files</strong>
+directly — no TOML conversion needed:</p>
+<pre><code class="language-bash">toboggan-server ./my-slides/
+
+# With static assets
+toboggan-server ./my-slides/ --public-dir ./my-slides/assets
+</code></pre>
+<p>The server detects a directory input and parses it the same way <code>toboggan-cli</code> does.
+See <a href="#markdown-folder-as-input">Creating Presentations</a> for the folder layout.</p>
 <h3 id="server-not-accessible-from-other-devices"><a class="header" href="#server-not-accessible-from-other-devices">Server not accessible from other devices</a></h3>
 <p><strong>Symptom</strong>: The server starts but other devices on the network can’t connect (connection refused or timeout).</p>
 <p><strong>Cause</strong>: By default, <code>toboggan-server</code> binds to <code>127.0.0.1</code> (localhost only). This is not reachable from other machines.</p>
@@ -1022,7 +1036,7 @@ toboggan-desktop
 </code></pre>
 <h2 id="workflow"><a class="header" href="#workflow">Workflow</a></h2>
 <ol>
-<li>Start the server: <code>toboggan-server my-talk.toml</code></li>
+<li>Start the server: <code>toboggan-server my-talk.toml</code> or <code>toboggan-server ./slides/</code></li>
 <li>Launch the desktop: <code>toboggan-desktop</code></li>
 <li>The desktop connects to the server automatically</li>
 <li>Use the desktop to navigate slides</li>
@@ -1119,8 +1133,9 @@ cargo build -p toboggan-server
 <p>The server will detect <code>toboggan-web/dist/</code> at compile time and embed it via <code>rust-embed</code>.</p>
 <h3 id="dev-mode-hot-reload"><a class="header" href="#dev-mode-hot-reload">Dev mode (hot reload)</a></h3>
 <p>For development, you can run the Vite dev server alongside the Rust server:</p>
-<pre><code class="language-bash"># Terminal 1: start the Rust server
+<pre><code class="language-bash"># Terminal 1: start the Rust server (TOML file or markdown folder)
 cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 my-talk.toml
+cargo run -p toboggan-server -- --host 0.0.0.0 --port 8080 ./slides/
 
 # Terminal 2: start the Vite dev server (auto-reloads on changes)
 cd toboggan-web
@@ -1228,8 +1243,9 @@ http://your-server.com:8080
 # Then share the ngrok URL with anyone
 </code></pre>
 <p><strong>Option C — Deploy to a VPS</strong></p>
-<pre><code class="language-bash"># On your VPS with a public IP
+<pre><code class="language-bash"># On your VPS with a public IP (TOML file or markdown folder)
 toboggan-server --host 0.0.0.0 --port 8080 talk.toml
+toboggan-server --host 0.0.0.0 --port 8080 ./slides/
 </code></pre>
 <p>Then access from anywhere: <code>http://your-vps-ip:8080</code></p>
 <h2 id="multiple-viewers"><a class="header" href="#multiple-viewers">Multiple viewers</a></h2>
@@ -2780,6 +2796,11 @@ text and positioned as a transparent <code>&lt;a&gt;</code> element on top of th
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="presentation-format-1"><a class="header" href="#presentation-format-1">Presentation Format</a></h1>
 <p>Toboggan serializes talks as TOML using the <code>Talk</code>, <code>Slide</code>, <code>Content</code>, and <code>TerminalConfig</code> types from <code>toboggan-core</code>.</p>
+<blockquote>
+<p>You can also pass a <strong>directory of Markdown files</strong> directly to <code>toboggan-server</code> — the
+same parser from <code>toboggan-cli</code> converts them on startup. See
+<a href="#markdown-folder-as-input">Creating Presentations</a>.</p>
+</blockquote>
 <h2 id="canonical-shape"><a class="header" href="#canonical-shape">Canonical shape</a></h2>
 <pre><code class="language-toml">title = "My Talk"
 date = "2026-05-30"
@@ -2961,7 +2982,7 @@ RUST_LOG=toboggan_client=trace toboggan-tui http://localhost:8080
 <h2 id="toboggan-server"><a class="header" href="#toboggan-server"><code>toboggan-server</code></a></h2>
 <p>Hosts the talk and coordinates connected clients.</p>
 <ul>
-<li>Entry point: <code>cargo run -p toboggan-server -- &lt;talk.toml&gt;</code></li>
+<li>Entry point: <code>cargo run -p toboggan-server -- &lt;talk.toml&gt;</code> or <code>cargo run -p toboggan-server -- &lt;slides-dir/&gt;</code></li>
 <li>Validates host/port, WebSocket heartbeat, cleanup timers, and optional public assets.</li>
 <li>Keeps presentation state in a shared <code>TobogganState</code> facade.</li>
 <li>Accepts <code>Register</code> before handling other commands and broadcasts notifications to all clients.</li>
@@ -3033,8 +3054,9 @@ RUST_LOG=toboggan_client=trace toboggan-tui http://localhost:8080
 <h2 id="how-the-pieces-fit-together"><a class="header" href="#how-the-pieces-fit-together">How the pieces fit together</a></h2>
 <pre><code class="language-mermaid">flowchart LR
 	author[Author / source folder] --&gt; cli[toboggan-cli]
+	author --&gt; server[toboggan-server]
 	cli --&gt; talk[(TOML talk file)]
-	talk --&gt; server[toboggan-server]
+	talk --&gt; server
 	server --&gt; core[toboggan-core]
 	server --&gt; stats[toboggan-stats]
 	server --&gt; clientlib[toboggan-client]
@@ -3130,7 +3152,7 @@ cargo build
 cargo run -p toboggan-server -- slides_ex/riir-flat-output.toml
 
 # Convert a folder to a talk
-cargo run -p toboggan-cli -- --input slides_ex/riir-flat.md -o /tmp/my-talk.toml
+cargo run -p toboggan-cli -- slides_ex/riir-flat.md -o /tmp/my-talk.toml
 
 # Run terminal client
 cargo run -p toboggan-tui -- --host localhost --port 8080
