@@ -5,10 +5,6 @@
 
 ---
 
-> **🌐 Languages:** [**English**](introduction.html) · [Français](fr/index.html)
-
----
-
 # User Guide
 
 - [Creating Presentations](guide/creating-presentations.md)

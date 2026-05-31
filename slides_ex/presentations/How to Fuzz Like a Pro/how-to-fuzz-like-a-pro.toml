@@ -1,0 +1,880 @@
+title = "How to Fuzz Like a Pro"
+date = "2025-05-31"
+head = """
+<style>
+  .toboggan-footer { display: none; }
+</style>
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_01.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_02.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_03.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+  <a href="https://x.com/0xicingdeath" target="_blank" rel="noopener" title="x.com/0xicingdeath" style="position:absolute;left:25.863%;top:29.925%;width:18.087%;height:5.267%;cursor:pointer;"></a>
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_04.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_05.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_06.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_07.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_08.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_09.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_10.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_11.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_12.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_13.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_14.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+  <a href="https://github.com/crytic/echidna" target="_blank" rel="noopener" title="github.com/crytic/echidna" style="position:absolute;left:14.008%;top:41.845%;width:30.869%;height:4.974%;cursor:pointer;"></a>
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_15.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_16.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_17.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_18.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_19.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_20.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+  <a href="https://github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md" target="_blank" rel="noopener" title="github.com/crytic/building-secure-contracts/blob/master/program-analysis/echidna/Exercise-1.md" style="position:absolute;left:9.008%;top:77.969%;width:77.155%;height:3.072%;cursor:pointer;"></a>
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_21.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_22.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_23.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_24.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_25.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_26.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_27.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_28.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_29.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_30.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_31.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_32.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_33.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_34.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_35.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_36.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_37.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_38.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_39.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_40.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_41.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_42.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_43.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_44.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_45.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_46.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_47.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_48.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_49.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_50.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[slides.notes]
+type = "Empty"
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_51.jpg" style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+  <a href="https://github.com/crytic/echidna" target="_blank" rel="noopener" title="github.com/crytic/echidna" style="position:absolute;left:14.008%;top:29.914%;width:37.513%;height:4.725%;cursor:pointer;"></a>
+  <a href="https://github.com/crytic/building-secure-contracts" target="_blank" rel="noopener" title="github.com/crytic/building-secure-contracts" style="position:absolute;left:28.878%;top:34.933%;width:47.064%;height:4.477%;cursor:pointer;"></a>
+  <a href="https://jobs.lever.co/trailofbits" target="_blank" rel="noopener" title="jobs.lever.co/trailofbits" style="position:absolute;left:22.816%;top:67.968%;width:31.832%;height:4.477%;cursor:pointer;"></a>
+</div>
+"""
+
+[slides.notes]
+type = "Empty"

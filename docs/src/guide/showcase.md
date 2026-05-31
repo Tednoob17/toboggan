@@ -24,13 +24,13 @@ the Toboggan source code that reproduces it is on the right.
 ### Toboggan Source Code (by excerpt)
 
 The TOML file has **51 slides**, one per PDF page, with embedded images served via `--public-dir`.
-The complete file is at `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`.
+The complete file is at `slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml`.
 Presentation images are in `slides_ex/presentations/How to Fuzz Like a Pro/public/`.
 
 To serve with images:
 ```bash
 toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
-  "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
 ```
 
 ---
@@ -479,7 +479,7 @@ text = "Remind the audience about Echidna's GitHub repo. Encourage them to try f
 
 ```bash
 # Serve the TOML file directly
-toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
 
 # Then open http://localhost:8080
 ```
@@ -491,7 +491,7 @@ toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like
 2. Each slide's content (title, body, notes) was extracted and converted to Toboggan's TOML format.
 3. Rich HTML slides use inline HTML with an `alt` fallback for accessibility.
 4. Step-by-step reveals are supported via `<div class="step step-N">` markers.
-5. The result is a `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`
+5. The result is a `slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml`
    file that can be served by `toboggan-server`.
 
 ## "Building Secure Smart Contracts" — Trail of Bits Training
@@ -558,7 +558,7 @@ git clone https://github.com/Tednoob17/toboggan
 cd toboggan
 
 # Try the pre-built talk
-cargo run -p toboggan-server -- "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+cargo run -p toboggan-server -- "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
 
 # Or build from markdown sources
 cargo run -p toboggan-cli -- "slides_ex/presentations/Building Secure Smart Contracts/" -o my_talk.toml
