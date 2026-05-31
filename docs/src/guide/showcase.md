@@ -1,52 +1,46 @@
 # Showcase: Rebuilding Trail of Bits Slides
 
 > **Note**: This page shows existing slides rebuilt in Toboggan as a **demonstration**
-> of what the format can do with real-world content. The normal workflow is to write
+> of what the format looks like for a real talk. The normal workflow is to write your
 > slides directly in Markdown or TOML — there is no need to deconstruct existing PDFs.
+> This example is just here to show how a real-world presentation maps to Toboggan's
+> format and to give you a starting point for your own slides.
 
-This page demonstrates how Toboggan reproduces real conference presentations from PDF.
+This page demonstrates how Toboggan can reproduce real conference presentations from their source code.
 
 ## "How to Fuzz Like a Pro" — DeFi Security Summit 2024
 
 This talk by **Nat Chin** and **Josselin Feist** of Trail of Bits introduces Echidna,
-a property-based fuzzer for Ethereum smart contracts.
+a property-based fuzzer for Ethereum smart contracts. The original PDF is embedded below;
+the Toboggan source code that reproduces it is shown alongside.
 
-### What we built
+### Original PDF
 
-Each PDF page is rendered as a high-resolution JPEG (2160×1215 px at 3x zoom)
-and displayed as a full-width slide image. Links and Twitter handles found in
-the PDF are extracted and overlaid as clickable `<a>` elements.
+<object data="../assets/how-to-fuzz-like-a-pro.pdf" type="application/pdf" width="100%" height="600px">
+  <p>Your browser does not support embedded PDFs.
+  <a href="../assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
+</object>
 
-**The result**: 51 slides that look identical to the original PDF, with clickable
-links, no titles, no footer bar.
+### Toboggan Source Code (by excerpt)
 
-### Live server
+Each PDF page is rendered as a high-resolution JPEG image (2160×1215 px at 3x zoom)
+and displayed as a full-width slide. Links and Twitter handles found in the PDF text
+are extracted and overlaid as clickable `<a>` elements.
 
+The complete file is at `slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml`.
+Presentation images are in `slides_ex/presentations/How to Fuzz Like a Pro/public/`.
+
+To serve with images:
 ```bash
-toboggan-server \
-  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
-  --host 0.0.0.0 --port 8080 \
-  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
+toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
 ```
 
-Then open http://localhost:8080.
+---
 
-### TOML structure
-
-Each slide is minimal — just an image wrapped in a flex container. Pages with links
-have transparent clickable overlays positioned absolutely over the image.
+#### 1. Cover --> PDF page 1
 
 ```toml
-title = "How to Fuzz Like a Pro"
-date = "2025-05-31"
-
-# Custom CSS injected into <head> — hides the footer bar
-head = """
-<style>
-  .toboggan-footer { display: none; }
-</style>
-"""
-
 [[slides]]
 kind = "Standard"
 
@@ -65,7 +59,56 @@ raw = """
 
 [slides.notes]
 type = "Empty"
+```
 
+---
+
+#### 2. Speaker introductions --> PDF pages 2-3
+
+```toml
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;
+            display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_02.jpg"
+       style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Empty"
+
+[slides.body]
+type = "Html"
+raw = """
+<div style="width:100%;height:100%;position:relative;
+            display:flex;align-items:center;justify-content:center;">
+  <img src="public/page_03.jpg"
+       style="max-width:100%;max-height:100%;object-fit:contain;display:block;">
+</div>
+"""
+```
+
+---
+
+#### 3. Presentation body --> PDF pages 4-51
+
+Each PDF page becomes one slide with its full-page image render.
+Pages that contain URLs or Twitter handles get transparent clickable overlays.
+
+For example, page 14 has a link to `github.com/crytic/echidna`:
+
+```toml
 [[slides]]
 kind = "Standard"
 
@@ -88,10 +131,56 @@ raw = """
 """
 ```
 
-### How images are generated
+The `left`, `top`, `width`, `height` are percentage-based coordinates calculated
+from the PDF text bounding box (720×405 pt page → CSS percentages).
 
-The PDF pages are rendered using PyMuPDF at 3x zoom (2160×1215 px),
-saved as JPEG quality 95 for the best quality/size trade-off:
+Other pages with clickable overlays:
+- **Page 3**: `@0xicingdeath` → `x.com/0xicingdeath`
+- **Page 20**: Exercise link → `github.com/crytic/building-secure-contracts/...`
+- **Page 51**: Echidna repo, building-secure-contracts, Trail of Bits jobs
+
+---
+
+#### 4. Global configuration
+
+The TOML head hides the default footer bar, and the title is set to empty
+for a clean full-screen look:
+
+```toml
+title = "How to Fuzz Like a Pro"
+date = "2025-05-31"
+head = """
+<style>
+  .toboggan-footer { display: none; }
+</style>
+"""
+```
+
+---
+
+### How to Run It
+
+```bash
+# Serve the TOML file with its public image directory
+toboggan-server \
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
+  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
+
+# Then open http://localhost:8080
+```
+
+### How It Was Made
+
+1. The original PDF slides were collected from the
+   [Trail of Bits publications repository](https://github.com/trailofbits/publications).
+2. Each PDF page was rendered at 3x zoom (2160×1215 px) using PyMuPDF,
+   saved as JPEG quality 95.
+3. URLs and Twitter handles were detected from PDF text spans and converted
+   to clickable overlays with percentage-based positioning.
+4. The result is a `slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml`
+   file with 51 slides, one per PDF page.
+
+### Image generation script
 
 ```python
 import fitz
@@ -103,37 +192,93 @@ for i in range(len(doc)):
     pix.save(f"public/page_{i+1:02d}.jpg", jpg_quality=95)
 ```
 
-### How clickable links are extracted
-
-URLs and Twitter handles are detected from PDF text spans and positioned
-using percentage-based coordinates (relative to the 720×405 pt page):
-
-```python
-for span in page.get_text("dict") blocks:
-    for url in re.findall(r'https?://\S+', span["text"]):
-        bbox = span["bbox"]
-        left = bbox[0] / 720 * 100    # → CSS left: %
-        top  = bbox[1] / 405 * 100    # → CSS top: %
-        w = (bbox[2]-bbox[0])/720*100 # → CSS width: %
-        h = (bbox[3]-bbox[1])/405*100 # → CSS height: %
-```
-
-The overlay `<a>` tags are inserted into the slide HTML at the correct
-percentage positions, making them clickable even though the slide is an image.
-
 ### Files
 
 | File | Description |
 |------|-------------|
 | `how-to-fuzz-like-a-pro.toml` | Presentation definition (51 slides) |
-| `public/page_01.jpg` … `public/page_51.jpg` | Full-page slide renders |
+| `public/page_01.jpg` … `public/page_51.jpg` | Full-page slide renders at 2160×1215 px |
 | `docs/src/assets/how-to-fuzz-like-a-pro.pdf` | Original PDF source |
 
-### Key details
+## "Building Secure Smart Contracts" — Trail of Bits Training
 
-- **Resolution**: 2160×1215 px per slide (3x PDF zoom)
-- **Format**: JPEG quality 95 (~130 KB average per slide)
-- **Total size**: ~8.9 MB for all 51 pages
-- **Clickable links**: 5 URLs + 1 Twitter handle (`@0xicingdeath`)
-- **Footer**: Hidden via `head` CSS injection
-- **Slide titles**: Removed (not needed for image-based slides)
+The `slides_ex/` directory also includes a multi-part presentation on smart contract
+security, reconstructed from Trail of Bits' open-source training material at
+[secure-contracts.com](https://secure-contracts.com/).
+
+Unlike the pre-compiled TOML above, this one starts from **Markdown source files**
+in a folder structure:
+
+```text
+slides_ex/presentations/Building Secure Smart Contracts/
+├── _cover.md
+├── 01-motivation/
+│   ├── _part.md
+│   ├── 01-the-landscape.md
+│   └── 02-automation-pyramid.md
+├── 02-tools/
+│   ├── _part.md
+│   ├── 01-slither.md
+│   └── 02-echidna.md
+├── 03-static-analysis/
+│   ├── _part.md
+│   ├── 01-detecting-reentrancy.md
+│   └── 02-slither-python-api.md
+├── 04-fuzzing/
+│   ├── _part.md
+│   ├── 01-writing-invariants.md
+│   └── 02-configuration.md
+└── 05-conclusion/
+    ├── _part.md
+    ├── 01-takeaways.md
+    └── 02-resources.md
+```
+
+Convert and serve it:
+
+```bash
+toboggan-cli "slides_ex/presentations/Building Secure Smart Contracts/" -o building_secure.toml
+toboggan-server building_secure.toml
+```
+
+### Key Features Demonstrated
+
+| Feature | Usage |
+|---------|-------|
+| **Cover slides** | `_cover.md` at the folder root |
+| **Part dividers** | `_part.md` files in subdirectories |
+| **Slide ordering** | Numerical prefixes (`01-`, `02-`) control order |
+| **Pause points** | `<!-- pause -->` creates step-by-step reveals |
+| **Speaker notes** | `<!-- notes -->` for presenter-only content |
+| **Code blocks** | Fenced code with language tags for syntax highlighting |
+| **Frontmatter** | `+++` delimited TOML for per-slide metadata |
+| **Multi-format output** | Convert to `toml`, `json`, `yaml`, or `html` |
+
+## Try It Yourself
+
+The full source for both examples is in the `slides_ex/` directory of the repository.
+Clone the repo and experiment:
+
+```bash
+git clone https://github.com/Tednoob17/toboggan
+cd toboggan
+
+# Try the pre-built talk
+cargo run -p toboggan-server -- \
+  "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml" \
+  --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public"
+
+# Or build from markdown sources
+cargo run -p toboggan-cli -- "slides_ex/presentations/Building Secure Smart Contracts/" -o my_talk.toml
+cargo run -p toboggan-server -- my_talk.toml
+```
+
+Then open http://localhost:8080 and present.
+
+## Exporting to PDF
+
+Toboggan does not currently export slides to PDF — it is a live presentation system
+designed for real-time, multi-device playback via a WebSocket server. If you need a
+PDF version of your slides, you can use your browser's **Print --> Save as PDF** feature
+while viewing the presentation at `http://localhost:8080`, or use a tool like
+[`wkhtmltopdf`](https://wkhtmltopdf.org/) to render the HTML output.
