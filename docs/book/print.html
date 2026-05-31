@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-31d2a0e0.js";
+            window.path_to_searchindex_js = "searchindex-d0f4d9d2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -600,7 +600,7 @@ toboggan-server my_talk.toml
 </li>
 <li>
 <p><strong>How to Fuzz Like a Pro</strong> — a pre-compiled TOML talk file that can be served directly:</p>
-<pre><code class="language-bash">toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+<pre><code class="language-bash"> toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
 </code></pre>
 </li>
 </ul>
@@ -681,7 +681,7 @@ duration = "5m"
 <pre><code class="language-bash">toboggan-cli "My Slides Folder/" -o presentation.toml
 </code></pre>
 <ul>
-<li>The CLI expects a <strong>directory</strong> as input. If you pass a single <code>.toml</code> file, the CLI will error with <code>NotADirectory</code> — you don’t need to convert a TOML file with the CLI.</li>
+<li>The CLI expects a <strong>directory</strong> as input. If you pass a single <code>.toml</code> file or a file path, the CLI will error with <code>NotADirectory</code> (if it’s a file) or produce unexpected output — you don’t need to convert a TOML file with the CLI.</li>
 </ul>
 <h3 id="frontmatter-format"><a class="header" href="#frontmatter-format">Frontmatter format</a></h3>
 <ul>
@@ -714,7 +714,7 @@ Slide content here...
 </ul>
 <h3 id="quick-checklist"><a class="header" href="#quick-checklist">Quick checklist</a></h3>
 <ul>
-<li>Is the input a directory? (not a <code>.toml</code> file)</li>
+<li>Is the input a directory? (not a single <code>.toml</code> or <code>.md</code> file)</li>
 <li>Are paths quoted if they contain spaces?</li>
 <li>Are frontmatter blocks <code>+++</code> TOML or removed?</li>
 <li>Are files named with <code>.md</code>/<code>.html</code> and not hidden?</li>
@@ -725,6 +725,104 @@ Slide content here...
 </ul>
 <pre><code class="language-bash">mkdir -p /tmp/toboggan-output
 toboggan-cli "path/to/slides/" -o /tmp/toboggan-output/presentation.toml
+</code></pre>
+<h2 id="server"><a class="header" href="#server">Server</a></h2>
+<h3 id="server-not-accessible-from-other-devices"><a class="header" href="#server-not-accessible-from-other-devices">Server not accessible from other devices</a></h3>
+<p><strong>Symptom</strong>: The server starts but other devices on the network can’t connect (connection refused or timeout).</p>
+<p><strong>Cause</strong>: By default, <code>toboggan-server</code> binds to <code>127.0.0.1</code> (localhost only). This is not reachable from other machines.</p>
+<p><strong>Fix</strong>: Bind to all interfaces with <code>--host 0.0.0.0</code>:</p>
+<pre><code class="language-bash">toboggan-server --host 0.0.0.0 --port 8080 my-talk.toml
+</code></pre>
+<h3 id="address-already-in-use"><a class="header" href="#address-already-in-use">“address already in use”</a></h3>
+<p><strong>Symptom</strong>: The server fails to start on the default port.</p>
+<p><strong>Fix</strong>: Use a different port or kill the existing process:</p>
+<pre><code class="language-bash"># Use a custom port
+toboggan-server --port 9090 my-talk.toml
+
+# Or find and kill the process using port 8080
+lsof -i :8080
+kill &lt;PID&gt;
+</code></pre>
+<h3 id="talk-file-errors"><a class="header" href="#talk-file-errors">Talk file errors</a></h3>
+<p><strong>Symptom</strong>: Server exits immediately with a <code>Talk</code> parse error.</p>
+<p><strong>Fix</strong>: Validate the talk file:</p>
+<pre><code class="language-bash"># Check the talk file loads correctly
+toboggan-server my-talk.toml
+
+# Common issues:
+# - Missing required fields (title, date)
+# - Invalid slide kind (use: Cover, Part, Standard)
+# - Content type must be "Text" or "Html" (not bare strings)
+</code></pre>
+<h3 id="images-not-showing-in-slides"><a class="header" href="#images-not-showing-in-slides">Images not showing in slides</a></h3>
+<p><strong>Symptom</strong>: Slides with <code>&lt;img&gt;</code> tags show broken images.</p>
+<p><strong>Cause</strong>: The server needs to know where to serve static files from.</p>
+<p><strong>Fix</strong>: Use <code>--public-dir</code> to point to the folder containing your images:</p>
+<pre><code class="language-bash">toboggan-server --public-dir ./public my-talk.toml
+</code></pre>
+<p>Then reference images as <code>/public/my-image.jpg</code> in your slide HTML.</p>
+<h3 id="hot-reload-watch-mode-not-detecting-changes"><a class="header" href="#hot-reload-watch-mode-not-detecting-changes">Hot-reload (watch mode) not detecting changes</a></h3>
+<p><strong>Symptom</strong>: The server’s <code>--watch</code> flag doesn’t reload when you edit the talk file.</p>
+<p><strong>Fix</strong>: The watch mode uses filesystem polling. Make sure:</p>
+<ul>
+<li>The file is saved to disk (not just in an editor buffer)</li>
+<li>You’re watching the correct file (the one passed to the server)</li>
+<li>Some editors (vim with <code>set nobackup</code>) may trigger more reliably than others</li>
+</ul>
+<pre><code class="language-bash">toboggan-server --watch my-talk.toml
+</code></pre>
+<h3 id="cors-errors-in-the-browser"><a class="header" href="#cors-errors-in-the-browser">CORS errors in the browser</a></h3>
+<p><strong>Symptom</strong>: The browser console shows CORS errors when the web UI connects to the server.</p>
+<p><strong>Fix</strong>: If the web UI is served from a different origin than the server, use <code>--allowed-origins</code>:</p>
+<pre><code class="language-bash">toboggan-server --allowed-origins "https://my-cdn.com" my-talk.toml
+</code></pre>
+<p>Or allow all origins for development:</p>
+<pre><code class="language-bash">toboggan-server --allowed-origins "*" my-talk.toml
+</code></pre>
+<h3 id="verify-the-server-is-running"><a class="header" href="#verify-the-server-is-running">Verify the server is running</a></h3>
+<pre><code class="language-bash"># Health check endpoint
+curl http://localhost:8080/api/health
+
+# Should return: OK
+# If connection refused, the server is not running or bound to a different host/port.
+</code></pre>
+<h2 id="presentation-format"><a class="header" href="#presentation-format">Presentation format</a></h2>
+<h3 id="footer-not-showing-or-unwanted-footer-appears"><a class="header" href="#footer-not-showing-or-unwanted-footer-appears">Footer not showing or unwanted footer appears</a></h3>
+<ul>
+<li>The Toboggan UI has a built-in footer bar (<code>.toboggan-footer</code>). To hide it, inject CSS via the <code>head</code> field:</li>
+</ul>
+<pre><code class="language-toml">head = """
+&lt;style&gt;
+  .toboggan-footer { display: none; }
+&lt;/style&gt;
+"""
+</code></pre>
+<ul>
+<li>The optional <code>footer</code> field in the talk header sets a text string in the presentation metadata, not a visual footer.</li>
+</ul>
+<h3 id="slide-kind-is-invalid"><a class="header" href="#slide-kind-is-invalid">Slide kind is invalid</a></h3>
+<p><strong>Symptom</strong>: The server rejects the talk with “unknown variant” for <code>kind</code>.</p>
+<p><strong>Fix</strong>: Only these slide kinds are valid: <code>Cover</code>, <code>Part</code>, <code>Standard</code>.</p>
+<pre><code class="language-toml"># Correct
+kind = "Part"
+
+# Wrong — "Section" and "Break" don't exist
+</code></pre>
+<h3 id="content-type-must-be-tagged"><a class="header" href="#content-type-must-be-tagged">Content type must be tagged</a></h3>
+<p>Each content block is a typed enum. You can’t set <code>body</code> to a raw string:</p>
+<pre><code class="language-toml"># Wrong — this will not parse
+[slides.body]
+text = "Hello"
+
+# Correct — use "type" field
+[slides.body]
+type = "Text"
+text = "Hello"
+
+# Or for HTML content
+[slides.body]
+type = "Html"
+raw = "&lt;h1&gt;Hello&lt;/h1&gt;"
 </code></pre>
 <h2 id="web-frontend-build"><a class="header" href="#web-frontend-build">Web frontend build</a></h2>
 <h3 id="wasm-pack-fails-with-bulk-memory-errors"><a class="header" href="#wasm-pack-fails-with-bulk-memory-errors">wasm-pack fails with bulk memory errors</a></h3>
@@ -773,6 +871,14 @@ cargo build -p toboggan-server
 <p>Or use the provided script:</p>
 <pre><code class="language-bash">./scripts/build-web.sh
 </code></pre>
+<h3 id="websocket-connection-retries-exhausted"><a class="header" href="#websocket-connection-retries-exhausted">WebSocket connection retries exhausted</a></h3>
+<p><strong>Symptom</strong>: The web UI shows “reconnecting…” and eventually gives up.</p>
+<p><strong>Fix</strong>: If the server is behind a proxy or on a slow network, the frontend’s WebSocket retry settings can be adjusted in <code>toboggan-web/.env</code>:</p>
+<pre><code class="language-env">VITE_WS_MAX_RETRIES=10
+VITE_WS_INITIAL_RETRY_DELAY=2000
+VITE_WS_MAX_RETRY_DELAY=60000
+</code></pre>
+<p>Then rebuild the frontend and server.</p>
 <h2 id="tui-client"><a class="header" href="#tui-client">TUI client</a></h2>
 <h3 id="tui-says-not-a-terminal"><a class="header" href="#tui-says-not-a-terminal">TUI says “not a terminal”</a></h3>
 <p><strong>Symptom</strong>: The TUI exits immediately with a “not a terminal” error.</p>
@@ -790,28 +896,17 @@ curl http://localhost:8080/api/health
 # Run TUI with matching host/port
 toboggan-tui --host localhost --port 8080
 </code></pre>
-<h2 id="server"><a class="header" href="#server">Server</a></h2>
-<h3 id="address-already-in-use"><a class="header" href="#address-already-in-use">“address already in use”</a></h3>
-<p><strong>Symptom</strong>: The server fails to start on the default port.</p>
-<p><strong>Fix</strong>: Use a different port or kill the existing process:</p>
-<pre><code class="language-bash"># Use a custom port
-toboggan-server --port 9090 my-talk.toml
-
-# Or find and kill the process using port 8080
-lsof -i :8080
-kill &lt;PID&gt;
+<p>If the server is bound to <code>0.0.0.0</code>, use the machine’s LAN IP to connect from another device:</p>
+<pre><code class="language-bash">toboggan-tui --host 192.168.1.42 --port 8080
 </code></pre>
-<h3 id="talk-file-errors"><a class="header" href="#talk-file-errors">Talk file errors</a></h3>
-<p><strong>Symptom</strong>: Server exits immediately with a <code>Talk</code> parse error.</p>
-<p><strong>Fix</strong>: Validate the talk file:</p>
-<pre><code class="language-bash"># Check the talk file is valid TOML
-cargo run -p toboggan-cli -- --input my-talk.toml -o /dev/null
-
-# Common issues:
-# - Missing required fields (title, slides)
-# - Invalid slide kind (use: Cover, Standard, Section, Break)
-# - Content type must be "Text" or "Html" (not raw strings)
-</code></pre>
+<h3 id="tui-keyboard-shortcuts-not-working"><a class="header" href="#tui-keyboard-shortcuts-not-working">TUI keyboard shortcuts not working</a></h3>
+<p><strong>Symptom</strong>: Keys like <code>→</code>, <code>←</code>, or <code>g</code> don’t respond.</p>
+<p><strong>Fix</strong>: Make sure the terminal is in focus and supports the required key sequences.
+Some terminal multiplexers (tmux, screen) may intercept arrow keys. Try:</p>
+<ul>
+<li>Running the TUI outside tmux/screen</li>
+<li>Using alternate shortcuts (n = next, p = previous, q = quit)</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="server-usage"><a class="header" href="#server-usage">Server Usage</a></h1>
 <p><code>toboggan-server</code> loads a TOML talk file, serves the browser UI, and keeps all connected clients in sync over WebSocket.</p>
@@ -2596,65 +2691,65 @@ text and positioned as a transparent <code>&lt;a&gt;</code> element on top of th
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h1>
-<p>Toboggan découple l’ordinateur qui fait tourner la présentation de l’appareil qui la contrôle. Résultat : des scénarios impossibles avec un setup classique deviennent triviaux.</p>
-<h2 id="deux-présentateurs-une-seule-scène"><a class="header" href="#deux-présentateurs-une-seule-scène">Deux présentateurs, une seule scène</a></h2>
-<p>Vous présentez à deux. Le premier est au podium, le second est de l’autre côté de la scène — ou carrément dans la salle. Pas question de faire passer le clicker devant tout le monde.</p>
+<p>Toboggan decouples the computer running the presentation from the device controlling it. This unlocks scenarios that are impossible with a traditional setup.</p>
+<h2 id="two-presenters-one-stage"><a class="header" href="#two-presenters-one-stage">Two presenters, one stage</a></h2>
+<p>You’re presenting as a duo. The first speaker is at the podium, the second is on the other side of the stage — or in the audience. Passing the clicker across the room isn’t an option.</p>
 <ul>
-<li>Le serveur tourne sur le PC branché au projecteur.</li>
-<li>Un des présentateurs utilise le PC.</li>
-<li>L’autre ouvre le client Web sur son téléphone ou une tablette.</li>
-<li>Chacun peut avancer les slides depuis son propre appareil, où qu’il soit dans la salle.</li>
+<li>The server runs on the PC connected to the projector.</li>
+<li>One presenter uses the PC.</li>
+<li>The other opens the web client on their phone or tablet.</li>
+<li>Both can advance slides from their own device, wherever they are in the room.</li>
 </ul>
-<p>Plus besoin de dire « tu peux cliquer pour moi ? » ou de se passer le boîtier discrètement.</p>
-<h2 id="pas-de-télécommande--votre-téléphone-suffit"><a class="header" href="#pas-de-télécommande--votre-téléphone-suffit">Pas de télécommande ? Votre téléphone suffit</a></h2>
-<p>La salle est équipée mais il n’y a pas de télécommande, ou la pile est morte. Toboggan transforme n’importe quel smartphone en remote :</p>
+<p>No more saying “can you click for me?” or discreetly handing over the remote.</p>
+<h2 id="no-remote-your-phone-is-enough"><a class="header" href="#no-remote-your-phone-is-enough">No remote? Your phone is enough</a></h2>
+<p>The room is equipped but there’s no clicker, or its battery is dead. Toboggan turns any smartphone into a remote:</p>
 <ul>
-<li>Lancez le serveur sur le PC relié au projecteur.</li>
-<li>Ouvrez le client Web sur votre téléphone.</li>
-<li>Promenez-vous sur scène — avancez, reculez, sautez à n’importe quelle slide depuis votre poche.</li>
+<li>Start the server on the PC connected to the projector.</li>
+<li>Open the web client on your phone.</li>
+<li>Walk the stage — advance, rewind, jump to any slide from your pocket.</li>
 </ul>
-<p>Pas de Bluetooth, pas de dongle, pas de matériel spécifique.</p>
-<h2 id="le-câble-vidéo-est-loin-du-podium"><a class="header" href="#le-câble-vidéo-est-loin-du-podium">Le câble vidéo est loin du podium</a></h2>
-<p>La prise HDMI / DisplayPort est au fond de la salle, mais vous voulez parler depuis le devant. Vous êtes obligé de rester collé au bureau du projecteur ? Non :</p>
+<p>No Bluetooth, no dongle, no special hardware.</p>
+<h2 id="video-cable-is-far-from-the-podium"><a class="header" href="#video-cable-is-far-from-the-podium">Video cable is far from the podium</a></h2>
+<p>The HDMI / DisplayPort jack is at the back of the room, but you want to speak from the front. Stuck next to the projector desk? No:</p>
 <ul>
-<li>Posez le PC près du projecteur (là où est le câble).</li>
-<li>Rejoignez le podium avec votre téléphone ou votre tablette.</li>
-<li>Contrôlez les slides sans fil depuis l’endroit où vous parlez vraiment.</li>
+<li>Set up the PC next to the projector (where the cable is).</li>
+<li>Move to the podium with your phone or tablet.</li>
+<li>Control slides wirelessly from where you’re actually speaking.</li>
 </ul>
-<h2 id="présenter-sans-son-pc"><a class="header" href="#présenter-sans-son-pc">Présenter sans son PC</a></h2>
-<p>PC oublié, batterie à plat, ou ordinateur qui refuse de coopérer le jour J. Pas de panique :</p>
+<h2 id="presenting-without-your-own-laptop"><a class="header" href="#presenting-without-your-own-laptop">Presenting without your own laptop</a></h2>
+<p>Laptop forgotten, dead battery, or a computer that refuses to cooperate on the day. No panic:</p>
 <ul>
-<li>Lancez le serveur Toboggan sur le PC d’un collègue, un Raspberry Pi, ou même une VM dans le cloud.</li>
-<li>Ouvrez le client Web sur n’importe quel appareil — téléphone, tablette, prêt — et présentez.</li>
-<li>Les slides et les sessions terminal tournent sur le serveur, pas sur votre appareil.</li>
+<li>Start the Toboggan server on a colleague’s PC, a Raspberry Pi, or even a cloud VM.</li>
+<li>Open the web client on any device — phone, tablet, loaner — and present.</li>
+<li>Slides and terminal sessions run on the server, not on your device.</li>
 </ul>
-<p>Utile aussi pour les démos embarquées : vous pouvez lancer des sessions SSH depuis le serveur, exécuter des commandes en direct, et tout contrôler depuis votre téléphone.</p>
-<h2 id="en-salle-de-formation-ou-workshop"><a class="header" href="#en-salle-de-formation-ou-workshop">En salle de formation ou workshop</a></h2>
-<p>Le formateur avance les slides, et chaque participant suit sur son propre écran :</p>
+<p>Also useful for embedded demos: you can launch SSH sessions from the server, run live commands, and control everything from your phone.</p>
+<h2 id="training-rooms-and-workshops"><a class="header" href="#training-rooms-and-workshops">Training rooms and workshops</a></h2>
+<p>The instructor advances slides while each participant follows on their own screen:</p>
 <ul>
-<li>Le serveur tourne sur la machine du formateur.</li>
-<li>Le formateur contrôle le rythme depuis son PC.</li>
-<li>Les participants ouvrent le client Web sur leur propre appareil (téléphone, tablette, PC) et voient la slide en cours.</li>
-<li>Tout le monde suit à son rythme sans être collé à l’écran du formateur.</li>
+<li>The server runs on the instructor’s machine.</li>
+<li>The instructor controls the pace from their PC.</li>
+<li>Participants open the web client on their own device (phone, tablet, PC) and see the current slide.</li>
+<li>Everyone follows at their own pace without crowding around the instructor’s screen.</li>
 </ul>
-<h2 id="accessibilité"><a class="header" href="#accessibilité">Accessibilité</a></h2>
-<p>Un présentateur à mobilité réduite peut contrôler la présentation depuis une position confortable (assis dans la salle, depuis un appareil fixé au fauteuil roulant, etc.), sans avoir à rester debout au bureau du projecteur.</p>
-<h2 id="session-de-questions--débogage-en-direct"><a class="header" href="#session-de-questions--débogage-en-direct">Session de questions / débogage en direct</a></h2>
-<p>Pendant les questions, le présentateur peut s’approcher du public tout en gardant la main sur les slides :</p>
+<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
+<p>A presenter with limited mobility can control the presentation from a comfortable position (sitting in the audience, from a wheelchair-mounted device, etc.) without needing to stand at the projector desk.</p>
+<h2 id="qa-and-live-debugging-sessions"><a class="header" href="#qa-and-live-debugging-sessions">Q&amp;A and live debugging sessions</a></h2>
+<p>During questions, the presenter can approach the audience while keeping control of the slides:</p>
 <ul>
-<li>Téléphone dans la poche, il avance les slides pour répondre aux questions.</li>
-<li>Il peut même revenir en arrière pour montrer un détail technique sans retourner au bureau.</li>
+<li>Phone in pocket, advance slides to answer questions.</li>
+<li>Jump back to show a technical detail without returning to the desk.</li>
 </ul>
-<h2 id="terminaux-embarqués-dans-les-slides"><a class="header" href="#terminaux-embarqués-dans-les-slides">Terminaux embarqués dans les slides</a></h2>
-<p>Toboggan permet d’intégrer des sessions terminal live dans une slide. Utile pour :</p>
+<h2 id="embedded-terminals-in-slides"><a class="header" href="#embedded-terminals-in-slides">Embedded terminals in slides</a></h2>
+<p>Toboggan lets you embed live terminal sessions directly in a slide. Useful for:</p>
 <ul>
-<li>Montrer un fuzzer en cours d’exécution — le terminal se met à jour en temps réel.</li>
-<li>Faire une démo de debug sans basculer entre fenêtres.</li>
-<li>Laisser les participants distants interagir avec le même terminal depuis leur navigateur.</li>
+<li>Showing a fuzzer running in real time — the terminal updates live.</li>
+<li>Doing a live debug demo without switching windows.</li>
+<li>Letting remote participants interact with the same terminal from their browser.</li>
 </ul>
-<p>Le combo « contrôle des slides depuis n’importe quel appareil + terminaux embarqués » rend Toboggan particulièrement adapté aux conférences techniques, formations et présentations en binôme.</p>
+<p>The combination of “control slides from any device + embedded terminals” makes Toboggan especially well suited for technical conferences, training sessions, and duo presentations.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="presentation-format"><a class="header" href="#presentation-format">Presentation Format</a></h1>
+<h1 id="presentation-format-1"><a class="header" href="#presentation-format-1">Presentation Format</a></h1>
 <p>Toboggan serializes talks as TOML using the <code>Talk</code>, <code>Slide</code>, <code>Content</code>, and <code>TerminalConfig</code> types from <code>toboggan-core</code>.</p>
 <h2 id="canonical-shape"><a class="header" href="#canonical-shape">Canonical shape</a></h2>
 <pre><code class="language-toml">title = "My Talk"

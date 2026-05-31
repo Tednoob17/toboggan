@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31d2a0e0.js";
+            window.path_to_searchindex_js = "../searchindex-d0f4d9d2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -181,63 +181,63 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="use-cases"><a class="header" href="#use-cases">Use Cases</a></h1>
-<p>Toboggan découple l’ordinateur qui fait tourner la présentation de l’appareil qui la contrôle. Résultat : des scénarios impossibles avec un setup classique deviennent triviaux.</p>
-<h2 id="deux-présentateurs-une-seule-scène"><a class="header" href="#deux-présentateurs-une-seule-scène">Deux présentateurs, une seule scène</a></h2>
-<p>Vous présentez à deux. Le premier est au podium, le second est de l’autre côté de la scène — ou carrément dans la salle. Pas question de faire passer le clicker devant tout le monde.</p>
+<p>Toboggan decouples the computer running the presentation from the device controlling it. This unlocks scenarios that are impossible with a traditional setup.</p>
+<h2 id="two-presenters-one-stage"><a class="header" href="#two-presenters-one-stage">Two presenters, one stage</a></h2>
+<p>You’re presenting as a duo. The first speaker is at the podium, the second is on the other side of the stage — or in the audience. Passing the clicker across the room isn’t an option.</p>
 <ul>
-<li>Le serveur tourne sur le PC branché au projecteur.</li>
-<li>Un des présentateurs utilise le PC.</li>
-<li>L’autre ouvre le client Web sur son téléphone ou une tablette.</li>
-<li>Chacun peut avancer les slides depuis son propre appareil, où qu’il soit dans la salle.</li>
+<li>The server runs on the PC connected to the projector.</li>
+<li>One presenter uses the PC.</li>
+<li>The other opens the web client on their phone or tablet.</li>
+<li>Both can advance slides from their own device, wherever they are in the room.</li>
 </ul>
-<p>Plus besoin de dire « tu peux cliquer pour moi ? » ou de se passer le boîtier discrètement.</p>
-<h2 id="pas-de-télécommande--votre-téléphone-suffit"><a class="header" href="#pas-de-télécommande--votre-téléphone-suffit">Pas de télécommande ? Votre téléphone suffit</a></h2>
-<p>La salle est équipée mais il n’y a pas de télécommande, ou la pile est morte. Toboggan transforme n’importe quel smartphone en remote :</p>
+<p>No more saying “can you click for me?” or discreetly handing over the remote.</p>
+<h2 id="no-remote-your-phone-is-enough"><a class="header" href="#no-remote-your-phone-is-enough">No remote? Your phone is enough</a></h2>
+<p>The room is equipped but there’s no clicker, or its battery is dead. Toboggan turns any smartphone into a remote:</p>
 <ul>
-<li>Lancez le serveur sur le PC relié au projecteur.</li>
-<li>Ouvrez le client Web sur votre téléphone.</li>
-<li>Promenez-vous sur scène — avancez, reculez, sautez à n’importe quelle slide depuis votre poche.</li>
+<li>Start the server on the PC connected to the projector.</li>
+<li>Open the web client on your phone.</li>
+<li>Walk the stage — advance, rewind, jump to any slide from your pocket.</li>
 </ul>
-<p>Pas de Bluetooth, pas de dongle, pas de matériel spécifique.</p>
-<h2 id="le-câble-vidéo-est-loin-du-podium"><a class="header" href="#le-câble-vidéo-est-loin-du-podium">Le câble vidéo est loin du podium</a></h2>
-<p>La prise HDMI / DisplayPort est au fond de la salle, mais vous voulez parler depuis le devant. Vous êtes obligé de rester collé au bureau du projecteur ? Non :</p>
+<p>No Bluetooth, no dongle, no special hardware.</p>
+<h2 id="video-cable-is-far-from-the-podium"><a class="header" href="#video-cable-is-far-from-the-podium">Video cable is far from the podium</a></h2>
+<p>The HDMI / DisplayPort jack is at the back of the room, but you want to speak from the front. Stuck next to the projector desk? No:</p>
 <ul>
-<li>Posez le PC près du projecteur (là où est le câble).</li>
-<li>Rejoignez le podium avec votre téléphone ou votre tablette.</li>
-<li>Contrôlez les slides sans fil depuis l’endroit où vous parlez vraiment.</li>
+<li>Set up the PC next to the projector (where the cable is).</li>
+<li>Move to the podium with your phone or tablet.</li>
+<li>Control slides wirelessly from where you’re actually speaking.</li>
 </ul>
-<h2 id="présenter-sans-son-pc"><a class="header" href="#présenter-sans-son-pc">Présenter sans son PC</a></h2>
-<p>PC oublié, batterie à plat, ou ordinateur qui refuse de coopérer le jour J. Pas de panique :</p>
+<h2 id="presenting-without-your-own-laptop"><a class="header" href="#presenting-without-your-own-laptop">Presenting without your own laptop</a></h2>
+<p>Laptop forgotten, dead battery, or a computer that refuses to cooperate on the day. No panic:</p>
 <ul>
-<li>Lancez le serveur Toboggan sur le PC d’un collègue, un Raspberry Pi, ou même une VM dans le cloud.</li>
-<li>Ouvrez le client Web sur n’importe quel appareil — téléphone, tablette, prêt — et présentez.</li>
-<li>Les slides et les sessions terminal tournent sur le serveur, pas sur votre appareil.</li>
+<li>Start the Toboggan server on a colleague’s PC, a Raspberry Pi, or even a cloud VM.</li>
+<li>Open the web client on any device — phone, tablet, loaner — and present.</li>
+<li>Slides and terminal sessions run on the server, not on your device.</li>
 </ul>
-<p>Utile aussi pour les démos embarquées : vous pouvez lancer des sessions SSH depuis le serveur, exécuter des commandes en direct, et tout contrôler depuis votre téléphone.</p>
-<h2 id="en-salle-de-formation-ou-workshop"><a class="header" href="#en-salle-de-formation-ou-workshop">En salle de formation ou workshop</a></h2>
-<p>Le formateur avance les slides, et chaque participant suit sur son propre écran :</p>
+<p>Also useful for embedded demos: you can launch SSH sessions from the server, run live commands, and control everything from your phone.</p>
+<h2 id="training-rooms-and-workshops"><a class="header" href="#training-rooms-and-workshops">Training rooms and workshops</a></h2>
+<p>The instructor advances slides while each participant follows on their own screen:</p>
 <ul>
-<li>Le serveur tourne sur la machine du formateur.</li>
-<li>Le formateur contrôle le rythme depuis son PC.</li>
-<li>Les participants ouvrent le client Web sur leur propre appareil (téléphone, tablette, PC) et voient la slide en cours.</li>
-<li>Tout le monde suit à son rythme sans être collé à l’écran du formateur.</li>
+<li>The server runs on the instructor’s machine.</li>
+<li>The instructor controls the pace from their PC.</li>
+<li>Participants open the web client on their own device (phone, tablet, PC) and see the current slide.</li>
+<li>Everyone follows at their own pace without crowding around the instructor’s screen.</li>
 </ul>
-<h2 id="accessibilité"><a class="header" href="#accessibilité">Accessibilité</a></h2>
-<p>Un présentateur à mobilité réduite peut contrôler la présentation depuis une position confortable (assis dans la salle, depuis un appareil fixé au fauteuil roulant, etc.), sans avoir à rester debout au bureau du projecteur.</p>
-<h2 id="session-de-questions--débogage-en-direct"><a class="header" href="#session-de-questions--débogage-en-direct">Session de questions / débogage en direct</a></h2>
-<p>Pendant les questions, le présentateur peut s’approcher du public tout en gardant la main sur les slides :</p>
+<h2 id="accessibility"><a class="header" href="#accessibility">Accessibility</a></h2>
+<p>A presenter with limited mobility can control the presentation from a comfortable position (sitting in the audience, from a wheelchair-mounted device, etc.) without needing to stand at the projector desk.</p>
+<h2 id="qa-and-live-debugging-sessions"><a class="header" href="#qa-and-live-debugging-sessions">Q&amp;A and live debugging sessions</a></h2>
+<p>During questions, the presenter can approach the audience while keeping control of the slides:</p>
 <ul>
-<li>Téléphone dans la poche, il avance les slides pour répondre aux questions.</li>
-<li>Il peut même revenir en arrière pour montrer un détail technique sans retourner au bureau.</li>
+<li>Phone in pocket, advance slides to answer questions.</li>
+<li>Jump back to show a technical detail without returning to the desk.</li>
 </ul>
-<h2 id="terminaux-embarqués-dans-les-slides"><a class="header" href="#terminaux-embarqués-dans-les-slides">Terminaux embarqués dans les slides</a></h2>
-<p>Toboggan permet d’intégrer des sessions terminal live dans une slide. Utile pour :</p>
+<h2 id="embedded-terminals-in-slides"><a class="header" href="#embedded-terminals-in-slides">Embedded terminals in slides</a></h2>
+<p>Toboggan lets you embed live terminal sessions directly in a slide. Useful for:</p>
 <ul>
-<li>Montrer un fuzzer en cours d’exécution — le terminal se met à jour en temps réel.</li>
-<li>Faire une démo de debug sans basculer entre fenêtres.</li>
-<li>Laisser les participants distants interagir avec le même terminal depuis leur navigateur.</li>
+<li>Showing a fuzzer running in real time — the terminal updates live.</li>
+<li>Doing a live debug demo without switching windows.</li>
+<li>Letting remote participants interact with the same terminal from their browser.</li>
 </ul>
-<p>Le combo « contrôle des slides depuis n’importe quel appareil + terminaux embarqués » rend Toboggan particulièrement adapté aux conférences techniques, formations et présentations en binôme.</p>
+<p>The combination of “control slides from any device + embedded terminals” makes Toboggan especially well suited for technical conferences, training sessions, and duo presentations.</p>
 
                     </main>
 

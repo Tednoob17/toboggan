@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-31d2a0e0.js";
+            window.path_to_searchindex_js = "../searchindex-d0f4d9d2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ab01e76e.js"></script>
@@ -190,7 +190,7 @@
 <pre><code class="language-bash">toboggan-cli "My Slides Folder/" -o presentation.toml
 </code></pre>
 <ul>
-<li>The CLI expects a <strong>directory</strong> as input. If you pass a single <code>.toml</code> file, the CLI will error with <code>NotADirectory</code> — you don’t need to convert a TOML file with the CLI.</li>
+<li>The CLI expects a <strong>directory</strong> as input. If you pass a single <code>.toml</code> file or a file path, the CLI will error with <code>NotADirectory</code> (if it’s a file) or produce unexpected output — you don’t need to convert a TOML file with the CLI.</li>
 </ul>
 <h3 id="frontmatter-format"><a class="header" href="#frontmatter-format">Frontmatter format</a></h3>
 <ul>
@@ -223,7 +223,7 @@ Slide content here...
 </ul>
 <h3 id="quick-checklist"><a class="header" href="#quick-checklist">Quick checklist</a></h3>
 <ul>
-<li>Is the input a directory? (not a <code>.toml</code> file)</li>
+<li>Is the input a directory? (not a single <code>.toml</code> or <code>.md</code> file)</li>
 <li>Are paths quoted if they contain spaces?</li>
 <li>Are frontmatter blocks <code>+++</code> TOML or removed?</li>
 <li>Are files named with <code>.md</code>/<code>.html</code> and not hidden?</li>
@@ -234,6 +234,104 @@ Slide content here...
 </ul>
 <pre><code class="language-bash">mkdir -p /tmp/toboggan-output
 toboggan-cli "path/to/slides/" -o /tmp/toboggan-output/presentation.toml
+</code></pre>
+<h2 id="server"><a class="header" href="#server">Server</a></h2>
+<h3 id="server-not-accessible-from-other-devices"><a class="header" href="#server-not-accessible-from-other-devices">Server not accessible from other devices</a></h3>
+<p><strong>Symptom</strong>: The server starts but other devices on the network can’t connect (connection refused or timeout).</p>
+<p><strong>Cause</strong>: By default, <code>toboggan-server</code> binds to <code>127.0.0.1</code> (localhost only). This is not reachable from other machines.</p>
+<p><strong>Fix</strong>: Bind to all interfaces with <code>--host 0.0.0.0</code>:</p>
+<pre><code class="language-bash">toboggan-server --host 0.0.0.0 --port 8080 my-talk.toml
+</code></pre>
+<h3 id="address-already-in-use"><a class="header" href="#address-already-in-use">“address already in use”</a></h3>
+<p><strong>Symptom</strong>: The server fails to start on the default port.</p>
+<p><strong>Fix</strong>: Use a different port or kill the existing process:</p>
+<pre><code class="language-bash"># Use a custom port
+toboggan-server --port 9090 my-talk.toml
+
+# Or find and kill the process using port 8080
+lsof -i :8080
+kill &lt;PID&gt;
+</code></pre>
+<h3 id="talk-file-errors"><a class="header" href="#talk-file-errors">Talk file errors</a></h3>
+<p><strong>Symptom</strong>: Server exits immediately with a <code>Talk</code> parse error.</p>
+<p><strong>Fix</strong>: Validate the talk file:</p>
+<pre><code class="language-bash"># Check the talk file loads correctly
+toboggan-server my-talk.toml
+
+# Common issues:
+# - Missing required fields (title, date)
+# - Invalid slide kind (use: Cover, Part, Standard)
+# - Content type must be "Text" or "Html" (not bare strings)
+</code></pre>
+<h3 id="images-not-showing-in-slides"><a class="header" href="#images-not-showing-in-slides">Images not showing in slides</a></h3>
+<p><strong>Symptom</strong>: Slides with <code>&lt;img&gt;</code> tags show broken images.</p>
+<p><strong>Cause</strong>: The server needs to know where to serve static files from.</p>
+<p><strong>Fix</strong>: Use <code>--public-dir</code> to point to the folder containing your images:</p>
+<pre><code class="language-bash">toboggan-server --public-dir ./public my-talk.toml
+</code></pre>
+<p>Then reference images as <code>/public/my-image.jpg</code> in your slide HTML.</p>
+<h3 id="hot-reload-watch-mode-not-detecting-changes"><a class="header" href="#hot-reload-watch-mode-not-detecting-changes">Hot-reload (watch mode) not detecting changes</a></h3>
+<p><strong>Symptom</strong>: The server’s <code>--watch</code> flag doesn’t reload when you edit the talk file.</p>
+<p><strong>Fix</strong>: The watch mode uses filesystem polling. Make sure:</p>
+<ul>
+<li>The file is saved to disk (not just in an editor buffer)</li>
+<li>You’re watching the correct file (the one passed to the server)</li>
+<li>Some editors (vim with <code>set nobackup</code>) may trigger more reliably than others</li>
+</ul>
+<pre><code class="language-bash">toboggan-server --watch my-talk.toml
+</code></pre>
+<h3 id="cors-errors-in-the-browser"><a class="header" href="#cors-errors-in-the-browser">CORS errors in the browser</a></h3>
+<p><strong>Symptom</strong>: The browser console shows CORS errors when the web UI connects to the server.</p>
+<p><strong>Fix</strong>: If the web UI is served from a different origin than the server, use <code>--allowed-origins</code>:</p>
+<pre><code class="language-bash">toboggan-server --allowed-origins "https://my-cdn.com" my-talk.toml
+</code></pre>
+<p>Or allow all origins for development:</p>
+<pre><code class="language-bash">toboggan-server --allowed-origins "*" my-talk.toml
+</code></pre>
+<h3 id="verify-the-server-is-running"><a class="header" href="#verify-the-server-is-running">Verify the server is running</a></h3>
+<pre><code class="language-bash"># Health check endpoint
+curl http://localhost:8080/api/health
+
+# Should return: OK
+# If connection refused, the server is not running or bound to a different host/port.
+</code></pre>
+<h2 id="presentation-format"><a class="header" href="#presentation-format">Presentation format</a></h2>
+<h3 id="footer-not-showing-or-unwanted-footer-appears"><a class="header" href="#footer-not-showing-or-unwanted-footer-appears">Footer not showing or unwanted footer appears</a></h3>
+<ul>
+<li>The Toboggan UI has a built-in footer bar (<code>.toboggan-footer</code>). To hide it, inject CSS via the <code>head</code> field:</li>
+</ul>
+<pre><code class="language-toml">head = """
+&lt;style&gt;
+  .toboggan-footer { display: none; }
+&lt;/style&gt;
+"""
+</code></pre>
+<ul>
+<li>The optional <code>footer</code> field in the talk header sets a text string in the presentation metadata, not a visual footer.</li>
+</ul>
+<h3 id="slide-kind-is-invalid"><a class="header" href="#slide-kind-is-invalid">Slide kind is invalid</a></h3>
+<p><strong>Symptom</strong>: The server rejects the talk with “unknown variant” for <code>kind</code>.</p>
+<p><strong>Fix</strong>: Only these slide kinds are valid: <code>Cover</code>, <code>Part</code>, <code>Standard</code>.</p>
+<pre><code class="language-toml"># Correct
+kind = "Part"
+
+# Wrong — "Section" and "Break" don't exist
+</code></pre>
+<h3 id="content-type-must-be-tagged"><a class="header" href="#content-type-must-be-tagged">Content type must be tagged</a></h3>
+<p>Each content block is a typed enum. You can’t set <code>body</code> to a raw string:</p>
+<pre><code class="language-toml"># Wrong — this will not parse
+[slides.body]
+text = "Hello"
+
+# Correct — use "type" field
+[slides.body]
+type = "Text"
+text = "Hello"
+
+# Or for HTML content
+[slides.body]
+type = "Html"
+raw = "&lt;h1&gt;Hello&lt;/h1&gt;"
 </code></pre>
 <h2 id="web-frontend-build"><a class="header" href="#web-frontend-build">Web frontend build</a></h2>
 <h3 id="wasm-pack-fails-with-bulk-memory-errors"><a class="header" href="#wasm-pack-fails-with-bulk-memory-errors">wasm-pack fails with bulk memory errors</a></h3>
@@ -282,6 +380,14 @@ cargo build -p toboggan-server
 <p>Or use the provided script:</p>
 <pre><code class="language-bash">./scripts/build-web.sh
 </code></pre>
+<h3 id="websocket-connection-retries-exhausted"><a class="header" href="#websocket-connection-retries-exhausted">WebSocket connection retries exhausted</a></h3>
+<p><strong>Symptom</strong>: The web UI shows “reconnecting…” and eventually gives up.</p>
+<p><strong>Fix</strong>: If the server is behind a proxy or on a slow network, the frontend’s WebSocket retry settings can be adjusted in <code>toboggan-web/.env</code>:</p>
+<pre><code class="language-env">VITE_WS_MAX_RETRIES=10
+VITE_WS_INITIAL_RETRY_DELAY=2000
+VITE_WS_MAX_RETRY_DELAY=60000
+</code></pre>
+<p>Then rebuild the frontend and server.</p>
 <h2 id="tui-client"><a class="header" href="#tui-client">TUI client</a></h2>
 <h3 id="tui-says-not-a-terminal"><a class="header" href="#tui-says-not-a-terminal">TUI says “not a terminal”</a></h3>
 <p><strong>Symptom</strong>: The TUI exits immediately with a “not a terminal” error.</p>
@@ -299,28 +405,17 @@ curl http://localhost:8080/api/health
 # Run TUI with matching host/port
 toboggan-tui --host localhost --port 8080
 </code></pre>
-<h2 id="server"><a class="header" href="#server">Server</a></h2>
-<h3 id="address-already-in-use"><a class="header" href="#address-already-in-use">“address already in use”</a></h3>
-<p><strong>Symptom</strong>: The server fails to start on the default port.</p>
-<p><strong>Fix</strong>: Use a different port or kill the existing process:</p>
-<pre><code class="language-bash"># Use a custom port
-toboggan-server --port 9090 my-talk.toml
-
-# Or find and kill the process using port 8080
-lsof -i :8080
-kill &lt;PID&gt;
+<p>If the server is bound to <code>0.0.0.0</code>, use the machine’s LAN IP to connect from another device:</p>
+<pre><code class="language-bash">toboggan-tui --host 192.168.1.42 --port 8080
 </code></pre>
-<h3 id="talk-file-errors"><a class="header" href="#talk-file-errors">Talk file errors</a></h3>
-<p><strong>Symptom</strong>: Server exits immediately with a <code>Talk</code> parse error.</p>
-<p><strong>Fix</strong>: Validate the talk file:</p>
-<pre><code class="language-bash"># Check the talk file is valid TOML
-cargo run -p toboggan-cli -- --input my-talk.toml -o /dev/null
-
-# Common issues:
-# - Missing required fields (title, slides)
-# - Invalid slide kind (use: Cover, Standard, Section, Break)
-# - Content type must be "Text" or "Html" (not raw strings)
-</code></pre>
+<h3 id="tui-keyboard-shortcuts-not-working"><a class="header" href="#tui-keyboard-shortcuts-not-working">TUI keyboard shortcuts not working</a></h3>
+<p><strong>Symptom</strong>: Keys like <code>→</code>, <code>←</code>, or <code>g</code> don’t respond.</p>
+<p><strong>Fix</strong>: Make sure the terminal is in focus and supports the required key sequences.
+Some terminal multiplexers (tmux, screen) may intercept arrow keys. Try:</p>
+<ul>
+<li>Running the TUI outside tmux/screen</li>
+<li>Using alternate shortcuts (n = next, p = previous, q = quit)</li>
+</ul>
 
                     </main>
 

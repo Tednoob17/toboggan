@@ -1,72 +1,72 @@
 # Use Cases
 
-Toboggan découple l'ordinateur qui fait tourner la présentation de l'appareil qui la contrôle. Résultat : des scénarios impossibles avec un setup classique deviennent triviaux.
+Toboggan decouples the computer running the presentation from the device controlling it. This unlocks scenarios that are impossible with a traditional setup.
 
-## Deux présentateurs, une seule scène
+## Two presenters, one stage
 
-Vous présentez à deux. Le premier est au podium, le second est de l'autre côté de la scène — ou carrément dans la salle. Pas question de faire passer le clicker devant tout le monde.
+You're presenting as a duo. The first speaker is at the podium, the second is on the other side of the stage — or in the audience. Passing the clicker across the room isn't an option.
 
-- Le serveur tourne sur le PC branché au projecteur.
-- Un des présentateurs utilise le PC.
-- L'autre ouvre le client Web sur son téléphone ou une tablette.
-- Chacun peut avancer les slides depuis son propre appareil, où qu'il soit dans la salle.
+- The server runs on the PC connected to the projector.
+- One presenter uses the PC.
+- The other opens the web client on their phone or tablet.
+- Both can advance slides from their own device, wherever they are in the room.
 
-Plus besoin de dire « tu peux cliquer pour moi ? » ou de se passer le boîtier discrètement.
+No more saying "can you click for me?" or discreetly handing over the remote.
 
-## Pas de télécommande ? Votre téléphone suffit
+## No remote? Your phone is enough
 
-La salle est équipée mais il n'y a pas de télécommande, ou la pile est morte. Toboggan transforme n'importe quel smartphone en remote :
+The room is equipped but there's no clicker, or its battery is dead. Toboggan turns any smartphone into a remote:
 
-- Lancez le serveur sur le PC relié au projecteur.
-- Ouvrez le client Web sur votre téléphone.
-- Promenez-vous sur scène — avancez, reculez, sautez à n'importe quelle slide depuis votre poche.
+- Start the server on the PC connected to the projector.
+- Open the web client on your phone.
+- Walk the stage — advance, rewind, jump to any slide from your pocket.
 
-Pas de Bluetooth, pas de dongle, pas de matériel spécifique.
+No Bluetooth, no dongle, no special hardware.
 
-## Le câble vidéo est loin du podium
+## Video cable is far from the podium
 
-La prise HDMI / DisplayPort est au fond de la salle, mais vous voulez parler depuis le devant. Vous êtes obligé de rester collé au bureau du projecteur ? Non :
+The HDMI / DisplayPort jack is at the back of the room, but you want to speak from the front. Stuck next to the projector desk? No:
 
-- Posez le PC près du projecteur (là où est le câble).
-- Rejoignez le podium avec votre téléphone ou votre tablette.
-- Contrôlez les slides sans fil depuis l'endroit où vous parlez vraiment.
+- Set up the PC next to the projector (where the cable is).
+- Move to the podium with your phone or tablet.
+- Control slides wirelessly from where you're actually speaking.
 
-## Présenter sans son PC
+## Presenting without your own laptop
 
-PC oublié, batterie à plat, ou ordinateur qui refuse de coopérer le jour J. Pas de panique :
+Laptop forgotten, dead battery, or a computer that refuses to cooperate on the day. No panic:
 
-- Lancez le serveur Toboggan sur le PC d'un collègue, un Raspberry Pi, ou même une VM dans le cloud.
-- Ouvrez le client Web sur n'importe quel appareil — téléphone, tablette, prêt — et présentez.
-- Les slides et les sessions terminal tournent sur le serveur, pas sur votre appareil.
+- Start the Toboggan server on a colleague's PC, a Raspberry Pi, or even a cloud VM.
+- Open the web client on any device — phone, tablet, loaner — and present.
+- Slides and terminal sessions run on the server, not on your device.
 
-Utile aussi pour les démos embarquées : vous pouvez lancer des sessions SSH depuis le serveur, exécuter des commandes en direct, et tout contrôler depuis votre téléphone.
+Also useful for embedded demos: you can launch SSH sessions from the server, run live commands, and control everything from your phone.
 
-## En salle de formation ou workshop
+## Training rooms and workshops
 
-Le formateur avance les slides, et chaque participant suit sur son propre écran :
+The instructor advances slides while each participant follows on their own screen:
 
-- Le serveur tourne sur la machine du formateur.
-- Le formateur contrôle le rythme depuis son PC.
-- Les participants ouvrent le client Web sur leur propre appareil (téléphone, tablette, PC) et voient la slide en cours.
-- Tout le monde suit à son rythme sans être collé à l'écran du formateur.
+- The server runs on the instructor's machine.
+- The instructor controls the pace from their PC.
+- Participants open the web client on their own device (phone, tablet, PC) and see the current slide.
+- Everyone follows at their own pace without crowding around the instructor's screen.
 
-## Accessibilité
+## Accessibility
 
-Un présentateur à mobilité réduite peut contrôler la présentation depuis une position confortable (assis dans la salle, depuis un appareil fixé au fauteuil roulant, etc.), sans avoir à rester debout au bureau du projecteur.
+A presenter with limited mobility can control the presentation from a comfortable position (sitting in the audience, from a wheelchair-mounted device, etc.) without needing to stand at the projector desk.
 
-## Session de questions / débogage en direct
+## Q&A and live debugging sessions
 
-Pendant les questions, le présentateur peut s'approcher du public tout en gardant la main sur les slides :
+During questions, the presenter can approach the audience while keeping control of the slides:
 
-- Téléphone dans la poche, il avance les slides pour répondre aux questions.
-- Il peut même revenir en arrière pour montrer un détail technique sans retourner au bureau.
+- Phone in pocket, advance slides to answer questions.
+- Jump back to show a technical detail without returning to the desk.
 
-## Terminaux embarqués dans les slides
+## Embedded terminals in slides
 
-Toboggan permet d'intégrer des sessions terminal live dans une slide. Utile pour :
+Toboggan lets you embed live terminal sessions directly in a slide. Useful for:
 
-- Montrer un fuzzer en cours d'exécution — le terminal se met à jour en temps réel.
-- Faire une démo de debug sans basculer entre fenêtres.
-- Laisser les participants distants interagir avec le même terminal depuis leur navigateur.
+- Showing a fuzzer running in real time — the terminal updates live.
+- Doing a live debug demo without switching windows.
+- Letting remote participants interact with the same terminal from their browser.
 
-Le combo « contrôle des slides depuis n'importe quel appareil + terminaux embarqués » rend Toboggan particulièrement adapté aux conférences techniques, formations et présentations en binôme.
+The combination of "control slides from any device + embedded terminals" makes Toboggan especially well suited for technical conferences, training sessions, and duo presentations.

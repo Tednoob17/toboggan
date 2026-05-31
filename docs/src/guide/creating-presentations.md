@@ -266,7 +266,7 @@ The repository includes real-world example presentations in the `slides_ex/` dir
 
 - **How to Fuzz Like a Pro** — a pre-compiled TOML talk file that can be served directly:
   ```bash
-  toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+   toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
   ```
 
 These examples demonstrate the project structure and frontmatter conventions used in real talks.
