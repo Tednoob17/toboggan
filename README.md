@@ -208,13 +208,25 @@ toboggan-desktop/          # Separate workspace (iced + wgpu)
 > Rust GPU ecosystem (wgpu, naga, ash...). Isolating it keeps the main build
 > fast and compatible with free CI runners (7 GB RAM limit).
 
+### Build requirements by component
+
+| Component | Prerequisites | RAM | Notes |
+|-----------|---------------|-----|-------|
+| `toboggan-server` | Rust only | ~2 GB | Works headless, web UI optional |
+| `toboggan-cli` | Rust only | ~2 GB | Markdown → TOML converter |
+| `toboggan-tui` | Rust only | ~2 GB | Needs a real TTY (works over SSH) |
+| `toboggan-desktop` | Rust + GPU libs | ~8 GB | Separate workspace (iced/wgpu) |
+| **Web frontend** | Node.js + npm + wasm-pack | ~2 GB | Required for browser UI |
+| iOS app | Xcode + Rust targets | ~4 GB | macOS only |
+| ESP32 | ESP-IDF toolchain | ~2 GB | Embedded target |
+
 ### Build all components
 
 ```bash
-# Main build (CLI + server + TUI - fast, ~4 GB RAM)
+# Main build (CLI + server + TUI — fast, ~4 GB RAM)
 cargo build --release
 
-# Desktop build (iced/wgpu - separate, ~8+ GB RAM)
+# Desktop build (iced/wgpu — separate, ~8+ GB RAM)
 cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 
 # Or in one command
@@ -222,20 +234,45 @@ cargo build --release && cargo build --release --manifest-path toboggan-desktop/
 
 # Light build (essentials only)
 cargo build --release -p toboggan-cli -p toboggan-server -p toboggan-tui
-
-# Web frontend (required before building the server)
-cd toboggan-web && npm install && npm run build && cd ..
 ```
 
 ### Platform-specific builds
 
-#### Web (WASM)
+#### Web frontend (WASM)
+
+The browser UI requires the WASM crate. Without it, the server still works
+but shows a placeholder page at `http://localhost:8080`.
+
 ```bash
-mise build:wasm
-# Or manually:
-cd toboggan-web/toboggan-wasm
+# 1. Install wasm-pack (https://wasm-pack.rs/)
+curl -sSfL https://wasm-pack.init.example/install.sh | sh   # or use your package manager
+
+# 2. Add the WASM target
+rustup target add wasm32-unknown-unknown
+
+# 3. Install JS dependencies and build
+cd toboggan-web
+npm install
+
+# 4. Build the WASM crate first
+cd toboggan-wasm
 wasm-pack build --target web --release
+cd ..
+
+# 5. Build the TypeScript frontend
+npm run build
+cd ..
 ```
+
+Then rebuild the server to embed the frontend:
+
+```bash
+cargo build --release -p toboggan-server
+```
+
+> **Quick alternative**: skip the web UI and use the **TUI client** instead
+> (`toboggan-tui --host <ip> --port 8080`). It works over SSH and needs
+> no JavaScript toolchain.
 
 #### iOS
 ```bash
@@ -244,6 +281,8 @@ mise build:ios
 cd toboggan-mobile
 ./build.sh
 ```
+
+Requires macOS with Xcode installed.
 
 #### Desktop (separate workspace)
 ```bash
@@ -254,13 +293,17 @@ cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 cd toboggan-desktop && cargo build --release
 ```
 
-**Note**: Desktop requires ~8+ GB RAM due to GPU dependencies (wgpu/naga).
-On memory-constrained machines, prefer the TUI or web client.
+**Note**: Desktop requires ~8+ GB RAM and system GPU libraries
+(`libxkbcommon-dev`, `libwayland-dev`, `libegl1-mesa-dev` on Linux).
+On memory-constrained or headless machines, use the **TUI** or **web** client instead.
 
 #### Terminal UI
 ```bash
 cargo build -p toboggan-tui --release
 ```
+
+The TUI works in any terminal (including SSH). No special dependencies
+needed — just a real TTY (not a CI or tool sub-shell).
 
 ## Architecture
 

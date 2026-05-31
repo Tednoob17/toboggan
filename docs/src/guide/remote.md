@@ -30,7 +30,7 @@ Typically looks like `192.168.1.42` or `10.0.0.5`.
 
 ```bash
 # Terminal (TUI)
-toboggan-tui http://192.168.1.42:8080
+toboggan-tui --host 192.168.1.42 --port 8080
 
 # No installation needed — use the web UI
 # Just open a browser to:

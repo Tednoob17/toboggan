@@ -2,10 +2,15 @@
 
 `toboggan-tui` is the terminal client built with `ratatui` and `crossterm`.
 
+## Requirements
+
+- A real TTY (terminal). Does **not** work in CI sub-shells or non-interactive contexts.
+- Works over SSH, on any Linux/macOS/Windows terminal.
+
 ## Running
 
 ```bash
-toboggan-tui http://localhost:8080
+toboggan-tui --host localhost --port 8080
 ```
 
 ## Controls

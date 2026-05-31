@@ -22,8 +22,12 @@ Once the server is running, open any client and point it at the server URL:
 | Client | Command / URL |
 |--------|---------------|
 | **Web** | `http://localhost:8080` |
-| **TUI** | `cargo run -p toboggan-tui -- http://localhost:8080` |
+| **TUI** | `toboggan-tui --host localhost --port 8080` |
 | **Mobile/Desktop** | Configure the server URL in the app |
+
+> **Web UI note**: The browser frontend requires building `toboggan-web`
+> (Node.js + wasm-pack). Without it, the server shows a placeholder page.
+> All API endpoints (`/api/talk`, `/api/ws`) work regardless.
 
 ## HTTP and WebSocket endpoints
 
