@@ -152,9 +152,22 @@ cd ..
 cargo build --release -p toboggan-server
 ```
 
-> **Tip**: Add `--release` for optimized builds. Without it, you get debug builds
-> (faster to compile but slower to run). Binaries are in `target/release/`
-> (with `--release`) or `target/debug/` (without).
+### Build outputs
+
+After building, your binaries are at these paths:
+
+| Component | Default path |
+|-----------|-------------|
+| `toboggan-cli` | `target/debug/toboggan-cli` (debug) or `target/release/toboggan-cli` (release) |
+| `toboggan-server` | `target/debug/toboggan-server` or `target/release/toboggan-server` |
+| `toboggan-tui` | `target/debug/toboggan-tui` or `target/release/toboggan-tui` |
+| `toboggan-desktop` | `target/debug/toboggan-desktop` or `target/release/toboggan-desktop` |
+| WASM output | `toboggan-web/toboggan-wasm/pkg/` |
+| Web frontend (built) | `toboggan-web/dist/` (embedded into server binary at compile time) |
+
+> **Note**: The server embeds the web frontend. If you change the frontend code,
+> you must rebuild the server (`cargo build -p toboggan-server`) to see the
+> changes.
 
 ### Or use the build script
 

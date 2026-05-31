@@ -11,9 +11,15 @@ toboggan-server talk.toml
 # Custom host and port
 toboggan-server --host 0.0.0.0 --port 9090 talk.toml
 
+# Serve presentation images from a local folder
+toboggan-server --public-dir ./public talk.toml
+
 # Enable watch mode
 toboggan-server --watch talk.toml
 ```
+
+The `--public-dir` flag serves static files (images, videos, etc.) at the `/public/` URL path.
+This is useful for embedding images in your slide HTML with `<img src="/public/my-image.jpg">`.<｜end▁of▁thinking｜>
 
 ## Connecting clients
 

@@ -152,6 +152,50 @@ type = "Text"
 text = "Speaker notes — only visible in presenter mode"
 ```
 
+### Progressive reveals (steps)
+
+To reveal content incrementally within a single slide, wrap each chunk in a `<div class="step step-N">`:
+
+```toml
+[[slides]]
+kind = "Standard"
+
+[slides.title]
+type = "Text"
+text = "Progressive Example"
+
+[slides.body]
+type = "Html"
+raw = """
+<div class="step step-0">
+<h3>First thing to show</h3>
+<p>This appears when the slide loads.</p>
+</div>
+<div class="step step-1">
+<h3>Second thing</h3>
+<p>This appears on click / next.</p>
+</div>
+<div class="step step-2">
+<h3>Third thing</h3>
+<p>This appears on the next click.</p>
+</div>
+"""
+alt = """
+## Progressive Example
+
+### Step 1
+First thing to show.
+
+### Step 2
+Second thing to show.
+
+### Step 3
+Third thing to show.
+"""
+```
+
+The numbering starts at `0` and increments by 1 for each step. The `step_counts` in the API response ([0, 2, 1, ...]) tells the client how many steps each slide has (0 = single view, no steps).
+
 ## Slide fields
 
 | Field | Type | Required | Description |

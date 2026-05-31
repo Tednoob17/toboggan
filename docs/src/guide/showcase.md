@@ -23,10 +23,15 @@ the Toboggan source code that reproduces it is on the right.
 
 ### Toboggan Source Code (by excerpt)
 
-The TOML file is 520 lines across 12 slides, producing 51 PDF pages.
-The 12-->51 ratio comes from **steps** (progressive reveals) and `Part` separators.
-Each excerpt below maps to one or more PDF pages.
+The TOML file has **51 slides**, one per PDF page, with embedded images served via `--public-dir`.
 The complete file is at `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`.
+Presentation images are in `slides_ex/presentations/How to Fuzz Like a Pro/public/`.
+
+To serve with images:
+```bash
+toboggan-server --public-dir "slides_ex/presentations/How to Fuzz Like a Pro/public" \
+  "slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml"
+```
 
 ---
 

@@ -62,6 +62,42 @@ cd toboggan-web
 npm run dev          # runs on http://localhost:8000, proxies /public to :8080
 ```
 
+## Configuration (.env)
+
+The web frontend reads environment variables at build time from `toboggan-web/.env`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_API_BASE_URL` | `location.origin` | Base URL for REST API calls (e.g. `/api/talk`). Set this if the frontend is served from a different origin than the server. |
+| `VITE_WS_BASE_URL` | `ws://{location.host}/api/ws` | WebSocket URL for real-time updates. |
+| `VITE_WS_MAX_RETRIES` | `5` | Max WebSocket reconnection attempts. |
+| `VITE_WS_INITIAL_RETRY_DELAY` | `1000` | Initial retry delay in ms. |
+| `VITE_WS_MAX_RETRY_DELAY` | `30000` | Max retry delay in ms. |
+
+> **Important**: By default `VITE_API_BASE_URL` and `VITE_WS_BASE_URL` are **not set**,
+> so the frontend uses `location.origin` (the same server the page was loaded from).
+> This is correct for most deployments. Only set them if you need to proxy API
+> calls to a different backend.
+
+### Changing the API URL for production
+
+If you serve the web UI from a different host than the server (e.g. via a CDN or
+reverse proxy), uncomment and edit the relevant lines in `toboggan-web/.env`:
+
+```env
+VITE_API_BASE_URL=http://your-server-ip:8080
+VITE_WS_BASE_URL=ws://your-server-ip:8080/api/ws
+```
+
+Then rebuild the frontend:
+
+```bash
+cd toboggan-web
+npm run build
+cd ..
+cargo build -p toboggan-server
+```
+
 ## Architecture
 
 ```

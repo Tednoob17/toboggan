@@ -10,7 +10,11 @@
 ## Running
 
 ```bash
+# If installed via pre-built binary or cargo install
 toboggan-tui --host localhost --port 8080
+
+# If built from source (binary is in target/debug/ or target/release/)
+./target/debug/toboggan-tui --host localhost --port 8080
 ```
 
 ## Controls
