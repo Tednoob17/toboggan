@@ -1,0 +1,1 @@
+# Full Automated — Example

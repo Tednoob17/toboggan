@@ -76,8 +76,10 @@ impl Settings {
             return Err(format!("Talk file does not exist: {}", self.talk.display()));
         }
 
-        if self.talk.extension().is_none_or(|ext| ext != "toml") {
-            return Err("Talk file must have .toml extension".to_owned());
+        if self.talk.is_file()
+            && self.talk.extension().is_none_or(|ext| ext != "toml")
+        {
+            return Err("Talk file must be a .toml file or a directory containing markdown slides".to_owned());
         }
 
         if let Some(ref assets_dir) = self.public_dir {

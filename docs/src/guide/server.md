@@ -5,8 +5,11 @@
 ## Starting the server
 
 ```bash
-# Basic usage
+# Basic usage — TOML file
 toboggan-server talk.toml
+
+# Basic usage — Markdown folder (v0.1.1-beta.2+)
+toboggan-server ./slides/
 
 # Custom host and port
 toboggan-server --host 0.0.0.0 --port 9090 talk.toml

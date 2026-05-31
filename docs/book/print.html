@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-d0f4d9d2.js";
+            window.path_to_searchindex_js = "searchindex-8bd79c35.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ab01e76e.js"></script>
@@ -599,12 +599,38 @@ toboggan-server my_talk.toml
 </code></pre>
 </li>
 <li>
-<p><strong>How to Fuzz Like a Pro</strong> — a pre-compiled TOML talk file that can be served directly:</p>
-<pre><code class="language-bash"> toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
+<p><strong>How to Fuzz Like a Pro</strong> — available in two formats:</p>
+<ul>
+<li><strong>TOML</strong> (pre-compiled, 51 slides):
+<pre><code class="language-bash">toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
+</code></pre>
+</li>
+<li><strong>Markdown</strong> (folder-based, 51 slides — editable individually):
+<pre><code class="language-bash">toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/markdown/"
 </code></pre>
 </li>
 </ul>
+</li>
+</ul>
 <p>These examples demonstrate the project structure and frontmatter conventions used in real talks.</p>
+<h2 id="markdown-folder-as-input"><a class="header" href="#markdown-folder-as-input">Markdown folder as input</a></h2>
+<p>Starting with v0.1.1-beta.2, <code>toboggan-server</code> accepts a <strong>directory of Markdown files</strong> directly — no TOML conversion needed:</p>
+<pre><code class="language-bash"># Serve a folder of markdown slides directly
+toboggan-server ./my-slides/
+
+# With public dir for images
+toboggan-server ./my-slides/ --public-dir ./my-slides/assets
+</code></pre>
+<p>The folder structure follows the same convention as the CLI input:</p>
+<pre><code>my-slides/
+├── _cover.md           # title and date metadata
+├── _head.html           # custom HTML head injection
+├── 01-introduction.md   # individual slides
+└── 02-deep-dive/
+    ├── _part.md         # section divider
+    └── 01-details.md
+</code></pre>
+<p>When a directory is passed, the server parses it on startup using the same parser as <code>toboggan-cli</code>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="cli-usage"><a class="header" href="#cli-usage">CLI Usage</a></h1>
 <p><code>toboggan-cli</code> converts a folder of Markdown/HTML slides into a Toboggan talk file and prints statistics.</p>
@@ -911,8 +937,11 @@ Some terminal multiplexers (tmux, screen) may intercept arrow keys. Try:</p>
 <h1 id="server-usage"><a class="header" href="#server-usage">Server Usage</a></h1>
 <p><code>toboggan-server</code> loads a TOML talk file, serves the browser UI, and keeps all connected clients in sync over WebSocket.</p>
 <h2 id="starting-the-server"><a class="header" href="#starting-the-server">Starting the server</a></h2>
-<pre><code class="language-bash"># Basic usage
+<pre><code class="language-bash"># Basic usage — TOML file
 toboggan-server talk.toml
+
+# Basic usage — Markdown folder (v0.1.1-beta.2+)
+toboggan-server ./slides/
 
 # Custom host and port
 toboggan-server --host 0.0.0.0 --port 9090 talk.toml

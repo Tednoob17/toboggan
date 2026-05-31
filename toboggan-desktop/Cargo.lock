@@ -4354,7 +4354,7 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "toboggan-client"
-version = "0.1.0"
+version = "0.1.1-beta.2"
 dependencies = [
  "derive_more",
  "futures",
@@ -4369,7 +4369,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-core"
-version = "0.1.0"
+version = "0.1.1-beta.2"
 dependencies = [
  "derive_more",
  "getrandom 0.3.4",
@@ -4382,7 +4382,7 @@ dependencies = [
 
 [[package]]
 name = "toboggan-desktop"
-version = "0.1.0"
+version = "0.1.1-beta.2"
 dependencies = [
  "anyhow",
  "async-stream",

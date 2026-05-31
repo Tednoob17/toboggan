@@ -3,6 +3,7 @@ use std::path::Path;
 use std::time::Duration;
 
 use anyhow::Context;
+use toboggan_cli::parser::FolderParser;
 use toboggan_core::Talk;
 use tracing::{info, instrument, warn};
 use utoipa::openapi::OpenApi;
@@ -72,7 +73,25 @@ pub async fn launch(settings: Settings) -> anyhow::Result<()> {
 }
 
 #[instrument]
+fn load_talk_from_folder(path: &Path) -> anyhow::Result<Talk> {
+    let parser = FolderParser::new(path.to_path_buf(), "base16-ocean.light".to_owned())
+        .with_context(|| format!("Parsing markdown folder {}", path.display()))?;
+    let parse_result = parser.parse(None, None)
+        .with_context(|| format!("Processing slides from {}", path.display()))?;
+    let talk = parse_result.to_talk();
+    info!(
+        "Loaded {} slides from markdown folder {}",
+        talk.slides.len(),
+        path.display()
+    );
+    Ok(talk)
+}
+
+#[instrument]
 async fn load_talk(path: &Path) -> anyhow::Result<Talk> {
+    if path.is_dir() {
+        return load_talk_from_folder(path);
+    }
     let content = tokio::fs::read_to_string(path)
         .await
         .with_context(|| format!("Reading talk file {}", path.display()))?;

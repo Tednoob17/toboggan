@@ -22,9 +22,15 @@ pub fn start_watch_task(talk_path: PathBuf, state: TobogganState) -> anyhow::Res
     })
     .context("Failed to create file watcher")?;
 
+    let recursive = if talk_path.is_dir() {
+        RecursiveMode::Recursive
+    } else {
+        RecursiveMode::NonRecursive
+    };
+
     watcher
-        .watch(&talk_path, RecursiveMode::NonRecursive)
-        .with_context(|| format!("Failed to watch file: {}", talk_path.display()))?;
+        .watch(&talk_path, recursive)
+        .with_context(|| format!("Failed to watch: {}", talk_path.display()))?;
 
     tokio::spawn(watch_loop(watcher, rx, talk_path, state));
 
@@ -85,11 +91,20 @@ fn should_reload(event: &Event) -> bool {
 }
 
 async fn reload_talk(path: &Path, state: &TobogganState) -> anyhow::Result<()> {
-    let content = tokio::fs::read_to_string(path)
-        .await
-        .with_context(|| format!("Reading talk file {}", path.display()))?;
-
-    let new_talk = toml::from_str(&content).context("Parsing talk TOML")?;
+    let new_talk = if path.is_dir() {
+        let parser = toboggan_cli::parser::FolderParser::new(
+            path.to_path_buf(),
+            "base16-ocean.light".to_owned(),
+        )
+        .context("Parsing markdown folder")?;
+        let parse_result = parser.parse(None, None).context("Processing slides")?;
+        parse_result.to_talk()
+    } else {
+        let content = tokio::fs::read_to_string(path)
+            .await
+            .with_context(|| format!("Reading talk file {}", path.display()))?;
+        toml::from_str(&content).context("Parsing talk TOML")?
+    };
 
     state.reload_talk(new_talk).await?;
 

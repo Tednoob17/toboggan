@@ -264,9 +264,39 @@ The repository includes real-world example presentations in the `slides_ex/` dir
   toboggan-server my_talk.toml
   ```
 
-- **How to Fuzz Like a Pro** — a pre-compiled TOML talk file that can be served directly:
-  ```bash
-   toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
-  ```
+- **How to Fuzz Like a Pro** — available in two formats:
+  - **TOML** (pre-compiled, 51 slides):
+    ```bash
+    toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/how-to-fuzz-like-a-pro.toml"
+    ```
+  - **Markdown** (folder-based, 51 slides — editable individually):
+    ```bash
+    toboggan-server "slides_ex/presentations/How to Fuzz Like a Pro/markdown/"
+    ```
 
 These examples demonstrate the project structure and frontmatter conventions used in real talks.
+
+## Markdown folder as input
+
+Starting with v0.1.1-beta.2, `toboggan-server` accepts a **directory of Markdown files** directly — no TOML conversion needed:
+
+```bash
+# Serve a folder of markdown slides directly
+toboggan-server ./my-slides/
+
+# With public dir for images
+toboggan-server ./my-slides/ --public-dir ./my-slides/assets
+```
+
+The folder structure follows the same convention as the CLI input:
+```
+my-slides/
+├── _cover.md           # title and date metadata
+├── _head.html           # custom HTML head injection
+├── 01-introduction.md   # individual slides
+└── 02-deep-dive/
+    ├── _part.md         # section divider
+    └── 01-details.md
+```
+
+When a directory is passed, the server parses it on startup using the same parser as `toboggan-cli`.
