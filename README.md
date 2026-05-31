@@ -117,7 +117,7 @@ cargo build --release
 cargo build --release --manifest-path toboggan-desktop/Cargo.toml
 
 # Run the server with an example presentation
-cargo run -p toboggan-server path/to/your-talk.toml
+cargo run -p toboggan-server -- path/to/your-talk.toml
 ```
 
 ### Try the example presentations
@@ -340,15 +340,20 @@ Toboggan supports multiple client types, each optimized for different use cases 
 Toboggan uses a simple JSON-based WebSocket protocol for real-time synchronization:
 
 ### Commands (Client → Server)
-- `Next`, `Previous`, `First`, `Last` - Navigation
-- `Goto { slide: N }` - Jump to specific slide
-- `Play`, `Pause`, `Resume` - Presentation control
-- `Register { client_id }` - Client registration
+- `Register`, `Unregister`, `Ping` - Connection management
+- `First`, `Last`, `GoTo { slide: N }` - Slide navigation
+- `NextSlide`, `PreviousSlide` - Step through slides
+- `NextStep`, `PreviousStep` - Step through progressive reveals
+- `Blink` - Visual notification effect
 
 ### Notifications (Server → Clients)
 - `State { current_slide, state }` - Presentation state updates
 - `Error { message }` - Error notifications
 - `Pong` - Heartbeat response
+- `Blink` - Visual notification
+- `TalkChange` - Talk file reloaded
+- `Registered` - Registration confirmation
+- `ClientConnected`, `ClientDisconnected` - Peer events
 
 ## Development
 

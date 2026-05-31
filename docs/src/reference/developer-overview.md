@@ -49,7 +49,7 @@ This document summarizes Toboggan's architecture, main crates, core types, runti
 
 ## CLI behavior highlights
 
-- `toboggan-cli` parses folders into slides, supports frontmatter TOML, progressive reveals via `<!-- pause -->`, speaker notes, and many output formats (TOML, JSON, YAML, CBOR, MessagePack, bincode).
+- `toboggan-cli` parses folders into slides, supports frontmatter TOML, progressive reveals via `<!-- pause -->`, speaker notes, and multiple output formats (TOML, JSON, YAML, HTML).
 - Provides presentation statistics and optional numbering of parts/slides.
 
 ## Build & run (developer quick commands)

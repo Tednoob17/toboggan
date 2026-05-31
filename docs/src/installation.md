@@ -52,9 +52,14 @@ curl.exe -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/to
 
 ### Debian / Ubuntu
 
+Download individual `.deb` packages:
+
 ```bash
-curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-cli-linux-amd64.deb -o toboggan-cli.deb
-sudo dpkg -i toboggan-cli.deb
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-cli_0.1.0-1_amd64.deb -o toboggan-cli.deb
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-server_0.1.0-1_amd64.deb -o toboggan-server.deb
+curl -sSfL https://github.com/Tednoob17/toboggan/releases/latest/download/toboggan-tui_0.1.0-1_amd64.deb -o toboggan-tui.deb
+sudo dpkg -i toboggan-cli.deb toboggan-server.deb toboggan-tui.deb
+sudo apt-get install -f
 ```
 
 ## Build from source
