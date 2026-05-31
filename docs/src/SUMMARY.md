@@ -3,6 +3,12 @@
 [Introduction](introduction.md)
 [Installation](installation.md)
 
+---
+
+> **🌐 Languages:** [**English**](introduction.html) · [Français](fr/index.html)
+
+---
+
 # User Guide
 
 - [Creating Presentations](guide/creating-presentations.md)

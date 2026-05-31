@@ -27,14 +27,15 @@ kind = "Standard"
 
 [slides.title]
 type = "Text"
-text = "How to fuzz like a pro"
+text = ""
 
 [slides.body]
 type = "Html"
 raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
-  <div style="flex: 1; padding: 0.5em 0;">
-<p style="text-align: center; color: #AD2B43; font-size: 1.2em;">Building secure contracts with property-based testing</p>
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div style="color: #AD2B43; font-weight: 300; font-size: 2.8em; text-align: center; line-height: 1.3;">Building secure contracts:</div>
+    <div style="color: #AD2B43; font-weight: 300; font-size: 2.8em; text-align: center; line-height: 1.3;">How to fuzz like a pro</div>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
     <span>DeFi Security Summit &nbsp;|&nbsp; Building Secure Contracts: Fuzzing like a pro</span>
@@ -42,8 +43,7 @@ raw = """
   </div>
 </div>"""
 alt = """
-## How to fuzz like a pro
-Building secure contracts with property-based testing
+## Building secure contracts: How to fuzz like a pro
 """
 
 [[slides]]
@@ -58,13 +58,16 @@ type = "Html"
 raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
-<h2>Nat Chin</h2>
+<h2>Nat Chin (</h2>
 <ul style="list-style: none; padding-left: 0;">
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong>@0xicingdeath</strong></li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Trail of Bits &mdash; trailofbits.com</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> We help developers to build safer software</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> R&amp;D focused: we use the latest program analysis techniques</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Slither, Echidna, Tealer, Amarna, solc-select&hellip;</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong style="color: #0097A7;">@0xicingdeath</strong></li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Trail of Bits: <strong style="color: #0097A7;">trailofbits.com</strong>
+  <ul style="list-style: none; padding-left: 1.5em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> We help developers to build safer software</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> R&amp;D focused: we use the latest program analysis techniques</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Slither, Echidna, Tealer, Amarna, solc-select…</li>
+  </ul>
+</li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -178,12 +181,16 @@ raw = """
   <div style="flex: 1; padding: 0.5em 0;">
 <h3>Main techniques</h3>
 <ul style="list-style: none; padding-left: 0;">
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Unit tests</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Manual analysis</li>
-<li>Automated analysis
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Fully automated analysis</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Semi automated analysis</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Main techniques
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Unit tests</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Manual analysis</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Automated analysis
+      <ul style="list-style: none; padding-left: 1.2em;">
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Fully automated analysis</li>
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Semi automated analysis</li>
+      </ul>
+    </li>
   </ul>
 </li>
 </ul>
@@ -239,9 +246,17 @@ raw = """
   <div style="flex: 1; padding: 0.5em 0;">
 <h3 style="color: #AD2B43;">Semi automated analysis</h3>
 <ul style="list-style: none; padding-left: 0;">
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong>Benefits:</strong> Great for logic-related bugs</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong>Limitations:</strong> Requires human in the loop</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong>Example:</strong> <span style="color: #AD2B43;">Property based testing with Echidna</span> (today&rsquo;s topic)</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Benefits</strong>
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Great for logic-related bugs</li>
+  </ul>
+</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Limitations</strong>
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Require human in the loop</li>
+  </ul>
+</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Example:</strong> Property based testing with <span style="color: #0097A7;">Echidna</span> <span style="color: #AD2B43;">(today&rsquo;s topic)</span></li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -326,15 +341,18 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Traditional fuzzer usually for crashes</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Smart contracts don&rsquo;t (really) have crashes</li>
-<li><strong>Property based testing:</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> User defines invariants</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Fuzzer generates random inputs to check the invariants</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Traditional fuzzer usually for crashes
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Smart contracts don&rsquo;t (really) have crashes</li>
   </ul>
 </li>
-<li><em>&ldquo;Unit tests on steroids&rdquo;</em></li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Property based testing
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> User defines invariants</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Fuzzer generates random inputs to check the invariants</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <em>&ldquo;Unit tests on steroids&rdquo;</em></li>
+  </ul>
+</li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -365,7 +383,7 @@ raw = """
     <div style="display: flex; flex-direction: row; gap: 1em; align-items: flex-start;">
       <div style="flex: 1;">
         <ul style="list-style: none; padding-left: 0;">
-          <li style="margin: 0.3em 0; font-size: 1.3em;"><span style="color: #10181F;">●</span> Something that must <strong style="color: #AD2B43;">always be true</strong></li>
+          <li style="margin: 0.3em 0; font-size: 1.3em;"><span style="color: #10181F;">●</span> Something that must <strong style="color: #10181F;">always</strong> be true</li>
         </ul>
       </div>
       <div style="flex: 0 0 auto; max-width: 55%;">
@@ -736,16 +754,16 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <h3>Start small, and iterate</h3>
-<ol>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Define invariants in English</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Write the invariants in Solidity</li>
-<li>Run Echidna
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> If invariants broken: investigate</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Once all invariants pass, go back to (1)</li>
+<ul style="list-style: none; padding-left: 0;">
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> <strong>1.</strong> Define invariants in English</li>
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> <strong>2.</strong> Write the invariants in Solidity</li>
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> <strong>3.</strong> Run Echidna
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> If invariants broken: investigate</li>
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Once all invariants pass, go back to (1)</li>
   </ul>
 </li>
-</ol>
+</ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
     <span>DeFi Security Summit &nbsp;|&nbsp; Building Secure Contracts: Fuzzing like a pro</span>
@@ -800,16 +818,23 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <h3>Math library</h3>
-<table>
-<thead>
-<tr><th>Property</th><th>Example</th></tr>
-</thead>
-<tbody>
-<tr><td>Commutative</td><td><code>1 + 2 = 2 + 1</code></td></tr>
-<tr><td>Identity</td><td><code>1 * 2 = 2</code></td></tr>
-<tr><td>Inverse</td><td><code>x + (-x) = 0</code></td></tr>
-</tbody>
-</table>
+<ul style="list-style: none; padding-left: 0;">
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> Commutative property
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> 1 + 2 = 2 + 1</li>
+  </ul>
+</li>
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> Identity property
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> 1 * 2 = 2</li>
+  </ul>
+</li>
+<li style="margin: 0.3em 0;"><span style="color: #AD2B43;">○</span> Inverse property
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> x + (-x) = 0</li>
+  </ul>
+</li>
+</ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
     <span>DeFi Security Summit &nbsp;|&nbsp; Building Secure Contracts: Fuzzing like a pro</span>
@@ -915,18 +940,22 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li><strong>Function-level invariant</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Ex: arithmetic&rsquo;s associativity</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Usually stateless invariants</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Can craft scenario to test the invariant</li>
-  </ul>
-</li>
-<li><strong>System-level invariant</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Ex: user&rsquo;s balance &lt; total supply</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Usually stateful invariants</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> All functions must be considered</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Identify the target of the invariant
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Function-level invariant</strong>
+      <ul style="list-style: none; padding-left: 1.2em;">
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Ex: arithmetic&rsquo;s associativity</li>
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Usually stateless invariants</li>
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Can craft scenario to test the invariant</li>
+      </ul>
+    </li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>System-level invariant</strong>
+      <ul style="list-style: none; padding-left: 1.2em;">
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Ex: user&rsquo;s balance &lt; total supply</li>
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Usually stateful invariants</li>
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> All functions must be considered</li>
+      </ul>
+    </li>
   </ul>
 </li>
 </ul>
@@ -1088,10 +1117,10 @@ raw = """
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
 <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> In practice: you don&rsquo;t know where the bugs are</li>
-<li><strong>Code coverage vs behavior coverage</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Cover as many functions as possible</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Or focus on specific components?</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Code coverage vs behavior coverage
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Cover as many functions as possible or;</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Focus on specific components?</li>
   </ul>
 </li>
 </ul>
@@ -1120,18 +1149,18 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li><strong>Behavior coverage first:</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Focus on 1 or 2 components</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Behavior coverage first</strong>
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Focus on 1 or 2 components</li>
   </ul>
 </li>
-<li><strong>Code coverage first:</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Cover many functions with simple properties</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> <strong>Code coverage first</strong>
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Cover many functions with simple properties</li>
   </ul>
 </li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Alternate: 1 day behavior, 1 day code&hellip;</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> No right or wrong approach &mdash; try and see what works</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Alternate: 1 day behavior, 1 day code&hellip;</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> No right or wrong approach &mdash; try and see what works</li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -1160,10 +1189,16 @@ raw = """
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
 <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start simple, then think about composition, related behaviors&hellip;</li>
-<li>Can <code>transfer</code> and <code>transferFrom</code> be equivalent?
-  <br><code>transfer(to, value) ?= transferFrom(msg.sender, to, value)</code></li>
-<li>Is transfer additive-like?
-  <br><code>transfer(to, v0), transfer(to, v1) ?= transfer(to, v0 + v1)</code></li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Can <code>transfer</code> and <code>transferFrom</code> be equivalent?
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> <code>transfer(to, value) ?= transferFrom(msg.sender, to, value)</code></li>
+  </ul>
+</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Is transfer additive-like?
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> <code>transfer(to, v0), transfer(to, v1) ?= transfer(to, v0 + v1)</code></li>
+  </ul>
+</li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -1191,11 +1226,17 @@ raw = """
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
 <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start simple, then think about composition, related behaviors&hellip;</li>
-<li>Can <code>transfer</code> and <code>transferFrom</code> be equivalent?
-  <br><code>transfer(to, value) ?= transferFrom(msg.sender, to, value)</code></li>
-<li>Is transfer additive-like?
-  <br><code>transfer(to, v0), transfer(to, v1) ?= transfer(to, v0 + v1)</code></li>
-<li><em>Spoiler: this won&rsquo;t hold; why?</em></li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Can <code>transfer</code> and <code>transferFrom</code> be equivalent?
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> <code>transfer(to, value) ?= transferFrom(msg.sender, to, value)</code></li>
+  </ul>
+</li>
+<li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Is transfer additive-like?
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> <code>transfer(to, v0), transfer(to, v1) ?= transfer(to, v0 + v1)</code></li>
+    <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Spoiler: this won&rsquo;t hold; why?</li>
+  </ul>
+</li>
 </ul>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
@@ -1313,10 +1354,10 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li><code>buy</code> is <strong>stateful</strong></li>
-<li><code>_valid_buy</code> is <strong>stateless</strong>
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start with it</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <code>buy</code> is <strong>stateful</strong></li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <code>_valid_buy</code> is <strong>stateless</strong>
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Start with it</li>
   </ul>
 </li>
 </ul>
@@ -1604,12 +1645,16 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li>Unique advanced features:
-  <ul style="list-style: none; padding-left: 0;">
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Can target high gas consumption functions</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Differential fuzzing</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Works with any compilation framework</li>
-    <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Different APIs: boolean property, assertion, dapptest/foundry mode</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Echidna has unique additional advanced features
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Can target high gas consumption functions</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Differential fuzzing</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Works with any compilation framework</li>
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Different APIs
+      <ul style="list-style: none; padding-left: 1.2em;">
+        <li style="margin: 0.15em 0;"><span style="color: #000000;">■</span> Boolean property, assertion, dapptest/foundry mode&hellip;</li>
+      </ul>
+    </li>
   </ul>
 </li>
 <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Free &amp; open source</li>
@@ -1658,12 +1703,17 @@ raw = """
 <div style="display: flex; flex-direction: column; min-height: 40vh;">
   <div style="flex: 1; padding: 0.5em 0;">
 <ul style="list-style: none; padding-left: 0;">
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start by writing invariants in English, then write Solidity properties</li>
-<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start simple and iterate</li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <a style="color: #0097A7;" href="https://github.com/crytic/echidna">github.com/crytic/echidna</a></li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> To learn more: <a style="color: #0097A7;" href="https://github.com/crytic/building-secure-contracts">github.com/crytic/building-secure-contracts</a></li>
+<li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> Start by writing invariants in English, then write Solidity properties
+  <ul style="list-style: none; padding-left: 1.2em;">
+    <li style="margin: 0.2em 0;"><span style="color: #AD2B43;">○</span> Start simple and iterate</li>
+  </ul>
+</li>
 <li style="margin: 0.3em 0;"><span style="color: #10181F;">●</span> <strong>Your mission:</strong> Try Echidna on your current project</li>
 </ul>
-<p style="margin-top: 1.5em; font-style: italic;">ToB is hiring: <a style="color: #0097A7;" href="https://jobs.lever.co/trailofbits">jobs.lever.co/trailofbits</a></p>
-<p style="font-style: italic;">Security Consultants &amp; Apprentices</p>
+<p style="margin-top: 1.5em;">ToB is hiring (<a style="color: #0097A7;" href="https://jobs.lever.co/trailofbits">https://jobs.lever.co/trailofbits</a>)</p>
+<p><span style="color: #10181F;">●</span> Security Consultants &amp; Apprentices</p>
   </div>
   <div style="display: flex; justify-content: space-between; align-items: center; font-size: 8pt; color: #8294A3; padding: 4px 0; margin-top: auto;">
     <span>DeFi Security Summit &nbsp;|&nbsp; Building Secure Contracts: Fuzzing like a pro</span>

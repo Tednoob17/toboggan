@@ -1,0 +1,9 @@
+[book]
+authors = ["Tednoob17"]
+language = "fr"
+src = "src-fr"
+title = "Toboggan — Documentation Française"
+
+[output.html]
+git-repository-url = "https://github.com/Tednoob17/toboggan"
+edit-url-template = "https://github.com/Tednoob17/toboggan/edit/main/docs/src-fr/{path}"
