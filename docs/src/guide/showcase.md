@@ -21,16 +21,16 @@ the Toboggan source code that reproduces it is on the right.
   <a href="../assets/how-to-fuzz-like-a-pro.pdf">Download the original PDF</a>.</p>
 </object>
 
-### Toboggan Source Code (par extraits)
+### Toboggan Source Code (by excerpt)
 
-Le fichier TOML fait 520 lignes pour 12 slides, qui produisent 51 pages PDF.
-Le ratio 12→51 vient des **steps** (reveals progressifs) et des séparateurs `Part`.
-Chaque extrait ci-dessous correspond à une ou plusieurs pages du PDF.
-Le fichier complet est dans `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`.
+The TOML file is 520 lines across 12 slides, producing 51 PDF pages.
+The 12-->51 ratio comes from **steps** (progressive reveals) and `Part` separators.
+Each excerpt below maps to one or more PDF pages.
+The complete file is at `slides_ex/presentations/How to Fuzz Like a Pro/How to Fuzz Like a Pro.toml`.
 
 ---
 
-#### 1. Page de garde → PDF page 1
+#### 1. Cover --> PDF page 1
 
 ```toml
 [[slides]]
@@ -64,7 +64,7 @@ DeFi Security Summit — 2024
 
 ---
 
-#### 2. Introduction des speakers → PDF pages 2-3
+#### 2. Speaker introductions --> PDF pages 2-3
 
 ```toml
 [[slides]]
@@ -109,7 +109,7 @@ text = "Why Fuzzing Matters"
 
 ---
 
-#### 3. The Problem (2 steps) → PDF pages 4-5
+#### 3. The Problem (2 steps) --> PDF pages 4-5
 
 ```toml
 [[slides]]
@@ -141,11 +141,11 @@ raw = """
 """
 ```
 
-> Les deux `<div class="step step-N">` produisent deux pages PDF distinctes.
+> Both `<div class="step step-N">` blocks produce two separate PDF pages.
 
 ---
 
-#### 4. What is Echidna? (2 steps) → PDF pages 6-7
+#### 4. What is Echidna? (2 steps) --> PDF pages 6-7
 
 ```toml
 [[slides]]
@@ -180,7 +180,7 @@ raw = """
 
 ---
 
-#### 5. Section "Writing Invariants" → PDF page 8 (séparateur)
+#### 5. Section "Writing Invariants" --> PDF page 8 (separator)
 
 ```toml
 [[slides]]
@@ -193,7 +193,7 @@ text = "Writing Invariants"
 
 ---
 
-#### 6. What Are Invariants? (2 steps) → PDF pages 9-10
+#### 6. What Are Invariants? (2 steps) --> PDF pages 9-10
 
 ```toml
 [[slides]]
@@ -227,7 +227,7 @@ raw = """
 
 ---
 
-#### 7. Writing Echidna Properties (2 steps) → PDF pages 11-12
+#### 7. Writing Echidna Properties (2 steps) --> PDF pages 11-12
 
 ```toml
 [[slides]]
@@ -258,7 +258,7 @@ raw = """
 
 ---
 
-#### 8. Advanced: Filtered Fuzzing (2 steps) → PDF pages 13-14
+#### 8. Advanced: Filtered Fuzzing (2 steps) --> PDF pages 13-14
 
 ```toml
 [[slides]]
@@ -294,7 +294,7 @@ echidna-test . --config echidna.yaml --corpus-dir corpus/ --seed 42</code></pre>
 
 ---
 
-#### 9. Section "Real-World Findings" → PDF page 15 (séparateur)
+#### 9. Section "Real-World Findings" --> PDF page 15 (separator)
 
 ```toml
 [[slides]]
@@ -306,7 +306,7 @@ text = "Real-World Findings"
 
 ---
 
-#### 10. Case Study: Lending Protocol (2 steps) → PDF pages 16-17
+#### 10. Case Study: Lending Protocol (2 steps) --> PDF pages 16-17
 
 ```toml
 [[slides]]
@@ -342,7 +342,7 @@ that could never be liquidated</li>
 
 ---
 
-#### 11. Best Practices (3 steps) → PDF pages 18-20
+#### 11. Best Practices (3 steps) --> PDF pages 18-20
 
 ```toml
 [[slides]]
@@ -385,11 +385,11 @@ raw = """
 """
 ```
 
-> 3 steps → 3 pages PDF pour cette slide.
+> 3 steps --> 3 PDF pages for this slide.
 
 ---
 
-#### 12. Conclusion & remerciements → PDF pages 21-51
+#### 12. Conclusion & acknowledgments --> PDF pages 21-51
 
 ```toml
 [[slides]]
@@ -448,10 +448,10 @@ type = "Text"
 text = "Remind the audience about Echidna's GitHub repo. Encourage them to try fuzzing their own contracts. Mention the Trail of Bits audit services."
 ```
 
-> La slide "Key Takeaways" a 2 steps (takeaways + resources) → 2 pages.  
-> La slide "Thank You" a des **speaker notes** (`[slides.notes]`) invisibles pour le public.
+> The "Key Takeaways" slide has 2 steps (takeaways + resources) --> 2 pages.  
+> The "Thank You" slide has **speaker notes** (`[slides.notes]`) invisible to the audience.
 
-**Récapitulatif du mapping slides → pages PDF :**
+**Slide-to-PDF-page mapping summary:**
 
 | Slides TOML | Steps | Pages PDF |
 |---|---|---|
@@ -468,7 +468,7 @@ text = "Remind the audience about Echidna's GitHub repo. Encourage them to try f
 | Best Practices | 3 steps | 18-20 |
 | Conclusion + Takeaways + Thank You | 3 steps | 21-51¹ |
 
-> ¹ Les pages 21-51 du PDF original contiennent des slides additionnelles (détails d'implémentation, remerciements, QA) qui n'ont pas été reproduites dans cet exemple.
+> ¹ Pages 21-51 of the original PDF contain additional slides (implementation details, acknowledgments, Q&A) that were not reproduced in this example.
 
 ### How to Run It
 
@@ -566,6 +566,6 @@ Then open http://localhost:8080 and present.
 
 Toboggan does not currently export slides to PDF — it is a live presentation system
 designed for real-time, multi-device playback via a WebSocket server. If you need a
-PDF version of your slides, you can use your browser's **Print → Save as PDF** feature
+PDF version of your slides, you can use your browser's **Print --> Save as PDF** feature
 while viewing the presentation at `http://localhost:8080`, or use a tool like
 [`wkhtmltopdf`](https://wkhtmltopdf.org/) to render the HTML output.
