@@ -50,6 +50,7 @@ echo "  ✓ WASM crate built"
 echo ""
 echo "--- Step 2/3: Building TypeScript frontend ---"
 cd "$PROJECT_DIR/toboggan-web"
+cp "$PROJECT_DIR/toboggan-favicon.png" "$PROJECT_DIR/toboggan-web/assets/toboggan-favicon.png"
 if [ ! -d node_modules ]; then
   echo "  Installing npm dependencies..."
   npm install
