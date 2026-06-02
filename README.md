@@ -10,7 +10,7 @@ A modern, multi-platform presentation system built in Rust with real-time synchr
 [![CI](https://github.com/Tednoob17/toboggan/actions/workflows/ci.yml/badge.svg)](https://github.com/Tednoob17/toboggan/actions/workflows/ci.yml)
 
 
-[![Toboggan logo](logo/toboggan-slides%20logo.png)](toboggan-slides%20logo.png)
+[![Toboggan logo](logo/toboggan-slides%20logo.png)](logo/toboggan-slides%20logo.png)
 
 ## Overview
 

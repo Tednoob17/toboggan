@@ -42,15 +42,16 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 # Step 2: Build WASM crate
 echo ""
 echo "--- Step 1/3: Building WASM crate ---"
-cd "$PROJECT_DIR/toboggan-web/toboggan-wasm"
+cd "$PROJECT_DIR/logo/toboggan-web/toboggan-wasm"
 wasm-pack build --target web --release
 echo "  ✓ WASM crate built"
 
 # Step 3: Install npm deps (if needed)
 echo ""
 echo "--- Step 2/3: Building TypeScript frontend ---"
-cd "$PROJECT_DIR/toboggan-web"
-cp "$PROJECT_DIR/toboggan-favicon.png" "$PROJECT_DIR/toboggan-web/assets/toboggan-favicon.png"
+cd "$PROJECT_DIR/logo/toboggan-web"
+cp "$PROJECT_DIR/logo/toboggan-favicon.png" "$PROJECT_DIR/logo/toboggan-web/assets/toboggan-favicon.png"
+cp "$PROJECT_DIR/logo/toboggan-favicon.png" "$PROJECT_DIR/logo/toboggan-web/assets/favicon.ico"
 if [ ! -d node_modules ]; then
   echo "  Installing npm dependencies..."
   npm install
