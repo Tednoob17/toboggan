@@ -76,7 +76,8 @@ pub async fn launch(settings: Settings) -> anyhow::Result<()> {
 fn load_talk_from_folder(path: &Path) -> anyhow::Result<Talk> {
     let parser = FolderParser::new(path.to_path_buf(), "base16-ocean.light".to_owned())
         .with_context(|| format!("Parsing markdown folder {}", path.display()))?;
-    let parse_result = parser.parse(None, None)
+    let parse_result = parser
+        .parse(None, None)
         .with_context(|| format!("Processing slides from {}", path.display()))?;
     let talk = parse_result.to_talk();
     info!(

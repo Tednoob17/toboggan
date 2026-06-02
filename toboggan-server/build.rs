@@ -18,7 +18,9 @@ fn main() {
     } else {
         println!("cargo:warning=web frontend dist not found — server will embed placeholder page");
         println!("cargo:warning=to build the full web UI:");
-        println!("cargo:warning=  1. cd toboggan-web/toboggan-wasm && wasm-pack build --target web --release");
+        println!(
+            "cargo:warning=  1. cd toboggan-web/toboggan-wasm && wasm-pack build --target web --release"
+        );
         println!("cargo:warning=  2. cd ../.. && npm install && npm run build");
         println!("cargo:warning=  3. cargo build -p toboggan-server (rebuild with embedded UI)");
         let dist = Path::new("../toboggan-web/dist");
