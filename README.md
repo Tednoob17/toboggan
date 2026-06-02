@@ -195,6 +195,25 @@ open http://localhost:8080
 cargo run -p toboggan-tui -- --host localhost --port 8080
 ```
 
+### Android
+
+To run the Android client:
+
+- Install Android Studio and the Android NDK (25+).
+- Add Rust Android targets:
+
+```
+rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+```
+
+- From the repo root, generate the native libraries and Kotlin bindings:
+
+```
+mise build:android
+```
+
+- Open `toboggan-android/` in Android Studio and run on an emulator or device. Use `10.0.2.2:8080` on the emulator to reach the host server; for physical devices update the server URL in `PresentationViewModel.kt`.
+
 ## Building
 
 ### Prerequisites
